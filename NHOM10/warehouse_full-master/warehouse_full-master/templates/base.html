@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}CloudWMS — Nền Tảng Quản Trị Kho Đám Mây{% endblock %}</title>
+    <title>{% block title %}CloudWMS — Nền Tảng Quản Trị Kho Đám Mây 3D{% endblock %}</title>
 
     <!-- Google Fonts: Plus Jakarta Sans & JetBrains Mono -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -16,31 +16,32 @@
 
     <style>
         :root {
-            --bg-void: #06080D;
-            --bg-surface: #0D111A;
-            --bg-card: #131824;
+            --bg-void: #04060B;
+            --bg-surface: rgba(13, 17, 28, 0.72);
+            --bg-card: rgba(18, 24, 38, 0.85);
             --gold-primary: #F59E0B;
             --gold-light: #FDE68A;
             --indigo-accent: #6366F1;
-            --border-subtle: rgba(255, 255, 255, 0.08);
-            --border-gold: rgba(245, 158, 11, 0.42);
+            --cyan-accent: #06B6D4;
+            --border-subtle: rgba(255, 255, 255, 0.09);
+            --border-gold: rgba(245, 158, 11, 0.55);
             --text-primary: #F8FAFC;
             --text-secondary: #94A3B8;
             --mouse-x: 50vw;
             --mouse-y: 25vh;
         }
 
-        /* Thanh tiến trình đọc trang phát sáng trên cùng */
+        /* Thanh tiến trình đọc trang phát sáng */
         #scroll-progress {
             position: fixed;
             top: 0;
             left: 0;
             height: 3px;
             width: 0%;
-            background: linear-gradient(90deg, #F59E0B, #FBBF24, #818CF8);
+            background: linear-gradient(90deg, #F59E0B, #FDE68A, #6366F1, #06B6D4);
             z-index: 9999;
-            box-shadow: 0 0 12px rgba(245, 158, 11, 0.8);
-            transition: width 0.1s ease-out;
+            box-shadow: 0 0 15px rgba(245, 158, 11, 0.9);
+            transition: width 0.08s ease-out;
         }
 
         body {
@@ -55,80 +56,44 @@
             -webkit-font-smoothing: antialiased;
         }
 
-        /* Nền lưới kỹ thuật số (Engineering Grid) + Quầng sáng động theo chuột */
-        body::before {
-            content: "";
+        /* Canvas mạng lưới đám mây 3D tương tác ở lớp nền */
+        #cloud-particle-canvas {
             position: fixed;
             inset: 0;
-            background-image: 
-                linear-gradient(to right, rgba(255, 255, 255, 0.025) 1px, transparent 1px),
-                linear-gradient(to bottom, rgba(255, 255, 255, 0.025) 1px, transparent 1px);
-            background-size: 44px 44px;
-            mask-image: radial-gradient(ellipse 80% 60% at 50% 10%, #000 40%, transparent 100%);
-            -webkit-mask-image: radial-gradient(ellipse 80% 60% at 50% 10%, #000 40%, transparent 100%);
+            width: 100%;
+            height: 100%;
             pointer-events: none;
             z-index: -2;
         }
 
+        /* Quầng sáng Spotlight bám theo con trỏ chuột */
         body::after {
             content: "";
             position: fixed;
             inset: 0;
             background: radial-gradient(
-                650px circle at var(--mouse-x) var(--mouse-y),
-                rgba(245, 158, 11, 0.08),
-                rgba(99, 102, 241, 0.04) 40%,
+                700px circle at var(--mouse-x) var(--mouse-y),
+                rgba(245, 158, 11, 0.11),
+                rgba(99, 102, 241, 0.06) 40%,
                 transparent 75%
             );
             pointer-events: none;
             z-index: -1;
-            transition: background 0.15s ease;
         }
 
-        /* Quầng sáng nền trôi nhẹ (Ambient Floating Orbs) */
-        .ambient-orb {
-            position: fixed;
-            border-radius: 50%;
-            filter: blur(110px);
-            opacity: 0.35;
-            pointer-events: none;
-            z-index: -2;
-            animation: floatOrb 14s ease-in-out infinite alternate;
-        }
-        .orb-1 {
-            width: 420px;
-            height: 420px;
-            background: rgba(245, 158, 11, 0.18);
-            top: -120px;
-            left: -80px;
-        }
-        .orb-2 {
-            width: 480px;
-            height: 480px;
-            background: rgba(79, 70, 229, 0.22);
-            top: 15%;
-            right: -140px;
-            animation-delay: -5s;
-        }
-
-        @keyframes floatOrb {
-            0% { transform: translate(0, 0) scale(1); }
-            100% { transform: translate(35px, 45px) scale(1.12); }
-        }
-
-        /* Navbar Kính Mờ (Glassmorphism) cao cấp */
+        /* Navbar Kính Mờ Cao Cấp */
         .wms-navbar {
-            background: rgba(6, 8, 13, 0.78) !important;
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
+            background: rgba(4, 6, 11, 0.75) !important;
+            backdrop-filter: blur(22px);
+            -webkit-backdrop-filter: blur(22px);
             border-bottom: 1px solid var(--border-subtle);
             padding: 0.85rem 0;
-            transition: all 0.3s ease;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
         }
 
         .wms-brand {
             font-weight: 800;
-            font-size: 1.32rem;
+            font-size: 1.35rem;
             letter-spacing: -0.02em;
             color: #FFFFFF !important;
             display: flex;
@@ -137,21 +102,21 @@
         }
 
         .wms-brand-icon {
-            width: 40px;
-            height: 40px;
+            width: 42px;
+            height: 42px;
             border-radius: 12px;
             background: linear-gradient(135deg, #F59E0B 0%, #B45309 100%);
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            color: #06080D;
-            font-size: 1.2rem;
-            box-shadow: 0 0 24px rgba(245, 158, 11, 0.45), inset 0 1px 1px rgba(255, 255, 255, 0.5);
-            transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+            color: #04060B;
+            font-size: 1.25rem;
+            box-shadow: 0 0 28px rgba(245, 158, 11, 0.55), inset 0 1px 2px rgba(255, 255, 255, 0.7);
+            transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
 
         .wms-brand:hover .wms-brand-icon {
-            transform: rotate(-8deg) scale(1.08);
+            transform: rotateY(180deg) scale(1.1);
         }
 
         .wms-nav-link {
@@ -166,39 +131,23 @@
 
         .wms-nav-link:hover, .wms-nav-link.active {
             color: #FFFFFF !important;
-            background: rgba(255, 255, 255, 0.06);
+            background: rgba(245, 158, 11, 0.12);
+            text-shadow: 0 0 12px rgba(245, 158, 11, 0.5);
         }
 
-        .wms-nav-link::after {
-            content: "";
-            position: absolute;
-            bottom: 4px;
-            left: 50%;
-            width: 0;
-            height: 2px;
-            background: var(--gold-primary);
-            border-radius: 2px;
-            transition: all 0.25s ease;
-            transform: translateX(-50%);
-        }
-
-        .wms-nav-link:hover::after, .wms-nav-link.active::after {
-            width: 55%;
-        }
-
-        /* Huy hiệu Render Cloud Live nhấp nháy nhịp tim */
+        /* Huy hiệu Render Cloud Live */
         .cloud-status-pill {
             display: inline-flex;
             align-items: center;
             gap: 8px;
-            background: rgba(16, 185, 129, 0.1);
-            border: 1px solid rgba(16, 185, 129, 0.35);
+            background: rgba(16, 185, 129, 0.12);
+            border: 1px solid rgba(16, 185, 129, 0.4);
             color: #34D399;
             font-size: 0.76rem;
             font-weight: 700;
-            padding: 0.35rem 0.9rem;
+            padding: 0.35rem 0.95rem;
             border-radius: 999px;
-            box-shadow: 0 0 20px rgba(16, 185, 129, 0.18);
+            box-shadow: 0 0 22px rgba(16, 185, 129, 0.25);
         }
 
         .pulse-dot {
@@ -206,57 +155,63 @@
             height: 8px;
             background-color: #10B981;
             border-radius: 50%;
-            box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.8);
-            animation: pulseRing 2s infinite;
+            box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.9);
+            animation: pulseRing 1.8s infinite;
         }
 
         @keyframes pulseRing {
-            0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.8); }
-            70% { box-shadow: 0 0 0 8px rgba(16, 185, 129, 0); }
+            0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.9); }
+            70% { box-shadow: 0 0 0 9px rgba(16, 185, 129, 0); }
             100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
         }
 
-        /* Chữ Gradient ánh vàng kim chuyển động mượt */
+        /* Chữ Gradient ánh vàng kim chuyển động */
         .text-gold-shimmer {
-            background: linear-gradient(90deg, #F59E0B 0%, #FDE68A 45%, #F59E0B 90%);
+            background: linear-gradient(90deg, #F59E0B 0%, #FEF08A 45%, #F59E0B 90%);
             background-size: 200% auto;
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            animation: textShimmer 4s linear infinite;
+            animation: textShimmer 3.5s linear infinite;
         }
 
         @keyframes textShimmer {
             to { background-position: 200% center; }
         }
 
-        /* Hero Banner đầu trang với hiệu ứng kính & viền sáng */
+        /* Hero Banner 3D đầu trang với viền sáng chạy */
         .wms-hero-strip {
-            background: linear-gradient(135deg, rgba(19, 24, 36, 0.85) 0%, rgba(13, 17, 26, 0.92) 100%);
-            backdrop-filter: blur(12px);
+            background: linear-gradient(135deg, rgba(18, 24, 38, 0.82) 0%, rgba(10, 14, 24, 0.9) 100%);
+            backdrop-filter: blur(16px);
             border-bottom: 1px solid var(--border-subtle);
-            padding: 2rem 0;
+            padding: 2.1rem 0;
             margin-bottom: 2.2rem;
             position: relative;
             overflow: hidden;
         }
 
-        .wms-hero-strip::before {
+        .wms-hero-strip::after {
             content: "";
             position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 1px;
-            background: linear-gradient(90deg, transparent, rgba(245, 158, 11, 0.6), rgba(99, 102, 241, 0.6), transparent);
+            bottom: 0;
+            left: -50%;
+            width: 200%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #F59E0B, #6366F1, #06B6D4, transparent);
+            animation: borderFlow 6s linear infinite;
+        }
+
+        @keyframes borderFlow {
+            0% { transform: translateX(-25%); }
+            100% { transform: translateX(25%); }
         }
 
         /* =========================================================
-           HIỆU ỨNG XUẤT HIỆN TỪNG NHỊP (STAGGERED ENTRANCE) & CARD 3D
+           HIỆU ỨNG 3D TILT CARD + PHẢN CHIẾU KÍNH (HOLOGRAPHIC GLARE)
            ========================================================= */
         @keyframes fadeUpReveal {
             from {
                 opacity: 0;
-                transform: translateY(22px) scale(0.98);
+                transform: translateY(28px) scale(0.96);
             }
             to {
                 opacity: 1;
@@ -265,21 +220,21 @@
         }
 
         .reveal-item {
-            animation: fadeUpReveal 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
+            animation: fadeUpReveal 0.65s cubic-bezier(0.22, 1, 0.36, 1) both;
         }
 
-        /* Nâng cấp toàn bộ khối nền trắng cũ sang Dark Glassmorphism */
         main .bg-white,
         main .bg-light,
         main .p-4.rounded,
         main .p-5.rounded,
         main .shadow-sm {
-            background: rgba(19, 24, 36, 0.78) !important;
-            backdrop-filter: blur(14px);
+            background: var(--bg-surface) !important;
+            backdrop-filter: blur(18px);
+            -webkit-backdrop-filter: blur(18px);
             border: 1px solid var(--border-subtle) !important;
-            border-radius: 18px !important;
+            border-radius: 20px !important;
             color: var(--text-primary) !important;
-            box-shadow: 0 12px 32px -8px rgba(0, 0, 0, 0.5) !important;
+            box-shadow: 0 16px 40px -10px rgba(0, 0, 0, 0.65) !important;
         }
 
         main h1, main h2, main h3, main h4, main h5, main h6,
@@ -292,34 +247,55 @@
             color: var(--text-secondary) !important;
         }
 
-        /* Card Sản Phẩm & Thẻ Thống Kê Nổi Khối + Ánh Sáng Viền */
+        /* Card 3D tương tác */
         .card {
-            background: linear-gradient(160deg, rgba(24, 30, 46, 0.92) 0%, rgba(14, 18, 28, 0.96) 100%) !important;
+            background: linear-gradient(160deg, rgba(24, 32, 50, 0.88) 0%, rgba(12, 16, 26, 0.95) 100%) !important;
+            backdrop-filter: blur(16px);
             border: 1px solid var(--border-subtle) !important;
-            border-radius: 20px !important;
+            border-radius: 22px !important;
             overflow: hidden !important;
-            box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.65) !important;
-            transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1),
-                        border-color 0.35s ease,
-                        box-shadow 0.35s ease !important;
+            position: relative;
+            transform-style: preserve-3d;
+            will-change: transform;
+            box-shadow: 0 14px 35px -10px rgba(0, 0, 0, 0.75) !important;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease !important;
         }
 
         .card:hover {
-            transform: translateY(-8px);
             border-color: var(--border-gold) !important;
-            box-shadow: 0 24px 48px -12px rgba(0, 0, 0, 0.85),
-                        0 0 30px rgba(245, 158, 11, 0.18) !important;
+            box-shadow: 0 28px 55px -12px rgba(0, 0, 0, 0.9),
+                        0 0 35px rgba(245, 158, 11, 0.22) !important;
+        }
+
+        /* Lớp phản chiếu ánh sáng 3D trên bề mặt Card */
+        .card-glare {
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(
+                circle at var(--glare-x, 50%) var(--glare-y, 50%),
+                rgba(255, 255, 255, 0.16) 0%,
+                rgba(245, 158, 11, 0.06) 30%,
+                transparent 70%
+            );
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+            z-index: 3;
+        }
+
+        .card:hover .card-glare {
+            opacity: 1;
         }
 
         .card-header {
-            background-color: rgba(255, 255, 255, 0.025) !important;
+            background-color: rgba(255, 255, 255, 0.03) !important;
             border-bottom: 1px solid var(--border-subtle) !important;
             color: var(--gold-light) !important;
             font-weight: 700;
             padding: 1rem 1.25rem;
         }
 
-        /* Khung ảnh sản phẩm có chiều sâu & zoom mượt khi hover */
+        /* Khung ảnh sản phẩm nổi khối 3D */
         .card img,
         .card-img-top,
         .product-img {
@@ -327,34 +303,34 @@
             height: 205px !important;
             max-width: 100% !important;
             object-fit: contain !important;
-            background: radial-gradient(circle at center, #FFFFFF 60%, #E2E8F0 100%) !important;
+            background: radial-gradient(circle at center, #FFFFFF 58%, #CBD5E1 100%) !important;
             padding: 16px;
             display: block;
             margin: 0 auto;
             border-bottom: 1px solid var(--border-subtle);
-            transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+            transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
         }
 
         .card:hover img {
-            transform: scale(1.06);
+            transform: scale(1.08);
         }
 
-        /* Nút bấm có dải ánh sáng chéo lướt qua (Shimmer Sweep) */
+        /* Nút bấm Nam Châm + Hiệu ứng gợn sóng (Ripple) */
         .btn {
             font-weight: 700;
-            border-radius: 11px !important;
-            padding: 0.58rem 1.25rem;
+            border-radius: 12px !important;
+            padding: 0.6rem 1.3rem;
             font-size: 0.9rem;
             position: relative;
             overflow: hidden;
-            transition: all 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+            transition: transform 0.2s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.25s ease;
         }
 
         .btn-warning, .btn-primary {
             background: linear-gradient(135deg, #F59E0B 0%, #D97706 100%) !important;
             border: none !important;
-            color: #06080D !important;
-            box-shadow: 0 4px 18px rgba(245, 158, 11, 0.32) !important;
+            color: #04060B !important;
+            box-shadow: 0 6px 20px rgba(245, 158, 11, 0.38) !important;
         }
 
         .btn-warning::before, .btn-primary::before {
@@ -364,9 +340,9 @@
             left: -100%;
             width: 60%;
             height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.45), transparent);
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.55), transparent);
             transform: skewX(-25deg);
-            transition: left 0.6s ease;
+            transition: left 0.65s ease;
         }
 
         .btn-warning:hover::before, .btn-primary:hover::before {
@@ -374,37 +350,52 @@
         }
 
         .btn-warning:hover, .btn-primary:hover {
-            transform: translateY(-2px) scale(1.02);
-            box-shadow: 0 8px 26px rgba(245, 158, 11, 0.5) !important;
+            box-shadow: 0 10px 30px rgba(245, 158, 11, 0.6) !important;
         }
 
         .btn-outline-primary, .btn-outline-secondary, .btn-light {
-            background: rgba(255, 255, 255, 0.05) !important;
-            border: 1px solid rgba(255, 255, 255, 0.14) !important;
+            background: rgba(255, 255, 255, 0.06) !important;
+            border: 1px solid rgba(255, 255, 255, 0.16) !important;
             color: #FFFFFF !important;
-            backdrop-filter: blur(8px);
+            backdrop-filter: blur(10px);
         }
 
         .btn-outline-primary:hover, .btn-outline-secondary:hover, .btn-light:hover {
-            background: rgba(245, 158, 11, 0.14) !important;
+            background: rgba(245, 158, 11, 0.16) !important;
             border-color: var(--gold-primary) !important;
             color: var(--gold-light) !important;
-            transform: translateY(-2px);
+        }
+
+        /* Hiệu ứng sóng năng lượng khi bấm nút */
+        .btn-ripple {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.5);
+            transform: scale(0);
+            animation: rippleAnim 0.6s linear;
+            pointer-events: none;
+        }
+
+        @keyframes rippleAnim {
+            to {
+                transform: scale(4);
+                opacity: 0;
+            }
         }
 
         /* Ô tìm kiếm & Select */
         .form-control, .form-select {
-            background-color: rgba(9, 12, 19, 0.9) !important;
-            border: 1px solid rgba(255, 255, 255, 0.12) !important;
+            background-color: rgba(6, 9, 16, 0.88) !important;
+            border: 1px solid rgba(255, 255, 255, 0.14) !important;
             color: #FFFFFF !important;
-            border-radius: 11px !important;
+            border-radius: 12px !important;
             padding: 0.65rem 1rem;
             transition: all 0.25s ease;
         }
 
         .form-control:focus, .form-select:focus {
             border-color: var(--gold-primary) !important;
-            box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.22), 0 0 18px rgba(245, 158, 11, 0.15) !important;
+            box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.25), 0 0 22px rgba(245, 158, 11, 0.2) !important;
         }
 
         /* Bảng dữ liệu */
@@ -415,7 +406,7 @@
         }
 
         .table thead th {
-            background-color: rgba(255, 255, 255, 0.035) !important;
+            background-color: rgba(255, 255, 255, 0.04) !important;
             color: var(--gold-light) !important;
             font-size: 0.78rem;
             font-weight: 700;
@@ -434,17 +425,17 @@
         }
 
         .table tbody tr:hover td {
-            background-color: rgba(245, 158, 11, 0.06) !important;
+            background-color: rgba(245, 158, 11, 0.08) !important;
         }
 
         .sku-code, code {
             font-family: 'JetBrains Mono', monospace;
             font-size: 0.82rem;
-            background: rgba(245, 158, 11, 0.12) !important;
+            background: rgba(245, 158, 11, 0.14) !important;
             color: var(--gold-light) !important;
-            border: 1px solid rgba(245, 158, 11, 0.28);
-            padding: 0.24rem 0.6rem;
-            border-radius: 7px;
+            border: 1px solid rgba(245, 158, 11, 0.32);
+            padding: 0.25rem 0.65rem;
+            border-radius: 8px;
         }
 
         .badge {
@@ -456,8 +447,8 @@
 
         .wms-footer {
             margin-top: auto;
-            background: rgba(6, 8, 13, 0.92);
-            backdrop-filter: blur(12px);
+            background: rgba(4, 6, 11, 0.88);
+            backdrop-filter: blur(14px);
             border-top: 1px solid var(--border-subtle);
             padding: 1.35rem 0;
             font-size: 0.85rem;
@@ -467,17 +458,16 @@
     {% block extra_css %}{% endblock %}
 </head>
 <body>
-    <!-- Thanh tiến trình cuộn trang & Quầng sáng nền -->
+    <!-- Thanh tiến trình cuộn & Nền hạt 3D tương tác -->
     <div id="scroll-progress"></div>
-    <div class="ambient-orb orb-1"></div>
-    <div class="ambient-orb orb-2"></div>
+    <canvas id="cloud-particle-canvas"></canvas>
 
     <!-- Thanh điều hướng chính -->
     <nav class="navbar navbar-expand-lg navbar-dark wms-navbar sticky-top">
         <div class="container">
             <a class="navbar-brand wms-brand" href="/">
                 <span class="wms-brand-icon"><i class="bi bi-box-seam-fill"></i></span>
-                <span>Cloud<span class="text-gold-shimmer">WMS</span> <span class="badge bg-warning text-dark ms-1" style="font-size: 0.65rem;">CLOUD PRO</span></span>
+                <span>Cloud<span class="text-gold-shimmer">WMS</span> <span class="badge bg-warning text-dark ms-1" style="font-size: 0.65rem;">3D CLOUD</span></span>
             </a>
 
             <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#wmsMainNav">
@@ -518,7 +508,7 @@
                                     <span class="badge bg-secondary" style="font-size: 0.65rem;">Customer</span>
                                 {% endif %}
                             </button>
-                            <ul class="dropdown-menu dropdown-menu-end shadow-lg border-secondary rounded-3 mt-2" style="background: #131824;">
+                            <ul class="dropdown-menu dropdown-menu-end shadow-lg border-secondary rounded-3 mt-2" style="background: #121826;">
                                 <li><span class="dropdown-item-text small text-muted">Vai trò: {% if user.is_staff %}Quản trị kho{% else %}Khách hàng{% endif %}</span></li>
                                 <li><hr class="dropdown-divider border-secondary"></li>
                                 <li>
@@ -541,12 +531,12 @@
         </div>
     </nav>
 
-    <!-- Dải tiêu đề sang trọng đầu trang -->
+    <!-- Dải tiêu đề 3D đầu trang -->
     <header class="wms-hero-strip reveal-item">
         <div class="container">
             <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3">
                 <div>
-                    <div class="text-uppercase fw-bold small mb-1" style="color: #FBBF24; letter-spacing: 0.12em;">
+                    <div class="text-uppercase fw-bold small mb-1" style="color: #FBBF24; letter-spacing: 0.14em;">
                         <i class="bi bi-stars me-1"></i> Cloud Warehouse Management Platform • Nhóm 10
                     </div>
                     <h1 class="h4 fw-bold mb-1 text-white">Hệ Thống Quản Lý Kho Hàng & Điều Phối Tồn Kho Trực Tuyến</h1>
@@ -594,37 +584,177 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        // 1. Hiệu ứng Spotlight ánh sáng di chuyển theo con trỏ chuột
-        document.addEventListener('mousemove', (e) => {
+        // =========================================================
+        // 1. NỀN MẠNG LƯỚI HẠT ĐÁM MÂY 3D TƯƠNG TÁC (PARTICLE CLOUD)
+        // =========================================================
+        const canvas = document.getElementById('cloud-particle-canvas');
+        const ctx = canvas.getContext('2d');
+        let particles = [];
+        let mouse = { x: null, y: null, radius: 160 };
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        window.addEventListener('mousemove', (e) => {
+            mouse.x = e.clientX;
+            mouse.y = e.clientY;
             document.documentElement.style.setProperty('--mouse-x', e.clientX + 'px');
             document.documentElement.style.setProperty('--mouse-y', e.clientY + 'px');
         });
 
-        // 2. Thanh tiến trình cuộn trang
-        window.addEventListener('scroll', () => {
-            const winScroll = document.documentElement.scrollTop || document.body.scrollTop;
-            const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
-            const scrolled = height > 0 ? (winScroll / height) * 100 : 0;
-            document.getElementById('scroll-progress').style.width = scrolled + '%';
-        });
+        class CloudNode {
+            constructor() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.vx = (Math.random() - 0.5) * 0.55;
+                this.vy = (Math.random() - 0.5) * 0.55;
+                this.size = Math.random() * 2.2 + 0.8;
+                this.isGold = Math.random() > 0.45;
+            }
+            update() {
+                this.x += this.vx;
+                this.y += this.vy;
+                if (this.x < 0 || this.x > canvas.width) this.vx *= -1;
+                if (this.y < 0 || this.y > canvas.height) this.vy *= -1;
+            }
+            draw() {
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fillStyle = this.isGold ? 'rgba(245, 158, 11, 0.55)' : 'rgba(99, 102, 241, 0.5)';
+                ctx.fill();
+            }
+        }
 
-        // 3. Tự động gắn hiệu ứng xuất hiện tuần tự (Staggered Cascade) cho các Card và Bảng
-        document.addEventListener('DOMContentLoaded', () => {
-            const elements = document.querySelectorAll('main .card, main .table-responsive, main .row > div');
-            elements.forEach((el, index) => {
-                if (!el.classList.contains('reveal-item')) {
-                    el.classList.add('reveal-item');
-                    el.style.animationDelay = Math.min(index * 0.06, 0.6) + 's';
+        function initParticles() {
+            particles = [];
+            const count = Math.min(Math.floor((canvas.width * canvas.height) / 18000), 85);
+            for (let i = 0; i < count; i++) particles.push(new CloudNode());
+        }
+
+        function animateParticles() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            for (let i = 0; i < particles.length; i++) {
+                particles[i].update();
+                particles[i].draw();
+
+                // Nối dây mạng lưới giữa các node gần nhau
+                for (let j = i + 1; j < particles.length; j++) {
+                    const dx = particles[i].x - particles[j].x;
+                    const dy = particles[i].y - particles[j].y;
+                    const dist = Math.hypot(dx, dy);
+                    if (dist < 130) {
+                        ctx.beginPath();
+                        ctx.strokeStyle = `rgba(245, 158, 11, ${(1 - dist / 130) * 0.16})`;
+                        ctx.lineWidth = 0.8;
+                        ctx.moveTo(particles[i].x, particles[i].y);
+                        ctx.lineTo(particles[j].x, particles[j].y);
+                        ctx.stroke();
+                    }
                 }
+
+                // Tương tác nối tia sáng với con trỏ chuột
+                if (mouse.x !== null) {
+                    const dxm = particles[i].x - mouse.x;
+                    const dym = particles[i].y - mouse.y;
+                    const distM = Math.hypot(dxm, dym);
+                    if (distM < mouse.radius) {
+                        ctx.beginPath();
+                        ctx.strokeStyle = `rgba(253, 230, 138, ${(1 - distM / mouse.radius) * 0.35})`;
+                        ctx.lineWidth = 1;
+                        ctx.moveTo(particles[i].x, particles[i].y);
+                        ctx.lineTo(mouse.x, mouse.y);
+                        ctx.stroke();
+                    }
+                }
+            }
+            requestAnimationFrame(animateParticles);
+        }
+        initParticles();
+        animateParticles();
+
+        // =========================================================
+        // 2. HIỆU ỨNG 3D TILT + ÁNH SÁNG KÍNH TRÊN TOÀN BỘ CARD
+        // =========================================================
+        document.addEventListener('DOMContentLoaded', () => {
+            const cards = document.querySelectorAll('main .card');
+            cards.forEach((card, index) => {
+                // Thêm hiệu ứng xuất hiện tuần tự
+                card.classList.add('reveal-item');
+                card.style.animationDelay = Math.min(index * 0.05, 0.5) + 's';
+
+                // Chèn lớp phản chiếu kính
+                const glare = document.createElement('div');
+                glare.className = 'card-glare';
+                card.appendChild(glare);
+
+                card.addEventListener('mousemove', (e) => {
+                    const rect = card.getBoundingClientRect();
+                    const x = e.clientX - rect.left;
+                    const y = e.clientY - rect.top;
+                    const centerX = rect.width / 2;
+                    const centerY = rect.height / 2;
+
+                    const rotateX = ((y - centerY) / centerY) * -6; // Góc nghiêng 3D
+                    const rotateY = ((x - centerX) / centerX) * 6;
+
+                    card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(-6px) scale(1.015)`;
+                    card.style.setProperty('--glare-x', `${(x / rect.width) * 100}%`);
+                    card.style.setProperty('--glare-y', `${(y / rect.height) * 100}%`);
+                });
+
+                card.addEventListener('mouseleave', () => {
+                    card.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg) translateY(0) scale(1)';
+                });
             });
 
-            // Đánh dấu active tự động cho link trên Navbar theo URL hiện tại
+            // =========================================================
+            // 3. NÚT BẤM NAM CHÂM (MAGNETIC) + GỢN SÓNG CLICK (RIPPLE)
+            // =========================================================
+            document.querySelectorAll('.btn').forEach(btn => {
+                btn.addEventListener('mousemove', (e) => {
+                    const rect = btn.getBoundingClientRect();
+                    const x = e.clientX - rect.left - rect.width / 2;
+                    const y = e.clientY - rect.top - rect.height / 2;
+                    btn.style.transform = `translate(${x * 0.18}px, ${y * 0.25}px) scale(1.03)`;
+                });
+
+                btn.addEventListener('mouseleave', () => {
+                    btn.style.transform = 'translate(0, 0) scale(1)';
+                });
+
+                btn.addEventListener('click', function(e) {
+                    const circle = document.createElement('span');
+                    const diameter = Math.max(this.clientWidth, this.clientHeight);
+                    const rect = this.getBoundingClientRect();
+                    circle.style.width = circle.style.height = `${diameter}px`;
+                    circle.style.left = `${e.clientX - rect.left - diameter / 2}px`;
+                    circle.style.top = `${e.clientY - rect.top - diameter / 2}px`;
+                    circle.classList.add('btn-ripple');
+                    const oldRipple = this.querySelector('.btn-ripple');
+                    if (oldRipple) oldRipple.remove();
+                    this.appendChild(circle);
+                });
+            });
+
+            // Đánh dấu link active trên Navbar
             const currentPath = window.location.pathname;
             document.querySelectorAll('.wms-nav-link').forEach(link => {
                 if (link.getAttribute('href') === currentPath) {
                     link.classList.add('active');
                 }
             });
+        });
+
+        // Thanh tiến trình cuộn trang
+        window.addEventListener('scroll', () => {
+            const winScroll = document.documentElement.scrollTop || document.body.scrollTop;
+            const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+            const scrolled = height > 0 ? (winScroll / height) * 100 : 0;
+            document.getElementById('scroll-progress').style.width = scrolled + '%';
         });
     </script>
     {% block extra_js %}{% endblock %}
