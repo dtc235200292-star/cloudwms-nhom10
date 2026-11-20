@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}CloudWMS — Nền Tảng Quản Trị Kho Đám Mây 3D{% endblock %}</title>
+    <title>{% block title %}CloudWMS — Nền Tảng Quản Trị Kho Đám Mây{% endblock %}</title>
 
-    <!-- Google Fonts: Plus Jakarta Sans & JetBrains Mono -->
+    <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -16,9 +16,8 @@
 
     <style>
         :root {
-            --bg-void: #04060B;
-            --bg-surface: rgba(13, 17, 28, 0.72);
-            --bg-card: rgba(18, 24, 38, 0.85);
+            --bg-void: #05070D;
+            --bg-surface: rgba(14, 19, 32, 0.76);
             --gold-primary: #F59E0B;
             --gold-light: #FDE68A;
             --indigo-accent: #6366F1;
@@ -31,14 +30,14 @@
             --mouse-y: 25vh;
         }
 
-        /* Thanh tiến trình đọc trang phát sáng */
+        /* Thanh tiến trình cuộn trang */
         #scroll-progress {
             position: fixed;
             top: 0;
             left: 0;
             height: 3px;
             width: 0%;
-            background: linear-gradient(90deg, #F59E0B, #FDE68A, #6366F1, #06B6D4);
+            background: linear-gradient(90deg, #F59E0B, #FEF08A, #6366F1, #06B6D4);
             z-index: 9999;
             box-shadow: 0 0 15px rgba(245, 158, 11, 0.9);
             transition: width 0.08s ease-out;
@@ -56,7 +55,34 @@
             -webkit-font-smoothing: antialiased;
         }
 
-        /* Canvas mạng lưới đám mây 3D tương tác ở lớp nền */
+        /* Nền cực quang Aurora tinh tế */
+        .aurora-bg {
+            position: fixed;
+            inset: 0;
+            z-index: -3;
+            overflow: hidden;
+            pointer-events: none;
+        }
+
+        .aurora-wave {
+            position: absolute;
+            width: 140%;
+            height: 60%;
+            top: -15%;
+            left: -20%;
+            background: radial-gradient(ellipse at 25% 35%, rgba(245, 158, 11, 0.13), transparent 55%),
+                        radial-gradient(ellipse at 75% 25%, rgba(99, 102, 241, 0.18), transparent 55%),
+                        radial-gradient(ellipse at 50% 65%, rgba(6, 182, 212, 0.11), transparent 55%);
+            filter: blur(80px);
+            animation: auroraDrift 18s ease-in-out infinite alternate;
+        }
+
+        @keyframes auroraDrift {
+            0% { transform: translate(0, 0) scale(1); }
+            100% { transform: translate(3%, 4%) scale(1.06); }
+        }
+
+        /* Canvas mạng lưới đám mây 3D tương tác */
         #cloud-particle-canvas {
             position: fixed;
             inset: 0;
@@ -66,15 +92,15 @@
             z-index: -2;
         }
 
-        /* Quầng sáng Spotlight bám theo con trỏ chuột */
+        /* Spotlight ánh sáng theo con trỏ chuột */
         body::after {
             content: "";
             position: fixed;
             inset: 0;
             background: radial-gradient(
-                700px circle at var(--mouse-x) var(--mouse-y),
-                rgba(245, 158, 11, 0.11),
-                rgba(99, 102, 241, 0.06) 40%,
+                650px circle at var(--mouse-x) var(--mouse-y),
+                rgba(245, 158, 11, 0.1),
+                rgba(99, 102, 241, 0.05) 42%,
                 transparent 75%
             );
             pointer-events: none;
@@ -83,79 +109,82 @@
 
         /* Navbar Kính Mờ Cao Cấp */
         .wms-navbar {
-            background: rgba(4, 6, 11, 0.75) !important;
+            background: rgba(5, 7, 13, 0.82) !important;
             backdrop-filter: blur(22px);
             -webkit-backdrop-filter: blur(22px);
             border-bottom: 1px solid var(--border-subtle);
-            padding: 0.85rem 0;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            padding: 0.8rem 0;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.55);
         }
 
         .wms-brand {
             font-weight: 800;
-            font-size: 1.35rem;
+            font-size: 1.32rem;
             letter-spacing: -0.02em;
             color: #FFFFFF !important;
             display: flex;
             align-items: center;
-            gap: 0.75rem;
+            gap: 0.7rem;
         }
 
         .wms-brand-icon {
-            width: 42px;
-            height: 42px;
-            border-radius: 12px;
+            width: 40px;
+            height: 40px;
+            border-radius: 11px;
             background: linear-gradient(135deg, #F59E0B 0%, #B45309 100%);
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            color: #04060B;
-            font-size: 1.25rem;
-            box-shadow: 0 0 28px rgba(245, 158, 11, 0.55), inset 0 1px 2px rgba(255, 255, 255, 0.7);
-            transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            color: #05070D;
+            font-size: 1.2rem;
+            box-shadow: 0 0 25px rgba(245, 158, 11, 0.5), inset 0 1px 2px rgba(255, 255, 255, 0.7);
+            transition: transform 0.45s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
 
         .wms-brand:hover .wms-brand-icon {
-            transform: rotateY(180deg) scale(1.1);
+            transform: rotateY(180deg) scale(1.08);
         }
 
         .wms-nav-link {
             color: var(--text-secondary) !important;
             font-weight: 600;
-            font-size: 0.92rem;
-            padding: 0.55rem 1rem !important;
+            font-size: 0.9rem;
+            padding: 0.5rem 0.9rem !important;
             border-radius: 10px;
-            position: relative;
-            transition: all 0.25s ease;
+            transition: all 0.22s ease;
+            white-space: nowrap;
         }
 
         .wms-nav-link:hover, .wms-nav-link.active {
             color: #FFFFFF !important;
-            background: rgba(245, 158, 11, 0.12);
-            text-shadow: 0 0 12px rgba(245, 158, 11, 0.5);
+            background: rgba(245, 158, 11, 0.14);
+            box-shadow: inset 0 0 0 1px rgba(245, 158, 11, 0.25);
         }
 
-        /* Huy hiệu Render Cloud Live */
+        .wms-nav-link.active i {
+            color: #FBBF24;
+        }
+
         .cloud-status-pill {
             display: inline-flex;
             align-items: center;
-            gap: 8px;
+            gap: 7px;
             background: rgba(16, 185, 129, 0.12);
             border: 1px solid rgba(16, 185, 129, 0.4);
             color: #34D399;
-            font-size: 0.76rem;
+            font-size: 0.74rem;
             font-weight: 700;
-            padding: 0.35rem 0.95rem;
+            padding: 0.32rem 0.85rem;
             border-radius: 999px;
-            box-shadow: 0 0 22px rgba(16, 185, 129, 0.25);
+            box-shadow: 0 0 20px rgba(16, 185, 129, 0.22);
+            white-space: nowrap;
         }
 
         .pulse-dot {
-            width: 8px;
-            height: 8px;
+            width: 7px;
+            height: 7px;
             background-color: #10B981;
             border-radius: 50%;
-            box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.9);
             animation: pulseRing 1.8s infinite;
         }
 
@@ -165,7 +194,6 @@
             100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
         }
 
-        /* Chữ Gradient ánh vàng kim chuyển động */
         .text-gold-shimmer {
             background: linear-gradient(90deg, #F59E0B 0%, #FEF08A 45%, #F59E0B 90%);
             background-size: 200% auto;
@@ -178,40 +206,13 @@
             to { background-position: 200% center; }
         }
 
-        /* Hero Banner 3D đầu trang với viền sáng chạy */
-        .wms-hero-strip {
-            background: linear-gradient(135deg, rgba(18, 24, 38, 0.82) 0%, rgba(10, 14, 24, 0.9) 100%);
-            backdrop-filter: blur(16px);
-            border-bottom: 1px solid var(--border-subtle);
-            padding: 2.1rem 0;
-            margin-bottom: 2.2rem;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .wms-hero-strip::after {
-            content: "";
-            position: absolute;
-            bottom: 0;
-            left: -50%;
-            width: 200%;
-            height: 2px;
-            background: linear-gradient(90deg, transparent, #F59E0B, #6366F1, #06B6D4, transparent);
-            animation: borderFlow 6s linear infinite;
-        }
-
-        @keyframes borderFlow {
-            0% { transform: translateX(-25%); }
-            100% { transform: translateX(25%); }
-        }
-
         /* =========================================================
-           HIỆU ỨNG 3D TILT CARD + PHẢN CHIẾU KÍNH (HOLOGRAPHIC GLARE)
+           KHỐI NỘI DUNG & CARD 3D TILT + PHẢN CHIẾU KÍNH
            ========================================================= */
         @keyframes fadeUpReveal {
             from {
                 opacity: 0;
-                transform: translateY(28px) scale(0.96);
+                transform: translateY(24px) scale(0.97);
             }
             to {
                 opacity: 1;
@@ -220,21 +221,22 @@
         }
 
         .reveal-item {
-            animation: fadeUpReveal 0.65s cubic-bezier(0.22, 1, 0.36, 1) both;
+            animation: fadeUpReveal 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
         }
 
+        /* Khối Hero & Filter của các trang con */
         main .bg-white,
         main .bg-light,
         main .p-4.rounded,
         main .p-5.rounded,
         main .shadow-sm {
             background: var(--bg-surface) !important;
-            backdrop-filter: blur(18px);
-            -webkit-backdrop-filter: blur(18px);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
             border: 1px solid var(--border-subtle) !important;
-            border-radius: 20px !important;
+            border-radius: 22px !important;
             color: var(--text-primary) !important;
-            box-shadow: 0 16px 40px -10px rgba(0, 0, 0, 0.65) !important;
+            box-shadow: 0 18px 45px -10px rgba(0, 0, 0, 0.65) !important;
         }
 
         main h1, main h2, main h3, main h4, main h5, main h6,
@@ -249,37 +251,36 @@
 
         /* Card 3D tương tác */
         .card {
-            background: linear-gradient(160deg, rgba(24, 32, 50, 0.88) 0%, rgba(12, 16, 26, 0.95) 100%) !important;
-            backdrop-filter: blur(16px);
+            background: linear-gradient(160deg, rgba(22, 30, 48, 0.88) 0%, rgba(11, 15, 25, 0.96) 100%) !important;
+            backdrop-filter: blur(18px);
             border: 1px solid var(--border-subtle) !important;
-            border-radius: 22px !important;
+            border-radius: 20px !important;
             overflow: hidden !important;
             position: relative;
             transform-style: preserve-3d;
             will-change: transform;
-            box-shadow: 0 14px 35px -10px rgba(0, 0, 0, 0.75) !important;
+            box-shadow: 0 14px 36px -10px rgba(0, 0, 0, 0.75) !important;
             transition: border-color 0.3s ease, box-shadow 0.3s ease !important;
         }
 
         .card:hover {
             border-color: var(--border-gold) !important;
-            box-shadow: 0 28px 55px -12px rgba(0, 0, 0, 0.9),
-                        0 0 35px rgba(245, 158, 11, 0.22) !important;
+            box-shadow: 0 26px 52px -12px rgba(0, 0, 0, 0.9),
+                        0 0 32px rgba(245, 158, 11, 0.22) !important;
         }
 
-        /* Lớp phản chiếu ánh sáng 3D trên bề mặt Card */
         .card-glare {
             position: absolute;
             inset: 0;
             background: radial-gradient(
                 circle at var(--glare-x, 50%) var(--glare-y, 50%),
-                rgba(255, 255, 255, 0.16) 0%,
-                rgba(245, 158, 11, 0.06) 30%,
+                rgba(255, 255, 255, 0.18) 0%,
+                rgba(245, 158, 11, 0.07) 32%,
                 transparent 70%
             );
             opacity: 0;
             pointer-events: none;
-            transition: opacity 0.3s ease;
+            transition: opacity 0.25s ease;
             z-index: 3;
         }
 
@@ -295,7 +296,7 @@
             padding: 1rem 1.25rem;
         }
 
-        /* Khung ảnh sản phẩm nổi khối 3D */
+        /* Khóa kích thước chuẩn cho toàn bộ ảnh sản phẩm */
         .card img,
         .card-img-top,
         .product-img {
@@ -308,18 +309,18 @@
             display: block;
             margin: 0 auto;
             border-bottom: 1px solid var(--border-subtle);
-            transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+            transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
         }
 
         .card:hover img {
-            transform: scale(1.08);
+            transform: scale(1.07);
         }
 
-        /* Nút bấm Nam Châm + Hiệu ứng gợn sóng (Ripple) */
+        /* Nút bấm Ánh Vàng Kim + Shimmer */
         .btn {
             font-weight: 700;
-            border-radius: 12px !important;
-            padding: 0.6rem 1.3rem;
+            border-radius: 11px !important;
+            padding: 0.58rem 1.25rem;
             font-size: 0.9rem;
             position: relative;
             overflow: hidden;
@@ -329,7 +330,7 @@
         .btn-warning, .btn-primary {
             background: linear-gradient(135deg, #F59E0B 0%, #D97706 100%) !important;
             border: none !important;
-            color: #04060B !important;
+            color: #05070D !important;
             box-shadow: 0 6px 20px rgba(245, 158, 11, 0.38) !important;
         }
 
@@ -340,9 +341,9 @@
             left: -100%;
             width: 60%;
             height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.55), transparent);
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.6), transparent);
             transform: skewX(-25deg);
-            transition: left 0.65s ease;
+            transition: left 0.6s ease;
         }
 
         .btn-warning:hover::before, .btn-primary:hover::before {
@@ -350,7 +351,7 @@
         }
 
         .btn-warning:hover, .btn-primary:hover {
-            box-shadow: 0 10px 30px rgba(245, 158, 11, 0.6) !important;
+            box-shadow: 0 10px 28px rgba(245, 158, 11, 0.6) !important;
         }
 
         .btn-outline-primary, .btn-outline-secondary, .btn-light {
@@ -366,7 +367,6 @@
             color: var(--gold-light) !important;
         }
 
-        /* Hiệu ứng sóng năng lượng khi bấm nút */
         .btn-ripple {
             position: absolute;
             border-radius: 50%;
@@ -377,25 +377,21 @@
         }
 
         @keyframes rippleAnim {
-            to {
-                transform: scale(4);
-                opacity: 0;
-            }
+            to { transform: scale(4); opacity: 0; }
         }
 
-        /* Ô tìm kiếm & Select */
+        /* Input & Select */
         .form-control, .form-select {
-            background-color: rgba(6, 9, 16, 0.88) !important;
+            background-color: rgba(6, 9, 16, 0.9) !important;
             border: 1px solid rgba(255, 255, 255, 0.14) !important;
             color: #FFFFFF !important;
-            border-radius: 12px !important;
-            padding: 0.65rem 1rem;
-            transition: all 0.25s ease;
+            border-radius: 11px !important;
+            padding: 0.62rem 1rem;
         }
 
         .form-control:focus, .form-select:focus {
             border-color: var(--gold-primary) !important;
-            box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.25), 0 0 22px rgba(245, 158, 11, 0.2) !important;
+            box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.25) !important;
         }
 
         /* Bảng dữ liệu */
@@ -421,7 +417,6 @@
             color: #E2E8F0 !important;
             border-bottom: 1px solid var(--border-subtle) !important;
             padding: 0.95rem 1rem;
-            transition: background-color 0.2s ease;
         }
 
         .table tbody tr:hover td {
@@ -434,8 +429,8 @@
             background: rgba(245, 158, 11, 0.14) !important;
             color: var(--gold-light) !important;
             border: 1px solid rgba(245, 158, 11, 0.32);
-            padding: 0.25rem 0.65rem;
-            border-radius: 8px;
+            padding: 0.24rem 0.6rem;
+            border-radius: 7px;
         }
 
         .badge {
@@ -447,8 +442,8 @@
 
         .wms-footer {
             margin-top: auto;
-            background: rgba(4, 6, 11, 0.88);
-            backdrop-filter: blur(14px);
+            background: rgba(5, 7, 13, 0.9);
+            backdrop-filter: blur(16px);
             border-top: 1px solid var(--border-subtle);
             padding: 1.35rem 0;
             font-size: 0.85rem;
@@ -458,16 +453,16 @@
     {% block extra_css %}{% endblock %}
 </head>
 <body>
-    <!-- Thanh tiến trình cuộn & Nền hạt 3D tương tác -->
     <div id="scroll-progress"></div>
+    <div class="aurora-bg"><div class="aurora-wave"></div></div>
     <canvas id="cloud-particle-canvas"></canvas>
 
-    <!-- Thanh điều hướng chính -->
-    <nav class="navbar navbar-expand-lg navbar-dark wms-navbar sticky-top">
+    <!-- Thanh điều hướng chuẩn xác 100% theo urls.py của dự án -->
+    <nav class="navbar navbar-expand-xl navbar-dark wms-navbar sticky-top">
         <div class="container">
             <a class="navbar-brand wms-brand" href="/">
                 <span class="wms-brand-icon"><i class="bi bi-box-seam-fill"></i></span>
-                <span>Cloud<span class="text-gold-shimmer">WMS</span> <span class="badge bg-warning text-dark ms-1" style="font-size: 0.65rem;">3D CLOUD</span></span>
+                <span>Cloud<span class="text-gold-shimmer">WMS</span></span>
             </a>
 
             <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#wmsMainNav">
@@ -475,26 +470,40 @@
             </button>
 
             <div class="collapse navbar-collapse" id="wmsMainNav">
-                <ul class="navbar-nav me-auto ms-lg-3 gap-1">
+                <ul class="navbar-nav me-auto ms-xl-3 gap-1">
                     <li class="nav-item">
-                        <a class="nav-link wms-nav-link" href="/"><i class="bi bi-grid-1x2-fill me-1"></i> Tổng quan</a>
+                        <a class="nav-link wms-nav-link" href="/"><i class="bi bi-house-door-fill me-1"></i> Trang chủ</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link wms-nav-link" href="/dashboard/"><i class="bi bi-bar-chart-line-fill me-1"></i> Thống kê</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link wms-nav-link" href="/products/"><i class="bi bi-boxes me-1"></i> Kho sản phẩm</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link wms-nav-link" href="/orders/"><i class="bi bi-receipt-cutoff me-1"></i> Đơn xuất / nhập</a>
+                        <a class="nav-link wms-nav-link" href="/orders/"><i class="bi bi-receipt-cutoff me-1"></i> Quản lý đơn</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link wms-nav-link" href="/my-orders/"><i class="bi bi-bag-check-fill me-1"></i> Đơn của tôi</a>
                     </li>
                     {% if user.is_staff %}
                     <li class="nav-item">
-                        <a class="nav-link wms-nav-link" href="/admin/"><i class="bi bi-shield-lock-fill me-1"></i> Quản trị hệ thống</a>
+                        <a class="nav-link wms-nav-link" href="/admin/"><i class="bi bi-shield-lock-fill me-1"></i> Quản trị</a>
                     </li>
                     {% endif %}
                 </ul>
 
-                <div class="d-flex align-items-center gap-3 mt-3 mt-lg-0">
-                    <span class="cloud-status-pill d-none d-xl-inline-flex">
-                        <span class="pulse-dot"></span> Render Cloud Live
+                <div class="d-flex flex-wrap align-items-center gap-2 mt-3 mt-xl-0">
+                    <!-- Nút Xuất CSV trỏ đúng /export-csv/ -->
+                    {% if user.is_staff %}
+                    <a href="/export-csv/" class="btn btn-warning btn-sm d-inline-flex align-items-center gap-1">
+                        <i class="bi bi-file-earmark-spreadsheet-fill"></i>
+                        <span>Xuất CSV</span>
+                    </a>
+                    {% endif %}
+
+                    <span class="cloud-status-pill d-none d-xxl-inline-flex">
+                        <span class="pulse-dot"></span> Render Live
                     </span>
 
                     {% if user.is_authenticated %}
@@ -508,8 +517,13 @@
                                     <span class="badge bg-secondary" style="font-size: 0.65rem;">Customer</span>
                                 {% endif %}
                             </button>
-                            <ul class="dropdown-menu dropdown-menu-end shadow-lg border-secondary rounded-3 mt-2" style="background: #121826;">
+                            <ul class="dropdown-menu dropdown-menu-end shadow-lg border-secondary rounded-3 mt-2" style="background: #0F1422;">
                                 <li><span class="dropdown-item-text small text-muted">Vai trò: {% if user.is_staff %}Quản trị kho{% else %}Khách hàng{% endif %}</span></li>
+                                <li><hr class="dropdown-divider border-secondary"></li>
+                                <li><a class="dropdown-item text-light" href="/dashboard/"><i class="bi bi-bar-chart-line me-2 text-warning"></i>Bảng thống kê</a></li>
+                                {% if user.is_staff %}
+                                <li><a class="dropdown-item text-light" href="/export-csv/"><i class="bi bi-download me-2 text-success"></i>Tải báo cáo CSV</a></li>
+                                {% endif %}
                                 <li><hr class="dropdown-divider border-secondary"></li>
                                 <li>
                                     <form method="post" action="/accounts/logout/">
@@ -531,33 +545,8 @@
         </div>
     </nav>
 
-    <!-- Dải tiêu đề 3D đầu trang -->
-    <header class="wms-hero-strip reveal-item">
-        <div class="container">
-            <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3">
-                <div>
-                    <div class="text-uppercase fw-bold small mb-1" style="color: #FBBF24; letter-spacing: 0.14em;">
-                        <i class="bi bi-stars me-1"></i> Cloud Warehouse Management Platform • Nhóm 10
-                    </div>
-                    <h1 class="h4 fw-bold mb-1 text-white">Hệ Thống Quản Lý Kho Hàng & Điều Phối Tồn Kho Trực Tuyến</h1>
-                    <p class="mb-0 small" style="color: #94A3B8;">Giám sát tồn kho thời gian thực, tự động khấu trừ đơn hàng và xuất báo cáo kế toán trên hạ tầng Đám mây.</p>
-                </div>
-                <div class="d-flex gap-2">
-                    <a href="/products/" class="btn btn-light btn-sm">
-                        <i class="bi bi-search me-1"></i> Tra cứu kho
-                    </a>
-                    {% if user.is_staff %}
-                    <a href="/export/csv/" class="btn btn-warning btn-sm">
-                        <i class="bi bi-file-earmark-spreadsheet-fill me-1"></i> Xuất báo cáo CSV
-                    </a>
-                    {% endif %}
-                </div>
-            </div>
-        </div>
-    </header>
-
-    <!-- Khu vực nội dung chính -->
-    <main class="container mb-5">
+    <!-- Nội dung chính -->
+    <main class="container my-4 my-md-5">
         {% if messages %}
             {% for message in messages %}
                 <div class="alert alert-{{ message.tags|default:'info' }} alert-dismissible fade show border-0 shadow rounded-3 mb-4 reveal-item" role="alert">
@@ -574,7 +563,7 @@
     <footer class="wms-footer">
         <div class="container d-flex flex-column flex-sm-row justify-content-between align-items-center gap-2">
             <div>
-                <strong class="text-white">Cloud<span class="text-gold-shimmer">WMS</span></strong> — Mini Project Điện Toán Đám Mây (Nhóm 10)
+                <strong class="text-white">Cloud<span class="text-gold-shimmer">WMS</span></strong> — Hệ Thống Quản Lý Kho Đám Mây (Nhóm 10)
             </div>
             <div>
                 Vận hành trên <span class="fw-semibold text-white">Python / Django</span> & <span class="fw-semibold" style="color: #FBBF24;">Render Cloud PaaS</span>
@@ -584,11 +573,11 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-      
+        // 1. Mạng lưới hạt đám mây 3D tương tác
         const canvas = document.getElementById('cloud-particle-canvas');
         const ctx = canvas.getContext('2d');
         let particles = [];
-        let mouse = { x: null, y: null, radius: 160 };
+        let mouse = { x: null, y: null, radius: 175 };
 
         function resizeCanvas() {
             canvas.width = window.innerWidth;
@@ -611,7 +600,7 @@
                 this.vx = (Math.random() - 0.5) * 0.55;
                 this.vy = (Math.random() - 0.5) * 0.55;
                 this.size = Math.random() * 2.2 + 0.8;
-                this.isGold = Math.random() > 0.45;
+                this.colorType = Math.random();
             }
             update() {
                 this.x += this.vx;
@@ -622,7 +611,13 @@
             draw() {
                 ctx.beginPath();
                 ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-                ctx.fillStyle = this.isGold ? 'rgba(245, 158, 11, 0.55)' : 'rgba(99, 102, 241, 0.5)';
+                if (this.colorType > 0.55) {
+                    ctx.fillStyle = 'rgba(245, 158, 11, 0.55)';
+                } else if (this.colorType > 0.25) {
+                    ctx.fillStyle = 'rgba(99, 102, 241, 0.5)';
+                } else {
+                    ctx.fillStyle = 'rgba(6, 182, 212, 0.45)';
+                }
                 ctx.fill();
             }
         }
@@ -643,9 +638,9 @@
                     const dx = particles[i].x - particles[j].x;
                     const dy = particles[i].y - particles[j].y;
                     const dist = Math.hypot(dx, dy);
-                    if (dist < 130) {
+                    if (dist < 135) {
                         ctx.beginPath();
-                        ctx.strokeStyle = `rgba(245, 158, 11, ${(1 - dist / 130) * 0.16})`;
+                        ctx.strokeStyle = `rgba(245, 158, 11, ${(1 - dist / 135) * 0.16})`;
                         ctx.lineWidth = 0.8;
                         ctx.moveTo(particles[i].x, particles[i].y);
                         ctx.lineTo(particles[j].x, particles[j].y);
@@ -659,7 +654,7 @@
                     const distM = Math.hypot(dxm, dym);
                     if (distM < mouse.radius) {
                         ctx.beginPath();
-                        ctx.strokeStyle = `rgba(253, 230, 138, ${(1 - distM / mouse.radius) * 0.35})`;
+                        ctx.strokeStyle = `rgba(254, 240, 138, ${(1 - distM / mouse.radius) * 0.4})`;
                         ctx.lineWidth = 1;
                         ctx.moveTo(particles[i].x, particles[i].y);
                         ctx.lineTo(mouse.x, mouse.y);
@@ -672,6 +667,7 @@
         initParticles();
         animateParticles();
 
+        // 2. 3D Tilt + Phản chiếu kính trên Card
         document.addEventListener('DOMContentLoaded', () => {
             const cards = document.querySelectorAll('main .card');
             cards.forEach((card, index) => {
@@ -689,7 +685,7 @@
                     const centerX = rect.width / 2;
                     const centerY = rect.height / 2;
 
-                    const rotateX = ((y - centerY) / centerY) * -6; // Góc nghiêng 3D
+                    const rotateX = ((y - centerY) / centerY) * -6;
                     const rotateY = ((x - centerX) / centerX) * 6;
 
                     card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(-6px) scale(1.015)`;
@@ -702,19 +698,8 @@
                 });
             });
 
-         
+            // 3. Hiệu ứng gợn sóng khi bấm nút
             document.querySelectorAll('.btn').forEach(btn => {
-                btn.addEventListener('mousemove', (e) => {
-                    const rect = btn.getBoundingClientRect();
-                    const x = e.clientX - rect.left - rect.width / 2;
-                    const y = e.clientY - rect.top - rect.height / 2;
-                    btn.style.transform = `translate(${x * 0.18}px, ${y * 0.25}px) scale(1.03)`;
-                });
-
-                btn.addEventListener('mouseleave', () => {
-                    btn.style.transform = 'translate(0, 0) scale(1)';
-                });
-
                 btn.addEventListener('click', function(e) {
                     const circle = document.createElement('span');
                     const diameter = Math.max(this.clientWidth, this.clientHeight);
@@ -729,6 +714,7 @@
                 });
             });
 
+            // Đánh dấu link active trên Navbar
             const currentPath = window.location.pathname;
             document.querySelectorAll('.wms-nav-link').forEach(link => {
                 if (link.getAttribute('href') === currentPath) {
