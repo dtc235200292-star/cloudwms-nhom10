@@ -17,10 +17,8 @@
     <style>
         :root {
             --wms-dark: #0B1120;
-            --wms-dark-card: #111827;
             --wms-primary: #4F46E5;
             --wms-primary-hover: #4338CA;
-            --wms-accent: #F59E0B;
             --wms-bg: #F8FAFC;
             --wms-border: #E2E8F0;
             --wms-text-main: #0F172A;
@@ -37,7 +35,7 @@
             -webkit-font-smoothing: antialiased;
         }
 
-        /* Navbar cao cấp hiệu ứng Glassmorphism tối màu */
+        /* Navbar cao cấp */
         .wms-navbar {
             background: rgba(11, 17, 32, 0.96);
             backdrop-filter: blur(12px);
@@ -81,7 +79,7 @@
             background: rgba(255, 255, 255, 0.09);
         }
 
-        /* Banner trạng thái Cloud trực tuyến */
+        /* Trạng thái Cloud trực tuyến */
         .cloud-status-pill {
             display: inline-flex;
             align-items: center;
@@ -110,17 +108,66 @@
             100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
         }
 
-        /* Nâng cấp tự động toàn bộ Card, Table, Button của các trang con */
+        /* Hero Header Banner đầu trang */
+        .wms-hero-strip {
+            background: linear-gradient(135deg, #0B1120 0%, #1E1B4B 60%, #312E81 100%);
+            color: #FFFFFF;
+            padding: 1.65rem 0;
+            margin-bottom: 1.75rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        /* =========================================================
+           FIX TRIỆT ĐỂ LỖI ẢNH BỊ TRÀN/ĐÈ LÊN NHAU TRONG CARD SẢN PHẨM
+           ========================================================= */
         .card {
             background: #FFFFFF;
             border: 1px solid var(--wms-border);
-            border-radius: 14px;
+            border-radius: 16px;
+            overflow: hidden !important; /* Cắt gọn mọi phần tử tràn ra ngoài viền card */
             box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04), 0 4px 12px rgba(15, 23, 42, 0.02);
             transition: transform 0.2s ease, box-shadow 0.2s ease;
         }
 
         .card:hover {
-            box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.07);
+            transform: translateY(-3px);
+            box-shadow: 0 12px 24px -6px rgba(15, 23, 42, 0.1);
+        }
+
+        /* Khóa kích thước chuẩn cho toàn bộ ảnh sản phẩm bên trong card */
+        .card img,
+        .card-img-top,
+        .product-img {
+            width: 100% !important;
+            height: 210px !important;
+            max-width: 100% !important;
+            object-fit: contain !important; /* Giữ nguyên tỷ lệ ảnh sản phẩm, không bị cắt mất góc */
+            background-color: #FFFFFF;
+            padding: 14px;
+            display: block;
+            margin: 0 auto;
+        }
+
+        /* =========================================================
+           FIX LỖI CHỮ TRẮNG TÀNG HÌNH TRÊN NỀN SÁNG Ở TRANG CHỦ CŨ
+           ========================================================= */
+        main .text-white,
+        main .text-light,
+        main .text-white-50 {
+            color: #334155 !important;
+        }
+
+        /* Giữ nguyên chữ trắng cho các nút bấm nền màu và badge */
+        main .btn-primary,
+        main .btn-success,
+        main .btn-danger,
+        main .btn-dark,
+        main .badge.bg-primary,
+        main .badge.bg-success,
+        main .badge.bg-danger,
+        main .badge.bg-dark,
+        main .badge.bg-secondary {
+            color: #FFFFFF !important;
         }
 
         .card-header {
@@ -156,7 +203,6 @@
             background-color: #F8FAFC;
         }
 
-        /* Font monospace cho mã SKU, giá tiền và số lượng */
         .sku-code, code {
             font-family: 'JetBrains Mono', monospace;
             font-size: 0.84rem;
@@ -191,15 +237,6 @@
             padding: 0.42em 0.75em;
             border-radius: 999px;
             letter-spacing: 0.01em;
-        }
-
-        /* Hero Header Banner đầu trang */
-        .wms-hero-strip {
-            background: linear-gradient(135deg, #0B1120 0%, #1E1B4B 60%, #312E81 100%);
-            color: #FFFFFF;
-            padding: 1.75rem 0;
-            margin-bottom: 1.75rem;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
         }
 
         .wms-footer {
@@ -309,7 +346,7 @@
         </div>
     </header>
 
-    <!-- Khu vực hiển thị thông báo hệ thống (Django Messages) -->
+    <!-- Khu vực nội dung chính -->
     <main class="container mb-5">
         {% if messages %}
             {% for message in messages %}
