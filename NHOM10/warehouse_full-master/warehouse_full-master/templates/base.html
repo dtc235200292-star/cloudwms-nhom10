@@ -584,9 +584,7 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        // =========================================================
-        // 1. NỀN MẠNG LƯỚI HẠT ĐÁM MÂY 3D TƯƠNG TÁC (PARTICLE CLOUD)
-        // =========================================================
+      
         const canvas = document.getElementById('cloud-particle-canvas');
         const ctx = canvas.getContext('2d');
         let particles = [];
@@ -641,7 +639,6 @@
                 particles[i].update();
                 particles[i].draw();
 
-                // Nối dây mạng lưới giữa các node gần nhau
                 for (let j = i + 1; j < particles.length; j++) {
                     const dx = particles[i].x - particles[j].x;
                     const dy = particles[i].y - particles[j].y;
@@ -656,7 +653,6 @@
                     }
                 }
 
-                // Tương tác nối tia sáng với con trỏ chuột
                 if (mouse.x !== null) {
                     const dxm = particles[i].x - mouse.x;
                     const dym = particles[i].y - mouse.y;
@@ -676,17 +672,12 @@
         initParticles();
         animateParticles();
 
-        // =========================================================
-        // 2. HIỆU ỨNG 3D TILT + ÁNH SÁNG KÍNH TRÊN TOÀN BỘ CARD
-        // =========================================================
         document.addEventListener('DOMContentLoaded', () => {
             const cards = document.querySelectorAll('main .card');
             cards.forEach((card, index) => {
-                // Thêm hiệu ứng xuất hiện tuần tự
                 card.classList.add('reveal-item');
                 card.style.animationDelay = Math.min(index * 0.05, 0.5) + 's';
 
-                // Chèn lớp phản chiếu kính
                 const glare = document.createElement('div');
                 glare.className = 'card-glare';
                 card.appendChild(glare);
@@ -711,9 +702,7 @@
                 });
             });
 
-            // =========================================================
-            // 3. NÚT BẤM NAM CHÂM (MAGNETIC) + GỢN SÓNG CLICK (RIPPLE)
-            // =========================================================
+         
             document.querySelectorAll('.btn').forEach(btn => {
                 btn.addEventListener('mousemove', (e) => {
                     const rect = btn.getBoundingClientRect();
@@ -740,7 +729,6 @@
                 });
             });
 
-            // Đánh dấu link active trên Navbar
             const currentPath = window.location.pathname;
             document.querySelectorAll('.wms-nav-link').forEach(link => {
                 if (link.getAttribute('href') === currentPath) {
@@ -749,7 +737,6 @@
             });
         });
 
-        // Thanh tiến trình cuộn trang
         window.addEventListener('scroll', () => {
             const winScroll = document.documentElement.scrollTop || document.body.scrollTop;
             const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
