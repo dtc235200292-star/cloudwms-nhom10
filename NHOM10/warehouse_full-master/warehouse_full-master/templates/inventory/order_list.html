@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+{% block content %}
+
+<section class="page-section">
+    <div class="container">
+
+        <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
+            <div>
+                <h2 class="section-title mb-1">Quản Lý & Duyệt Đơn Đặt Hàng</h2>
+                <p class="text-muted mb-0">Phê duyệt yêu cầu xuất kho và theo dõi trạng thái xử lý</p>
+            </div>
+
+            <div class="d-flex gap-2">
+                <a href="{% url 'order_list' %}" class="btn btn-sm {% if not status_filter %}btn-main{% else %}btn-soft{% endif %}">Tất cả</a>
+                <a href="?status=pending" class="btn btn-sm {% if status_filter == 'pending' %}btn-warning text-dark fw-bold{% else %}btn-soft{% endif %}">Chờ duyệt</a>
+                <a href="?status=approved" class="btn btn-sm {% if status_filter == 'approved' %}btn-success{% else %}btn-soft{% endif %}">Đã duyệt</a>
+                <a href="?status=rejected" class="btn btn-sm {% if status_filter == 'rejected' %}btn-danger{% else %}btn-soft{% endif %}">Từ chối</a>
+            </div>
+        </div>
+
+        <div class="card card-pro overflow-hidden">
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Mã đơn</th>
+                            <th>Khách đặt</th>
+                            <th>Sản phẩm</th>
+                            <th class="text-center">Số lượng</th>
+                            <th class="text-end">Tổng tiền</th>
+                            <th>Ghi chú</th>
+                            <th>Thời gian</th>
+                            <th>Trạng thái</th>
+                            <th class="text-end">Xử lý</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for order in orders %}
+                        <tr>
+                            <td class="fw-bold">#{{ order.id }}</td>
+                            <td><i class="bi bi-person me-1 text-muted"></i>{{ order.user.username }}</td>
+                            <td class="fw-semibold">{{ order.product.name }}</td>
+                            <td class="text-center fw-bold">{{ order.quantity }}</td>
+                            <td class="text-end fw-bold text-primary">{{ order.total_price }} đ</td>
+                            <td class="small text-muted">{{ order.note|default:"—" }}</td>
+                            <td class="small text-muted">{{ order.created_at|date:"d/m/Y H:i" }}</td>
+                            <td>
+                                {% if order.status == "pending" %}
+                                <span class="badge bg-warning text-dark rounded-pill px-3">Chờ duyệt</span>
+                                {% elif order.status == "approved" %}
+                                <span class="badge bg-success rounded-pill px-3">Đã duyệt</span>
+                                {% else %}
+                                <span class="badge bg-danger rounded-pill px-3">Từ chối</span>
+                                {% endif %}
+                            </td>
+                            <td class="text-end">
+                                {% if order.status == "pending" %}
+                                <a href="{% url 'order_approve' order.pk %}" class="btn btn-sm btn-success rounded-3 me-1" title="Duyệt & Trừ kho">
+                                    <i class="bi bi-check-lg"></i> Duyệt
+                                </a>
+                                <a href="{% url 'order_reject' order.pk %}" class="btn btn-sm btn-outline-danger rounded-3" title="Từ chối">
+                                    <i class="bi bi-x-lg"></i>
+                                </a>
+                                {% else %}
+                                <span class="text-muted small">Đã xử lý</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="9" class="text-center text-muted py-5">Không có đơn hàng nào trong danh sách.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+</section>
+
+{% endblock %}

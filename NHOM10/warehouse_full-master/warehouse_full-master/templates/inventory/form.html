@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% block content %}
+
+<section class="page-section">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-7">
+
+                <div class="card card-pro">
+                    <div class="card-body p-4 p-md-5">
+                        <div class="d-flex align-items-center gap-3 mb-4 pb-3 border-bottom">
+                            <div class="bg-primary bg-opacity-10 text-primary rounded-4 p-3">
+                                <i class="bi bi-pencil-square fs-4"></i>
+                            </div>
+                            <div>
+                                <h3 class="section-title mb-0">{{ title }}</h3>
+                                <p class="text-muted small mb-0">Vui lòng điền đầy đủ các thông tin bên dưới</p>
+                            </div>
+                        </div>
+
+                        <form method="post" enctype="multipart/form-data">
+                            {% csrf_token %}
+
+                            {% for field in form %}
+                            <div class="mb-3">
+                                <label class="form-label fw-semibold text-dark" for="{{ field.id_for_label }}">
+                                    {{ field.label }}
+                                </label>
+                                {{ field }}
+                                {% if field.help_text %}
+                                <div class="form-text">{{ field.help_text }}</div>
+                                {% endif %}
+                                {% for error in field.errors %}
+                                <div class="text-danger small mt-1"><i class="bi bi-exclamation-circle me-1"></i>{{ error }}</div>
+                                {% endfor %}
+                            </div>
+                            {% endfor %}
+
+                            <div class="d-flex gap-2 mt-4 pt-3 border-top">
+                                <button class="btn btn-main px-4 py-2" type="submit">
+                                    <i class="bi bi-check2-circle me-1"></i> Lưu thông tin
+                                </button>
+                                <a class="btn btn-outline-secondary rounded-3 px-4 py-2" href="javascript:history.back()">
+                                    Hủy bỏ
+                                </a>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</section>
+
+{% endblock %}

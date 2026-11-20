@@ -1,0 +1,301 @@
+{% extends "base.html" %}
+{% block content %}
+
+<section class="page-section">
+    <div class="container">
+
+        <!-- Header -->
+        <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
+            <div>
+                <span class="badge bg-primary bg-opacity-10 text-primary fw-semibold px-3 py-2 rounded-pill mb-2">
+                    <i class="bi bi-cloud-check me-1"></i> Trung tâm điều hành kho
+                </span>
+                <h2 class="section-title mb-1">Dashboard Quản Trị</h2>
+                <p class="text-muted mb-0">Theo dõi biến động tồn kho, giá trị hàng hóa và luồng xử lý đơn hàng</p>
+            </div>
+
+            <div class="d-flex flex-wrap gap-2">
+                <a href="{% url 'export_inventory_csv' %}" class="btn btn-soft">
+                    <i class="bi bi-file-earmark-spreadsheet me-1"></i> Xuất báo cáo CSV
+                </a>
+                <a href="{% url 'product_create' %}" class="btn btn-main">
+                    <i class="bi bi-plus-lg me-1"></i> Thêm sản phẩm
+                </a>
+            </div>
+        </div>
+
+        <!-- 4 KPI Cards -->
+        <div class="row g-4 mb-4">
+            <div class="col-sm-6 col-xl-3">
+                <div class="stat-card" style="background: linear-gradient(135deg, #2563eb, #1d4ed8);">
+                    <div class="d-flex justify-content-between align-items-start">
+                        <div>
+                            <p class="text-white-50 small fw-semibold text-uppercase mb-1">Tổng mặt hàng</p>
+                            <h2 class="fw-bold mb-1">{{ total_products }}</h2>
+                            <span class="small text-white-50">Tổng tồn: {{ total_stock_items }} sản phẩm</span>
+                        </div>
+                        <div class="bg-white bg-opacity-25 rounded-4 p-3">
+                            <i class="bi bi-box-seam fs-4 text-white"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-sm-6 col-xl-3">
+                <div class="stat-card" style="background: linear-gradient(135deg, #059669, #047857);">
+                    <div class="d-flex justify-content-between align-items-start">
+                        <div>
+                            <p class="text-white-50 small fw-semibold text-uppercase mb-1">Giá trị tồn kho</p>
+                            <h3 class="fw-bold mb-1">{{ total_inventory_value|floatformat:0 }} đ</h3>
+                            <span class="small text-white-50">Ước tính theo giá niêm yết</span>
+                        </div>
+                        <div class="bg-white bg-opacity-25 rounded-4 p-3">
+                            <i class="bi bi-cash-stack fs-4 text-white"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-sm-6 col-xl-3">
+                <div class="stat-card" style="background: linear-gradient(135deg, #d97706, #b45309);">
+                    <div class="d-flex justify-content-between align-items-start">
+                        <div>
+                            <p class="text-white-50 small fw-semibold text-uppercase mb-1">Đơn chờ duyệt</p>
+                            <h2 class="fw-bold mb-1">{{ pending_orders }}</h2>
+                            <span class="small text-white-50">Trên tổng {{ total_orders }} đơn hàng</span>
+                        </div>
+                        <div class="bg-white bg-opacity-25 rounded-4 p-3">
+                            <i class="bi bi-hourglass-split fs-4 text-white"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-sm-6 col-xl-3">
+                <div class="stat-card" style="background: linear-gradient(135deg, #4f46e5, #4338ca);">
+                    <div class="d-flex justify-content-between align-items-start">
+                        <div>
+                            <p class="text-white-50 small fw-semibold text-uppercase mb-1">Đơn đã xuất kho</p>
+                            <h2 class="fw-bold mb-1">{{ approved_orders }}</h2>
+                            <span class="small text-white-50">Đã phê duyệt & trừ kho</span>
+                        </div>
+                        <div class="bg-white bg-opacity-25 rounded-4 p-3">
+                            <i class="bi bi-check2-circle fs-4 text-white"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Charts -->
+        <div class="row g-4 mb-4">
+            <div class="col-lg-5">
+                <div class="card card-pro p-4 h-100">
+                    <h5 class="fw-bold mb-1">Tỷ lệ trạng thái đơn hàng</h5>
+                    <p class="text-muted small mb-4">Phân bổ đơn chờ duyệt, đã duyệt và từ chối</p>
+                    <div class="my-auto" style="max-height: 260px;">
+                        <canvas id="orderStatusChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-7">
+                <div class="card card-pro p-4 h-100">
+                    <h5 class="fw-bold mb-1">Phân bổ sản phẩm theo danh mục</h5>
+                    <p class="text-muted small mb-4">Số lượng mã hàng hiện có trong từng nhóm danh mục</p>
+                    <div class="my-auto">
+                        <canvas id="categoryChart" height="145"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tables Row -->
+        <div class="row g-4">
+            <!-- Recent Orders -->
+            <div class="col-lg-7">
+                <div class="card card-pro h-100">
+                    <div class="card-body p-4">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h5 class="fw-bold mb-0"><i class="bi bi-clock-history text-primary me-2"></i>Đơn hàng mới nhất</h5>
+                            <a href="{% url 'order_list' %}" class="btn btn-soft btn-sm">Xem tất cả</a>
+                        </div>
+
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Khách đặt</th>
+                                        <th>Sản phẩm</th>
+                                        <th class="text-center">SL</th>
+                                        <th>Trạng thái</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for order in recent_orders %}
+                                    <tr>
+                                        <td class="fw-semibold">{{ order.user.username }}</td>
+                                        <td>{{ order.product.name }}</td>
+                                        <td class="text-center fw-bold">{{ order.quantity }}</td>
+                                        <td>
+                                            {% if order.status == "pending" %}
+                                            <span class="badge bg-warning bg-opacity-15 text-warning-emphasis border border-warning rounded-pill px-3">Chờ duyệt</span>
+                                            {% elif order.status == "approved" %}
+                                            <span class="badge bg-success bg-opacity-15 text-success border border-success rounded-pill px-3">Đã duyệt</span>
+                                            {% else %}
+                                            <span class="badge bg-danger bg-opacity-15 text-danger border border-danger rounded-pill px-3">Từ chối</span>
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+                                    {% empty %}
+                                    <tr>
+                                        <td colspan="4" class="text-center text-muted py-4">Chưa có đơn hàng nào phát sinh.</td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Low Stock & Stock History -->
+            <div class="col-lg-5">
+                <div class="card card-pro mb-4">
+                    <div class="card-body p-4">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h5 class="fw-bold mb-0"><i class="bi bi-exclamation-triangle-fill text-danger me-2"></i>Cảnh báo sắp hết hàng</h5>
+                            <span class="badge bg-danger rounded-pill">Tồn ≤ 5</span>
+                        </div>
+
+                        {% for product in low_stock_products %}
+                        <div class="d-flex justify-content-between align-items-center py-2 {% if not forloop.last %}border-bottom{% endif %}">
+                            <div>
+                                <div class="fw-bold">{{ product.name }}</div>
+                                <small class="text-muted">SKU: {{ product.sku }}</small>
+                            </div>
+                            <div class="d-flex align-items-center gap-2">
+                                <span class="badge bg-danger bg-opacity-10 text-danger fw-bold px-3 py-2 rounded-pill">
+                                    Còn {{ product.quantity }}
+                                </span>
+                                <a href="{% url 'product_update' product.pk %}" class="btn btn-sm btn-outline-secondary rounded-pill" title="Nhập thêm">
+                                    <i class="bi bi-plus"></i>
+                                </a>
+                            </div>
+                        </div>
+                        {% empty %}
+                        <div class="text-center text-muted py-3">
+                            <i class="bi bi-shield-check text-success fs-3 d-block mb-1"></i>
+                            Tất cả mặt hàng đều đang đủ tồn kho.
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <div class="card card-pro">
+                    <div class="card-body p-4">
+                        <h5 class="fw-bold mb-3"><i class="bi bi-arrow-left-right text-indigo me-2"></i>Biến động kho gần đây</h5>
+                        {% for h in recent_histories %}
+                        <div class="d-flex justify-content-between align-items-center py-2 {% if not forloop.last %}border-bottom{% endif %} small">
+                            <div>
+                                <span class="fw-bold">{{ h.product.name }}</span>
+                                <div class="text-muted" style="font-size: 12px;">{{ h.note|default:h.get_action_display }}</div>
+                            </div>
+                            {% if h.action == "import" %}
+                            <span class="badge bg-success rounded-pill">+{{ h.quantity }} Nhập</span>
+                            {% else %}
+                            <span class="badge bg-secondary rounded-pill">-{{ h.quantity }} Xuất</span>
+                            {% endif %}
+                        </div>
+                        {% empty %}
+                        <p class="text-muted small mb-0">Chưa có lịch sử xuất nhập kho.</p>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</section>
+
+{% endblock %}
+
+{% block scripts %}
+<script id="order-stats-data" type="application/json">
+[
+    {% for item in order_stats %}
+    {"status": "{{ item.status|escapejs }}", "total": {{ item.total }}}{% if not forloop.last %},{% endif %}
+    {% endfor %}
+]
+</script>
+
+<script id="category-stats-data" type="application/json">
+[
+    {% for item in category_stats %}
+    {"name": "{{ item.name|escapejs }}", "total": {{ item.total_products }}}{% if not forloop.last %},{% endif %}
+    {% endfor %}
+]
+</script>
+
+<script>
+    const statusMap = {
+        "pending": "Chờ duyệt",
+        "approved": "Đã duyệt",
+        "rejected": "Từ chối"
+    };
+
+    const rawOrderStats = JSON.parse(document.getElementById("order-stats-data").textContent);
+    const orderLabels = rawOrderStats.map(item => statusMap[item.status] || item.status);
+    const orderData = rawOrderStats.map(item => item.total);
+
+    new Chart(document.getElementById("orderStatusChart"), {
+        type: "doughnut",
+        data: {
+            labels: orderLabels.length ? orderLabels : ["Chưa có dữ liệu"],
+            datasets: [{
+                data: orderData.length ? orderData : [1],
+                backgroundColor: orderData.length ? ["#f59e0b", "#10b981", "#ef4444"] : ["#e2e8f0"],
+                borderWidth: 0
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            cutout: "68%",
+            plugins: {
+                legend: { position: "bottom" }
+            }
+        }
+    });
+
+    const rawCategoryStats = JSON.parse(document.getElementById("category-stats-data").textContent);
+    const categoryLabels = rawCategoryStats.map(item => item.name);
+    const categoryData = rawCategoryStats.map(item => item.total);
+
+    new Chart(document.getElementById("categoryChart"), {
+        type: "bar",
+        data: {
+            labels: categoryLabels,
+            datasets: [{
+                label: "Số lượng sản phẩm",
+                data: categoryData,
+                backgroundColor: "#4f46e5",
+                borderRadius: 8,
+                barThickness: 32
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: { legend: { display: false } },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: { precision: 0 },
+                    grid: { color: "#f1f5f9" }
+                },
+                x: { grid: { display: false } }
+            }
+        }
+    });
+</script>
+{% endblock %}
