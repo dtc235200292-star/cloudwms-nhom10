@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html lang="vi">
+<html lang="vi" data-bs-theme="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}CloudWMS — Hệ Thống Quản Lý Kho Đám Mây{% endblock %}</title>
+    <title>{% block title %}CloudWMS — Nền Tảng Quản Trị Kho Đám Mây{% endblock %}</title>
 
-    <!-- Google Fonts: Plus Jakarta Sans & JetBrains Mono -->
+    <!-- Google Fonts: Cinzel/Playfair cho nét sang trọng + Plus Jakarta Sans + JetBrains Mono -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500;600&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -16,81 +16,92 @@
 
     <style>
         :root {
-            --wms-dark: #0B1120;
-            --wms-primary: #4F46E5;
-            --wms-primary-hover: #4338CA;
-            --wms-bg: #F8FAFC;
-            --wms-border: #E2E8F0;
-            --wms-text-main: #0F172A;
-            --wms-text-muted: #64748B;
+            --bg-obsidian: #090B10;
+            --bg-surface: #11141D;
+            --bg-card: #161A26;
+            --bg-card-hover: #1C2130;
+            --gold-primary: #F59E0B;
+            --gold-light: #FBBF24;
+            --gold-glow: rgba(245, 158, 11, 0.28);
+            --border-subtle: rgba(255, 255, 255, 0.08);
+            --border-gold: rgba(245, 158, 11, 0.35);
+            --text-primary: #F8FAFC;
+            --text-secondary: #94A3B8;
         }
 
         body {
             font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
-            background-color: var(--wms-bg);
-            color: var(--wms-text-main);
+            background-color: var(--bg-obsidian) !important;
+            background-image: 
+                radial-gradient(circle at 15% 15%, rgba(245, 158, 11, 0.07) 0%, transparent 40%),
+                radial-gradient(circle at 85% 25%, rgba(99, 102, 241, 0.08) 0%, transparent 45%),
+                linear-gradient(180deg, #090B10 0%, #0D1017 100%) !important;
+            color: var(--text-primary) !important;
             min-height: 100vh;
             display: flex;
             flex-direction: column;
             -webkit-font-smoothing: antialiased;
         }
 
-        /* Navbar cao cấp */
+        /* Navbar Kính Mờ (Glassmorphism) Đen - Vàng Kim */
         .wms-navbar {
-            background: rgba(11, 17, 32, 0.96);
-            backdrop-filter: blur(12px);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-            padding: 0.75rem 0;
+            background: rgba(9, 11, 16, 0.85) !important;
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border-bottom: 1px solid var(--border-subtle);
+            padding: 0.85rem 0;
         }
 
         .wms-brand {
             font-weight: 800;
-            font-size: 1.25rem;
-            letter-spacing: -0.02em;
+            font-size: 1.3rem;
+            letter-spacing: 0.02em;
             color: #FFFFFF !important;
             display: flex;
             align-items: center;
-            gap: 0.65rem;
+            gap: 0.7rem;
         }
 
         .wms-brand-icon {
-            width: 36px;
-            height: 36px;
+            width: 38px;
+            height: 38px;
             border-radius: 10px;
-            background: linear-gradient(135deg, #4F46E5 0%, #7C3AED 100%);
+            background: linear-gradient(135deg, #F59E0B 0%, #D97706 100%);
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            color: #fff;
-            box-shadow: 0 4px 12px rgba(79, 70, 229, 0.4);
+            color: #090B10;
+            font-size: 1.15rem;
+            box-shadow: 0 0 20px var(--gold-glow);
         }
 
         .wms-nav-link {
-            color: #CBD5E1 !important;
-            font-weight: 500;
+            color: var(--text-secondary) !important;
+            font-weight: 600;
             font-size: 0.92rem;
-            padding: 0.5rem 0.95rem !important;
-            border-radius: 8px;
-            transition: all 0.2s ease;
+            padding: 0.55rem 1rem !important;
+            border-radius: 10px;
+            transition: all 0.25s ease;
         }
 
         .wms-nav-link:hover, .wms-nav-link.active {
-            color: #FFFFFF !important;
-            background: rgba(255, 255, 255, 0.09);
+            color: var(--gold-light) !important;
+            background: rgba(245, 158, 11, 0.1);
         }
 
-        /* Trạng thái Cloud trực tuyến */
+        /* Huy hiệu trạng thái Render Cloud Live phát sáng */
         .cloud-status-pill {
             display: inline-flex;
             align-items: center;
-            gap: 6px;
-            background: rgba(16, 185, 129, 0.14);
+            gap: 7px;
+            background: rgba(16, 185, 129, 0.12);
             border: 1px solid rgba(16, 185, 129, 0.35);
             color: #34D399;
-            font-size: 0.75rem;
-            font-weight: 600;
-            padding: 0.25rem 0.75rem;
+            font-size: 0.76rem;
+            font-weight: 700;
+            padding: 0.32rem 0.85rem;
             border-radius: 999px;
+            box-shadow: 0 0 15px rgba(16, 185, 129, 0.15);
         }
 
         .pulse-dot {
@@ -108,144 +119,194 @@
             100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
         }
 
-        /* Hero Header Banner đầu trang */
-        .wms-hero-strip {
-            background: linear-gradient(135deg, #0B1120 0%, #1E1B4B 60%, #312E81 100%);
-            color: #FFFFFF;
-            padding: 1.65rem 0;
-            margin-bottom: 1.75rem;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-        }
-
         /* =========================================================
-           FIX TRIỆT ĐỂ LỖI ẢNH BỊ TRÀN/ĐÈ LÊN NHAU TRONG CARD SẢN PHẨM
+           PHỦ GIAO DIỆN DARK LUXURY & GOLD LÊN TOÀN BỘ TRANG CON
            ========================================================= */
-        .card {
-            background: #FFFFFF;
-            border: 1px solid var(--wms-border);
-            border-radius: 16px;
-            overflow: hidden !important; /* Cắt gọn mọi phần tử tràn ra ngoài viền card */
-            box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04), 0 4px 12px rgba(15, 23, 42, 0.02);
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        
+        /* Chuyển toàn bộ khối nền trắng cũ (bg-white, bg-light) sang nền tối sang trọng */
+        main .bg-white,
+        main .bg-light,
+        main .p-4.rounded,
+        main .p-5.rounded,
+        main .shadow-sm {
+            background-color: var(--bg-surface) !important;
+            border: 1px solid var(--border-subtle) !important;
+            color: var(--text-primary) !important;
         }
 
-        .card:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 12px 24px -6px rgba(15, 23, 42, 0.1);
-        }
-
-        /* Khóa kích thước chuẩn cho toàn bộ ảnh sản phẩm bên trong card */
-        .card img,
-        .card-img-top,
-        .product-img {
-            width: 100% !important;
-            height: 210px !important;
-            max-width: 100% !important;
-            object-fit: contain !important; /* Giữ nguyên tỷ lệ ảnh sản phẩm, không bị cắt mất góc */
-            background-color: #FFFFFF;
-            padding: 14px;
-            display: block;
-            margin: 0 auto;
-        }
-
-        /* =========================================================
-           FIX LỖI CHỮ TRẮNG TÀNG HÌNH TRÊN NỀN SÁNG Ở TRANG CHỦ CŨ
-           ========================================================= */
-        main .text-white,
-        main .text-light,
-        main .text-white-50 {
-            color: #334155 !important;
-        }
-
-        /* Giữ nguyên chữ trắng cho các nút bấm nền màu và badge */
-        main .btn-primary,
-        main .btn-success,
-        main .btn-danger,
-        main .btn-dark,
-        main .badge.bg-primary,
-        main .badge.bg-success,
-        main .badge.bg-danger,
-        main .badge.bg-dark,
-        main .badge.bg-secondary {
+        main h1, main h2, main h3, main h4, main h5, main h6,
+        main .text-dark,
+        main .text-body {
             color: #FFFFFF !important;
         }
 
+        main p, main .text-muted, main .text-secondary {
+            color: var(--text-secondary) !important;
+        }
+
+        /* Card Sản Phẩm & Thẻ Thống Kê Hiệu Ứng Viền Ánh Vàng Khi Hover */
+        .card {
+            background: linear-gradient(145deg, var(--bg-card) 0%, #121520 100%) !important;
+            border: 1px solid var(--border-subtle) !important;
+            border-radius: 18px !important;
+            overflow: hidden !important;
+            box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.6) !important;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+        }
+
+        .card:hover {
+            transform: translateY(-6px);
+            border-color: var(--border-gold) !important;
+            box-shadow: 0 20px 40px -12px rgba(0, 0, 0, 0.8), 0 0 25px rgba(245, 158, 11, 0.15) !important;
+        }
+
         .card-header {
-            background-color: transparent;
-            border-bottom: 1px solid var(--wms-border);
+            background-color: rgba(255, 255, 255, 0.02) !important;
+            border-bottom: 1px solid var(--border-subtle) !important;
+            color: var(--gold-light) !important;
             font-weight: 700;
             padding: 1rem 1.25rem;
         }
 
+        .card-body {
+            color: var(--text-primary) !important;
+        }
+
+        /* Khung ảnh sản phẩm tinh tế, sắc nét trên nền tối */
+        .card img,
+        .card-img-top,
+        .product-img {
+            width: 100% !important;
+            height: 205px !important;
+            max-width: 100% !important;
+            object-fit: contain !important;
+            background: radial-gradient(circle at center, #FFFFFF 65%, #E2E8F0 100%) !important;
+            padding: 16px;
+            display: block;
+            margin: 0 auto;
+            border-bottom: 1px solid var(--border-subtle);
+            transition: transform 0.35s ease;
+        }
+
+        .card:hover img {
+            transform: scale(1.04);
+        }
+
+        /* Ô tìm kiếm, Dropdown lọc & Input chuẩn Dark Mode */
+        .form-control, .form-select {
+            background-color: #0D1017 !important;
+            border: 1px solid rgba(255, 255, 255, 0.14) !important;
+            color: #FFFFFF !important;
+            border-radius: 10px !important;
+            padding: 0.6rem 0.95rem;
+        }
+
+        .form-control:focus, .form-select:focus {
+            border-color: var(--gold-primary) !important;
+            box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.2) !important;
+        }
+
+        .form-control::placeholder {
+            color: #64748B !important;
+        }
+
+        /* Bảng dữ liệu Dark Mode */
         .table {
+            color: var(--text-primary) !important;
             vertical-align: middle;
             margin-bottom: 0;
         }
 
         .table thead th {
-            background-color: #F1F5F9;
-            color: #475569;
+            background-color: rgba(255, 255, 255, 0.04) !important;
+            color: var(--gold-light) !important;
             font-size: 0.78rem;
             font-weight: 700;
             text-transform: uppercase;
-            letter-spacing: 0.04em;
-            border-bottom: 1px solid var(--wms-border);
-            padding: 0.85rem 1rem;
+            letter-spacing: 0.05em;
+            border-bottom: 1px solid var(--border-subtle) !important;
+            padding: 0.9rem 1rem;
         }
 
         .table tbody td {
-            padding: 0.9rem 1rem;
-            border-bottom: 1px solid #F1F5F9;
-            font-size: 0.92rem;
+            background-color: transparent !important;
+            color: #E2E8F0 !important;
+            border-bottom: 1px solid var(--border-subtle) !important;
+            padding: 0.95rem 1rem;
         }
 
-        .table tbody tr:hover {
-            background-color: #F8FAFC;
+        .table tbody tr:hover td {
+            background-color: rgba(245, 158, 11, 0.05) !important;
         }
 
+        /* Mã SKU & Code */
         .sku-code, code {
             font-family: 'JetBrains Mono', monospace;
-            font-size: 0.84rem;
-            background: #F1F5F9;
-            color: #334155;
-            padding: 0.2rem 0.45rem;
+            font-size: 0.82rem;
+            background: rgba(245, 158, 11, 0.12) !important;
+            color: var(--gold-light) !important;
+            border: 1px solid rgba(245, 158, 11, 0.25);
+            padding: 0.22rem 0.55rem;
             border-radius: 6px;
         }
 
+        /* Nút bấm Ánh Vàng Kim Sang Trọng */
         .btn {
-            font-weight: 600;
-            border-radius: 9px;
-            padding: 0.5rem 1rem;
+            font-weight: 700;
+            border-radius: 10px !important;
+            padding: 0.55rem 1.15rem;
             font-size: 0.9rem;
-            transition: all 0.18s ease;
+            transition: all 0.2s ease;
         }
 
-        .btn-primary {
-            background-color: var(--wms-primary);
-            border-color: var(--wms-primary);
-            box-shadow: 0 2px 6px rgba(79, 70, 229, 0.25);
+        .btn-warning, .btn-primary {
+            background: linear-gradient(135deg, #F59E0B 0%, #D97706 100%) !important;
+            border: none !important;
+            color: #090B10 !important;
+            box-shadow: 0 4px 15px rgba(245, 158, 11, 0.3) !important;
         }
 
-        .btn-primary:hover {
-            background-color: var(--wms-primary-hover);
-            border-color: var(--wms-primary-hover);
-            transform: translateY(-1px);
+        .btn-warning:hover, .btn-primary:hover {
+            background: linear-gradient(135deg, #FBBF24 0%, #F59E0B 100%) !important;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 22px rgba(245, 158, 11, 0.45) !important;
+        }
+
+        .btn-outline-primary, .btn-outline-secondary, .btn-light {
+            background: rgba(255, 255, 255, 0.06) !important;
+            border: 1px solid rgba(255, 255, 255, 0.15) !important;
+            color: #FFFFFF !important;
+        }
+
+        .btn-outline-primary:hover, .btn-outline-secondary:hover, .btn-light:hover {
+            background: rgba(245, 158, 11, 0.15) !important;
+            border-color: var(--gold-primary) !important;
+            color: var(--gold-light) !important;
         }
 
         .badge {
-            font-weight: 600;
-            padding: 0.42em 0.75em;
+            font-weight: 700;
+            padding: 0.45em 0.8em;
             border-radius: 999px;
-            letter-spacing: 0.01em;
+            letter-spacing: 0.02em;
+        }
+
+        /* Dải Banner Giới Thiệu Đầu Trang */
+        .wms-hero-strip {
+            background: linear-gradient(135deg, rgba(245, 158, 11, 0.12) 0%, rgba(17, 20, 29, 0.95) 55%, rgba(99, 102, 241, 0.12) 100%);
+            border-bottom: 1px solid var(--border-gold);
+            padding: 1.85rem 0;
+            margin-bottom: 2rem;
+            position: relative;
         }
 
         .wms-footer {
             margin-top: auto;
-            background: #FFFFFF;
-            border-top: 1px solid var(--wms-border);
-            padding: 1.1rem 0;
+            background: rgba(9, 11, 16, 0.95);
+            border-top: 1px solid var(--border-subtle);
+            padding: 1.25rem 0;
             font-size: 0.85rem;
-            color: var(--wms-text-muted);
+            color: var(--text-secondary);
         }
     </style>
     {% block extra_css %}{% endblock %}
@@ -257,7 +318,7 @@
         <div class="container">
             <a class="navbar-brand wms-brand" href="/">
                 <span class="wms-brand-icon"><i class="bi bi-box-seam-fill"></i></span>
-                <span>CloudWMS <span class="badge bg-warning text-dark ms-1" style="font-size: 0.68rem;">PRO</span></span>
+                <span>Cloud<span style="color: #FBBF24;">WMS</span> <span class="badge bg-warning text-dark ms-1" style="font-size: 0.65rem;">ENTERPRISE</span></span>
             </a>
 
             <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#wmsMainNav">
@@ -267,7 +328,7 @@
             <div class="collapse navbar-collapse" id="wmsMainNav">
                 <ul class="navbar-nav me-auto ms-lg-3 gap-1">
                     <li class="nav-item">
-                        <a class="nav-link wms-nav-link" href="/"><i class="bi bi-grid-1x2 me-1"></i> Tổng quan</a>
+                        <a class="nav-link wms-nav-link" href="/"><i class="bi bi-grid-1x2-fill me-1"></i> Tổng quan</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link wms-nav-link" href="/products/"><i class="bi bi-boxes me-1"></i> Kho sản phẩm</a>
@@ -277,7 +338,7 @@
                     </li>
                     {% if user.is_staff %}
                     <li class="nav-item">
-                        <a class="nav-link wms-nav-link" href="/admin/"><i class="bi bi-shield-lock me-1"></i> Quản trị hệ thống</a>
+                        <a class="nav-link wms-nav-link" href="/admin/"><i class="bi bi-shield-lock-fill me-1"></i> Quản trị hệ thống</a>
                     </li>
                     {% endif %}
                 </ul>
@@ -289,18 +350,18 @@
 
                     {% if user.is_authenticated %}
                         <div class="dropdown">
-                            <button class="btn btn-outline-light btn-sm dropdown-toggle d-flex align-items-center gap-2" type="button" data-bs-toggle="dropdown">
-                                <i class="bi bi-person-circle"></i>
+                            <button class="btn btn-outline-secondary btn-sm dropdown-toggle d-flex align-items-center gap-2" type="button" data-bs-toggle="dropdown">
+                                <i class="bi bi-person-circle text-warning"></i>
                                 <span>{{ user.username }}</span>
                                 {% if user.is_staff %}
-                                    <span class="badge bg-primary" style="font-size: 0.65rem;">Admin</span>
+                                    <span class="badge bg-warning text-dark" style="font-size: 0.65rem;">Admin</span>
                                 {% else %}
                                     <span class="badge bg-secondary" style="font-size: 0.65rem;">Customer</span>
                                 {% endif %}
                             </button>
-                            <ul class="dropdown-menu dropdown-menu-end shadow border-0 rounded-3 mt-2">
+                            <ul class="dropdown-menu dropdown-menu-end shadow-lg border-secondary rounded-3 mt-2" style="background: #161A26;">
                                 <li><span class="dropdown-item-text small text-muted">Vai trò: {% if user.is_staff %}Quản trị kho{% else %}Khách hàng{% endif %}</span></li>
-                                <li><hr class="dropdown-divider"></li>
+                                <li><hr class="dropdown-divider border-secondary"></li>
                                 <li>
                                     <form method="post" action="/accounts/logout/">
                                         {% csrf_token %}
@@ -312,7 +373,7 @@
                             </ul>
                         </div>
                     {% else %}
-                        <a href="/accounts/login/" class="btn btn-primary btn-sm px-3">
+                        <a href="/accounts/login/" class="btn btn-warning btn-sm px-3">
                             <i class="bi bi-box-arrow-in-right me-1"></i> Đăng nhập
                         </a>
                     {% endif %}
@@ -321,24 +382,24 @@
         </div>
     </nav>
 
-    <!-- Dải tiêu đề chuyên nghiệp đầu trang -->
+    <!-- Dải tiêu đề sang trọng đầu trang -->
     <header class="wms-hero-strip">
         <div class="container">
             <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3">
                 <div>
-                    <div class="text-uppercase fw-bold small mb-1" style="color: #FBBF24; letter-spacing: 0.08em;">
-                        <i class="bi bi-cloud-check-fill me-1"></i> Cloud Warehouse Management Platform
+                    <div class="text-uppercase fw-bold small mb-1" style="color: #FBBF24; letter-spacing: 0.1em;">
+                        <i class="bi bi-stars me-1"></i> Cloud Warehouse Management Platform • Nhóm 10
                     </div>
-                    <h1 class="h4 fw-bold mb-1">Hệ Thống Quản Lý Kho Hàng & Điều Phối Tồn Kho Trực Tuyến</h1>
-                    <p class="mb-0 small text-white-50">Theo dõi tồn kho thời gian thực, tự động khấu trừ đơn hàng và xuất báo cáo kế toán trên hạ tầng Đám mây.</p>
+                    <h1 class="h4 fw-bold mb-1 text-white">Hệ Thống Quản Lý Kho Hàng & Điều Phối Tồn Kho Trực Tuyến</h1>
+                    <p class="mb-0 small" style="color: #CBD5E1;">Giám sát tồn kho thời gian thực, tự động khấu trừ đơn hàng và xuất báo cáo kế toán trên hạ tầng Đám mây.</p>
                 </div>
                 <div class="d-flex gap-2">
-                    <a href="/products/" class="btn btn-light btn-sm fw-semibold">
+                    <a href="/products/" class="btn btn-light btn-sm">
                         <i class="bi bi-search me-1"></i> Tra cứu kho
                     </a>
                     {% if user.is_staff %}
-                    <a href="/export/csv/" class="btn btn-warning btn-sm fw-bold text-dark">
-                        <i class="bi bi-file-earmark-spreadsheet me-1"></i> Xuất báo cáo CSV
+                    <a href="/export/csv/" class="btn btn-warning btn-sm">
+                        <i class="bi bi-file-earmark-spreadsheet-fill me-1"></i> Xuất báo cáo CSV
                     </a>
                     {% endif %}
                 </div>
@@ -350,7 +411,7 @@
     <main class="container mb-5">
         {% if messages %}
             {% for message in messages %}
-                <div class="alert alert-{{ message.tags|default:'info' }} alert-dismissible fade show border-0 shadow-sm rounded-3 mb-4" role="alert">
+                <div class="alert alert-{{ message.tags|default:'info' }} alert-dismissible fade show border-0 shadow rounded-3 mb-4" role="alert">
                     <i class="bi bi-info-circle-fill me-2"></i> {{ message }}
                     <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
                 </div>
@@ -364,10 +425,10 @@
     <footer class="wms-footer">
         <div class="container d-flex flex-column flex-sm-row justify-content-between align-items-center gap-2">
             <div>
-                <strong>CloudWMS</strong> — Mini Project Điện Toán Đám Mây (Nhóm 10)
+                <strong class="text-white">Cloud<span style="color: #FBBF24;">WMS</span></strong> — Mini Project Điện Toán Đám Mây (Nhóm 10)
             </div>
             <div>
-                Vận hành trên <span class="fw-semibold text-dark">Python / Django</span> & <span class="fw-semibold text-primary">Render PaaS</span>
+                Vận hành trên <span class="fw-semibold text-white">Python / Django</span> & <span class="fw-semibold" style="color: #FBBF24;">Render Cloud PaaS</span>
             </div>
         </div>
     </footer>
