@@ -1,1 +1,142 @@
 
+{% extends "base.html" %}
+
+{% block title %}Phiếu Xuất Kho #{{ order.id }} — CloudWMS{% endblock %}
+
+{% block extra_css %}
+<style>
+    @media print {
+        .navbar, footer, .no-print, #cloudbot-widget, #scroll-progress-bar {
+            display: none !important;
+        }
+        body {
+            background: #FFFFFF !important;
+            padding: 0 !important;
+            margin: 0 !important;
+        }
+        .invoice-paper {
+            box-shadow: none !important;
+            border: none !important;
+            padding: 0 !important;
+            margin: 0 !important;
+            width: 100% !important;
+        }
+    }
+    .invoice-paper {
+        background: #FFFFFF !important;
+        border: 1px solid #CBD5E1 !important;
+        border-radius: 16px !important;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-9">
+        <!-- Thanh công cụ In ấn (ẩn khi in giấy/PDF) -->
+        <div class="d-flex justify-content-between align-items-center mb-3 no-print">
+            <a href="{% if user.is_staff %}{% url 'order_list' %}{% else %}{% url 'my_orders' %}{% endif %}" class="btn btn-outline-secondary">
+                <i class="bi bi-arrow-left me-1"></i> Quay lại danh sách đơn
+            </a>
+            <button onclick="window.print()" class="btn btn-primary px-4">
+                <i class="bi bi-printer-fill me-2"></i> In Phiếu / Xuất PDF
+            </button>
+        </div>
+
+        <!-- Khổ giấy Phiếu Xuất Kho chuẩn A4 -->
+        <div class="invoice-paper p-4 p-md-5">
+            <div class="d-flex justify-content-between align-items-start border-bottom pb-4 mb-4">
+                <div>
+                    <h4 class="fw-bold text-primary mb-1">HỆ THỐNG QUẢN TRỊ KHO CLOUDWMS</h4>
+                    <div class="small text-muted">Đơn vị vận hành: Nhóm 10 — Cloud Warehouse Management</div>
+                    <div class="small text-muted">Kho trung tâm: Khu Công Nghệ Cao, Việt Nam</div>
+                </div>
+                <div class="text-end">
+                    <span class="badge bg-dark mb-1">MẪU SỐ: 02-VT</span>
+                    <h4 class="fw-bold mb-1">PHIẾU XUẤT KHO</h4>
+                    <div class="small fw-bold text-primary">Số chứng từ: #PXK-{{ order.id }}</div>
+                    <div class="small text-muted">Ngày lập: {{ order.created_at|date:"d/m/Y H:i" }}</div>
+                </div>
+            </div>
+
+            <div class="row g-3 mb-4">
+                <div class="col-sm-6">
+                    <div class="p-3 rounded-3 bg-light border h-100">
+                        <div class="small text-muted fw-bold mb-1">THÔNG TIN NGƯỜI NHẬN HÀNG</div>
+                        <div class="fw-bold">Khách hàng: {{ order.user.username }}</div>
+                        <div class="small text-muted">Email: {{ order.user.email|default:"Khách hàng hệ thống CloudWMS" }}</div>
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <div class="p-3 rounded-3 bg-light border h-100">
+                        <div class="small text-muted fw-bold mb-1">TRẠNG THÁI CHỨNG TỪ</div>
+                        <div>
+                            Trạng thái đơn:
+                            {% if order.status == "approved" %}
+                                <span class="badge bg-success">ĐÃ DUYỆT XUẤT KHO</span>
+                            {% elif order.status == "pending" %}
+                                <span class="badge bg-warning text-dark">CHỜ PHÊ DUYỆT</span>
+                            {% else %}
+                                <span class="badge bg-danger">ĐÃ HỦY / TỪ CHỐI</span>
+                            {% endif %}
+                        </div>
+                        <div class="small text-muted mt-1">Hình thức: Xuất bán / Cấp phát vật tư trực tuyến</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="table-responsive mb-4">
+                <table class="table table-bordered align-middle">
+                    <thead class="table-light">
+                        <tr>
+                            <th class="text-center" style="width: 50px;">STT</th>
+                            <th>Mã SKU</th>
+                            <th>Tên hàng hóa / Vật tư</th>
+                            <th class="text-center">Số lượng</th>
+                            <th class="text-end">Đơn giá (VNĐ)</th>
+                            <th class="text-end">Thành tiền (VNĐ)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="text-center">1</td>
+                            <td><code>{{ order.product.sku }}</code></td>
+                            <td class="fw-bold">{{ order.product.name }}</td>
+                            <td class="text-center fw-bold">{{ order.quantity }}</td>
+                            <td class="text-end">{{ order.product.price|floatformat:0 }}</td>
+                            <td class="text-end fw-bold">{{ total_amount|floatformat:0 }}</td>
+                        </tr>
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <td colspan="5" class="text-end fw-bold">TỔNG CỘNG THANH TOÁN:</td>
+                            <td class="text-end fs-5 fw-bold text-primary">{{ total_amount|floatformat:0 }} đ</td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+
+            <div class="row text-center mt-5 pt-3">
+                <div class="col-4">
+                    <div class="fw-bold">Người lập phiếu</div>
+                    <div class="small text-muted fst-italic">(Ký, ghi rõ họ tên)</div>
+                    <div style="height: 65px;"></div>
+                    <div class="small fw-bold">Quản trị viên CloudWMS</div>
+                </div>
+                <div class="col-4">
+                    <div class="fw-bold">Thủ kho xuất hàng</div>
+                    <div class="small text-muted fst-italic">(Ký, xác nhận đủ SL)</div>
+                    <div style="height: 65px;"></div>
+                    <div class="small fw-bold">Bộ phận Kho vận</div>
+                </div>
+                <div class="col-4">
+                    <div class="fw-bold">Người nhận hàng</div>
+                    <div class="small text-muted fst-italic">(Ký, ghi rõ họ tên)</div>
+                    <div style="height: 65px;"></div>
+                    <div class="small fw-bold">{{ order.user.username }}</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
