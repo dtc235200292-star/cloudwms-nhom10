@@ -1,1 +1,67 @@
 
+{% extends "base.html" %}
+
+{% block title %}{{ title|default:"Cập nhật sản phẩm" }} — CloudWMS{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <div class="card p-4 p-md-5 reveal-item">
+            <div class="mb-4">
+                <span class="badge bg-primary mb-2">QUẢN LÝ HÀNG HÓA</span>
+                <h3 class="fw-bold mb-1">
+                    <i class="bi bi-box-seam-fill text-primary me-2"></i>{{ title|default:"Cập nhật thông tin & số lượng sản phẩm" }}
+                </h3>
+                <p class="text-muted mb-0">
+                    Chỉnh sửa thông tin chi tiết hoặc tăng số lượng tồn kho. Hệ thống tự động ghi nhận biến động vào nhật ký kho.
+                </p>
+            </div>
+
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+
+                {% if form.non_field_errors %}
+                    <div class="alert alert-danger rounded-4">
+                        {{ form.non_field_errors }}
+                    </div>
+                {% endif %}
+
+                {% for field in form %}
+                    <div class="mb-3">
+                        <label class="form-label fw-bold" for="{{ field.id_for_label }}">
+                            {{ field.label }}
+                        </label>
+                        {{ field }}
+                        {% if field.help_text %}
+                            <div class="form-text">{{ field.help_text }}</div>
+                        {% endif %}
+                        {% for error in field.errors %}
+                            <div class="text-danger small mt-1">{{ error }}</div>
+                        {% endfor %}
+                    </div>
+                {% endfor %}
+
+                <div class="d-flex flex-wrap gap-2 mt-4">
+                    <button type="submit" class="btn btn-primary px-4">
+                        <i class="bi bi-check-circle-fill me-1"></i> Lưu thay đổi
+                    </button>
+                    <a href="{% url 'dashboard' %}" class="btn btn-outline-secondary">
+                        Quay lại thống kê
+                    </a>
+                    <a href="{% url 'product_list' %}" class="btn btn-outline-primary">
+                        Danh sách sản phẩm
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        document.querySelectorAll("form select").forEach(el => el.classList.add("form-select"));
+        document.querySelectorAll("form input:not([type='hidden']):not([type='checkbox']):not([type='file']), form textarea").forEach(el => el.classList.add("form-control"));
+        document.querySelectorAll("form input[type='file']").forEach(el => el.classList.add("form-control"));
+    });
+</script>
+{% endblock %}
