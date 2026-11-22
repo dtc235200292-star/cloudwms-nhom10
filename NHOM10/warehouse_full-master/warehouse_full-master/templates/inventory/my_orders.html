@@ -5,68 +5,107 @@
 {% block content %}
 <div class="p-4 p-md-5 mb-4 reveal-item d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3">
     <div>
-        <span class="badge bg-primary mb-2">THEO DÕI ĐƠN HÀNG</span>
-        <h2 class="fw-bold mb-1">Đơn Đặt Hàng Của Tôi</h2>
-        <p class="text-muted mb-0">Kiểm tra trạng thái phê duyệt, hủy đơn đang chờ hoặc in phiếu xác nhận đơn hàng.</p>
+        <span class="badge bg-primary mb-2">THEO DÕI VẬN CHUYỂN THỜI GIAN THỰC</span>
+        <h2 class="fw-bold mb-1">Đơn Đặt Hàng & Tiến Độ Giao Hàng</h2>
+        <p class="text-muted mb-0">Kiểm tra địa chỉ giao nhận, thời gian dự kiến tới nơi và trạng thái xử lý từng đơn hàng.</p>
     </div>
     <a href="{% url 'order_create' %}" class="btn btn-primary">
         <i class="bi bi-cart-plus-fill me-1"></i> Tạo đơn hàng mới
     </a>
 </div>
 
-<div class="card p-4">
-    <div class="table-responsive">
-        <table class="table align-middle">
-            <thead>
-                <tr>
-                    <th>Mã đơn</th>
-                    <th>Sản phẩm</th>
-                    <th class="text-center">Số lượng</th>
-                    <th>Thời gian đặt</th>
-                    <th>Trạng thái</th>
-                    <th class="text-end">Thao tác</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for order in orders %}
-                <tr>
-                    <td class="fw-bold">#{{ order.id }}</td>
-                    <td>
-                        <div class="fw-bold">{{ order.product.name }}</div>
-                        <small class="text-muted">SKU: {{ order.product.sku }}</small>
-                    </td>
-                    <td class="text-center fw-bold">{{ order.quantity }}</td>
-                    <td class="small text-muted">{{ order.created_at|date:"d/m/Y H:i" }}</td>
-                    <td>
+<div class="d-flex flex-column gap-4">
+    {% for order in orders %}
+    <div class="card p-4">
+        <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-2 pb-3 mb-3 border-bottom">
+            <div>
+                <span class="badge bg-dark me-2">ĐƠN HÀNG #{{ order.id }}</span>
+                <span class="small text-muted">Đặt lúc: {{ order.created_at|date:"d/m/Y H:i" }}</span>
+            </div>
+            <div class="d-flex align-items-center gap-2">
+                {% if order.status == "pending" %}
+                    <span class="badge bg-warning text-dark">Chờ xác nhận & xuất kho</span>
+                    <form method="post" action="{% url 'order_cancel' order.pk %}" class="d-inline" onsubmit="return confirm('Bạn chắc chắn muốn hủy đơn hàng #{{ order.id }}?');">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-sm btn-outline-danger">Hủy đơn</button>
+                    </form>
+                {% elif order.status == "approved" %}
+                    <span class="badge bg-success">Đã xuất kho — Đang giao hàng</span>
+                {% else %}
+                    <span class="badge bg-danger">Đã hủy / Từ chối</span>
+                {% endif %}
+                <a href="{% url 'order_invoice' order.pk %}" class="btn btn-sm btn-outline-primary">
+                    <i class="bi bi-printer-fill me-1"></i> Phiếu đơn
+                </a>
+            </div>
+        </div>
+
+        <div class="row g-4 align-items-center">
+            <div class="col-lg-6">
+                <h5 class="fw-bold mb-1">{{ order.product.name }}</h5>
+                <div class="small text-muted mb-2">
+                    Mã SKU: <code>{{ order.product.sku }}</code> • Số lượng: <strong>{{ order.quantity }}</strong>
+                </div>
+                <div class="p-3 rounded-3 bg-light border small">
+                    <i class="bi bi-geo-alt-fill text-danger me-1"></i>
+                    <strong>Thông tin giao nhận & Dự kiến đến nơi:</strong><br>
+                    <span class="text-dark">{{ order.note|default:"Giao hàng tiêu chuẩn tại kho trung tâm (Dự kiến 1 - 2 ngày)" }}</span>
+                </div>
+            </div>
+
+            <div class="col-lg-6">
+                {% if order.status == "rejected" %}
+                    <div class="alert alert-danger rounded-4 mb-0">
+                        <i class="bi bi-x-circle-fill me-2"></i>Đơn hàng này đã bị hủy hoặc từ chối xuất kho.
+                    </div>
+                {% else %}
+                    <div class="small fw-bold text-primary mb-2"><i class="bi bi-truck me-1"></i>Tiến độ vận chuyển đơn hàng:</div>
+                    <div class="progress mb-3" style="height: 10px; border-radius: 999px;">
                         {% if order.status == "pending" %}
-                            <span class="badge bg-warning text-dark">Chờ duyệt</span>
-                        {% elif order.status == "approved" %}
-                            <span class="badge bg-success">Đã duyệt</span>
+                            <div class="progress-bar progress-bar-striped progress-bar-animated bg-warning" style="width: 30%;"></div>
                         {% else %}
-                            <span class="badge bg-danger">Đã hủy / Từ chối</span>
+                            <div class="progress-bar progress-bar-striped progress-bar-animated bg-success" style="width: 75%;"></div>
                         {% endif %}
-                    </td>
-                    <td class="text-end">
-                        <div class="d-inline-flex gap-1">
-                            {% if order.status == "pending" %}
-                                <form method="post" action="{% url 'order_cancel' order.pk %}" class="d-inline" onsubmit="return confirm('Bạn chắc chắn muốn hủy đơn hàng #{{ order.id }}?');">
-                                    {% csrf_token %}
-                                    <button type="submit" class="btn btn-sm btn-outline-danger">Hủy đơn</button>
-                                </form>
-                            {% endif %}
-                            <a href="{% url 'order_invoice' order.pk %}" class="btn btn-sm btn-outline-primary">
-                                <i class="bi bi-printer-fill me-1"></i> Phiếu đơn
-                            </a>
+                    </div>
+                    <div class="row text-center small">
+                        <div class="col-3">
+                            <div class="fw-bold text-success"><i class="bi bi-check-circle-fill"></i></div>
+                            <div class="fw-semibold">Đã tiếp nhận</div>
                         </div>
-                    </td>
-                </tr>
-                {% empty %}
-                <tr>
-                    <td colspan="6" class="text-center text-muted py-4">Bạn chưa có đơn đặt hàng nào.</td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+                        <div class="col-3">
+                            {% if order.status == "approved" %}
+                                <div class="fw-bold text-success"><i class="bi bi-check-circle-fill"></i></div>
+                                <div class="fw-semibold">Đã đóng gói</div>
+                            {% else %}
+                                <div class="text-warning"><i class="bi bi-hourglass-split"></i></div>
+                                <div class="text-muted">Chờ duyệt kho</div>
+                            {% endif %}
+                        </div>
+                        <div class="col-3">
+                            {% if order.status == "approved" %}
+                                <div class="fw-bold text-primary"><i class="bi bi-truck"></i></div>
+                                <div class="fw-bold text-primary">Đang giao hàng</div>
+                            {% else %}
+                                <div class="text-muted"><i class="bi bi-circle"></i></div>
+                                <div class="text-muted">Vận chuyển</div>
+                            {% endif %}
+                        </div>
+                        <div class="col-3">
+                            <div class="text-muted"><i class="bi bi-house-check"></i></div>
+                            <div class="text-muted">Nhận hàng</div>
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
     </div>
+    {% empty %}
+    <div class="card p-5 text-center">
+        <i class="bi bi-bag-x fs-1 text-muted mb-2"></i>
+        <h5>Bạn chưa có đơn đặt hàng nào</h5>
+        <p class="text-muted">Hãy chọn sản phẩm và nhập địa chỉ nhận hàng để trải nghiệm quy trình giao nhận.</p>
+        <div><a href="{% url 'order_create' %}" class="btn btn-primary">Đặt hàng ngay</a></div>
+    </div>
+    {% endfor %}
 </div>
 {% endblock %}
