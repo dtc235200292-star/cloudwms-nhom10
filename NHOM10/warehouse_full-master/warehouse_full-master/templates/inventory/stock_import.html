@@ -1,1 +1,84 @@
+{% extends "base.html" %}
 
+{% block title %}Lập Phiếu Nhập Kho — CloudWMS{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-7">
+        <div class="card p-4 p-md-5 reveal-item">
+            <div class="mb-4">
+                <span class="badge bg-success mb-2">NGHIỆP VỤ NHẬP KHO (STOCK-IN)</span>
+                <h3 class="fw-bold mb-1">
+                    <i class="bi bi-box-arrow-in-down text-success me-2"></i>Lập Phiếu Nhập Kho
+                </h3>
+                <p class="text-muted mb-0">
+                    Chọn sản phẩm và nhập số lượng hàng mới về kho. Hệ thống tự động cộng dồn vào tồn kho hiện tại và ghi nhật ký lịch sử.
+                </p>
+            </div>
+
+            <form method="post">
+                {% csrf_token %}
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Sản phẩm cần nhập kho <span class="text-danger">*</span></label>
+                    <select name="product_id" id="import-product-select" class="form-select" required onchange="updateCurrentStockPreview()">
+                        <option value="" data-stock="0">-- Chọn sản phẩm cần nhập --</option>
+                        {% for p in products %}
+                            <option value="{{ p.id }}"
+                                    data-stock="{{ p.quantity }}"
+                                    {% if selected_product_id == p.id|stringformat:"s" %}selected{% endif %}>
+                                [{{ p.sku }}] {{ p.name }} (Tồn hiện tại: {{ p.quantity }})
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <!-- Hộp xem trước tồn kho sau khi nhập -->
+                <div class="p-3 rounded-4 bg-light border d-flex justify-content-between align-items-center mb-3">
+                    <div>
+                        <span class="small text-muted d-block">Tồn kho hiện tại</span>
+                        <span id="preview-old-stock" class="fs-5 fw-bold text-dark">0</span>
+                    </div>
+                    <i class="bi bi-arrow-right fs-4 text-primary"></i>
+                    <div class="text-end">
+                        <span class="small text-muted d-block">Tồn kho dự kiến sau nhập</span>
+                        <span id="preview-new-stock" class="fs-5 fw-bold text-success">0</span>
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Số lượng nhập thêm <span class="text-danger">*</span></label>
+                    <input type="number" name="quantity" id="import-qty-input" class="form-control" min="1" placeholder="Nhập số lượng hàng mới về (VD: 20)" required oninput="updateCurrentStockPreview()">
+                </div>
+
+                <div class="mb-4">
+                    <label class="form-label fw-bold">Ghi chú phiếu nhập / Nhà cung cấp</label>
+                    <input type="text" name="note" class="form-control" placeholder="VD: Nhập bổ sung lô hàng từ nhà phân phối">
+                </div>
+
+                <div class="d-flex flex-wrap gap-2">
+                    <button type="submit" class="btn btn-primary px-4">
+                        <i class="bi bi-check2-circle me-1"></i> Xác nhận nhập kho
+                    </button>
+                    <a href="{% url 'dashboard' %}" class="btn btn-outline-secondary">Quay lại thống kê</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    function updateCurrentStockPreview() {
+        const select = document.getElementById('import-product-select');
+        const qtyInput = document.getElementById('import-qty-input');
+        const selectedOption = select.options[select.selectedIndex];
+
+        const currentStock = parseInt(selectedOption.getAttribute('data-stock') || '0', 10);
+        const addQty = parseInt(qtyInput.value || '0', 10);
+
+        document.getElementById('preview-old-stock').textContent = currentStock;
+        document.getElementById('preview-new-stock').textContent = currentStock + (addQty > 0 ? addQty : 0);
+    }
+
+    document.addEventListener('DOMContentLoaded', updateCurrentStockPreview);
+</script>
+{% endblock %}
