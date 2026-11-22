@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="vi" data-bs-theme="dark">
+<html lang="vi">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -16,34 +16,37 @@
 
     <style>
         :root {
-            --bg-void: #05070D;
-            --bg-surface: rgba(14, 19, 32, 0.78);
-            --gold-primary: #F59E0B;
-            --gold-light: #FDE68A;
-            --border-subtle: rgba(255, 255, 255, 0.09);
-            --border-gold: rgba(245, 158, 11, 0.55);
-            --text-primary: #F8FAFC;
-            --text-secondary: #94A3B8;
+            --bg-cloud: #F3F6FC;
+            --bg-surface: rgba(255, 255, 255, 0.86);
+            --primary-blue: #2563EB;
+            --primary-indigo: #4F46E5;
+            --accent-cyan: #06B6D4;
+            --accent-amber: #F59E0B;
+            --text-main: #0F172A;
+            --text-muted: #475569;
+            --border-light: rgba(148, 163, 184, 0.25);
+            --border-glow: rgba(37, 99, 235, 0.45);
             --mouse-x: 50vw;
             --mouse-y: 25vh;
         }
 
+        /* Thanh tiến trình cuộn trang */
         #scroll-progress {
             position: fixed;
             top: 0;
             left: 0;
-            height: 3px;
+            height: 3.5px;
             width: 0%;
-            background: linear-gradient(90deg, #F59E0B, #FEF08A, #6366F1, #06B6D4);
+            background: linear-gradient(90deg, #2563EB, #06B6D4, #6366F1, #F59E0B);
             z-index: 9999;
-            box-shadow: 0 0 15px rgba(245, 158, 11, 0.9);
+            box-shadow: 0 2px 10px rgba(37, 99, 235, 0.45);
             transition: width 0.08s ease-out;
         }
 
         body {
             font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
-            background-color: var(--bg-void) !important;
-            color: var(--text-primary) !important;
+            background-color: var(--bg-cloud) !important;
+            color: var(--text-main) !important;
             min-height: 100vh;
             display: flex;
             flex-direction: column;
@@ -52,32 +55,56 @@
             -webkit-font-smoothing: antialiased;
         }
 
-        .aurora-bg {
+        /* Nền cực quang tươi sáng chuyển động mượt */
+        .bright-aurora {
             position: fixed;
             inset: 0;
             z-index: -3;
             overflow: hidden;
             pointer-events: none;
+            background: linear-gradient(135deg, #F8FAFC 0%, #EEF2FF 50%, #ECFEFF 100%);
         }
 
-        .aurora-wave {
+        .aurora-blob {
             position: absolute;
-            width: 140%;
-            height: 60%;
-            top: -15%;
-            left: -20%;
-            background: radial-gradient(ellipse at 25% 35%, rgba(245, 158, 11, 0.13), transparent 55%),
-                        radial-gradient(ellipse at 75% 25%, rgba(99, 102, 241, 0.18), transparent 55%),
-                        radial-gradient(ellipse at 50% 65%, rgba(6, 182, 212, 0.11), transparent 55%);
-            filter: blur(80px);
-            animation: auroraDrift 18s ease-in-out infinite alternate;
+            border-radius: 50%;
+            filter: blur(85px);
+            opacity: 0.65;
+            animation: floatBlob 16s ease-in-out infinite alternate;
         }
 
-        @keyframes auroraDrift {
+        .blob-1 {
+            width: 520px;
+            height: 520px;
+            background: radial-gradient(circle, rgba(59, 130, 246, 0.24), transparent 70%);
+            top: -120px;
+            left: -80px;
+        }
+
+        .blob-2 {
+            width: 480px;
+            height: 480px;
+            background: radial-gradient(circle, rgba(6, 182, 212, 0.22), transparent 70%);
+            top: 15%;
+            right: -100px;
+            animation-delay: -5s;
+        }
+
+        .blob-3 {
+            width: 460px;
+            height: 460px;
+            background: radial-gradient(circle, rgba(99, 102, 241, 0.18), transparent 70%);
+            bottom: -100px;
+            left: 30%;
+            animation-delay: -9s;
+        }
+
+        @keyframes floatBlob {
             0% { transform: translate(0, 0) scale(1); }
-            100% { transform: translate(3%, 4%) scale(1.06); }
+            100% { transform: translate(45px, 35px) scale(1.1); }
         }
 
+        /* Canvas mạng lưới đám mây 3D tương tác */
         #cloud-particle-canvas {
             position: fixed;
             inset: 0;
@@ -87,89 +114,98 @@
             z-index: -2;
         }
 
+        /* Hiệu ứng vầng sáng theo con trỏ chuột */
         body::after {
             content: "";
             position: fixed;
             inset: 0;
             background: radial-gradient(
-                650px circle at var(--mouse-x) var(--mouse-y),
-                rgba(245, 158, 11, 0.1),
-                rgba(99, 102, 241, 0.05) 42%,
+                550px circle at var(--mouse-x) var(--mouse-y),
+                rgba(37, 99, 235, 0.08),
+                rgba(6, 182, 212, 0.04) 45%,
                 transparent 75%
             );
             pointer-events: none;
             z-index: -1;
         }
 
+        /* Thanh điều hướng kính mờ sáng (Frosted White Glass) */
         .wms-navbar {
-            background: rgba(5, 7, 13, 0.85) !important;
+            background: rgba(255, 255, 255, 0.84) !important;
             backdrop-filter: blur(22px);
             -webkit-backdrop-filter: blur(22px);
-            border-bottom: 1px solid var(--border-subtle);
-            padding: 0.8rem 0;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.55);
+            border-bottom: 1px solid rgba(226, 232, 240, 0.9);
+            padding: 0.78rem 0;
+            box-shadow: 0 8px 30px rgba(15, 23, 42, 0.06);
         }
 
         .wms-brand {
             font-weight: 800;
-            font-size: 1.32rem;
+            font-size: 1.35rem;
             letter-spacing: -0.02em;
-            color: #FFFFFF !important;
+            color: var(--text-main) !important;
             display: flex;
             align-items: center;
             gap: 0.7rem;
         }
 
         .wms-brand-icon {
-            width: 40px;
-            height: 40px;
-            border-radius: 11px;
-            background: linear-gradient(135deg, #F59E0B 0%, #B45309 100%);
+            width: 42px;
+            height: 42px;
+            border-radius: 12px;
+            background: linear-gradient(135deg, #2563EB 0%, #06B6D4 100%);
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            color: #05070D;
-            font-size: 1.2rem;
-            box-shadow: 0 0 25px rgba(245, 158, 11, 0.5), inset 0 1px 2px rgba(255, 255, 255, 0.7);
-            transition: transform 0.45s cubic-bezier(0.34, 1.56, 0.64, 1);
+            color: #FFFFFF;
+            font-size: 1.25rem;
+            box-shadow: 0 8px 20px rgba(37, 99, 235, 0.35);
+            transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
 
         .wms-brand:hover .wms-brand-icon {
             transform: rotateY(180deg) scale(1.08);
         }
 
+        .text-gradient-brand {
+            background: linear-gradient(90deg, #2563EB, #4F46E5, #0891B2);
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: gradientFlow 4s linear infinite;
+        }
+
+        @keyframes gradientFlow {
+            to { background-position: 200% center; }
+        }
+
         .wms-nav-link {
-            color: var(--text-secondary) !important;
+            color: var(--text-muted) !important;
             font-weight: 600;
             font-size: 0.9rem;
-            padding: 0.5rem 0.9rem !important;
-            border-radius: 10px;
+            padding: 0.5rem 0.95rem !important;
+            border-radius: 11px;
             transition: all 0.22s ease;
             white-space: nowrap;
         }
 
         .wms-nav-link:hover, .wms-nav-link.active {
-            color: #FFFFFF !important;
-            background: rgba(245, 158, 11, 0.14);
-            box-shadow: inset 0 0 0 1px rgba(245, 158, 11, 0.25);
-        }
-
-        .wms-nav-link.active i {
-            color: #FBBF24;
+            color: var(--primary-blue) !important;
+            background: rgba(37, 99, 235, 0.09);
+            box-shadow: inset 0 0 0 1px rgba(37, 99, 235, 0.18);
         }
 
         .cloud-status-pill {
             display: inline-flex;
             align-items: center;
             gap: 7px;
-            background: rgba(16, 185, 129, 0.12);
-            border: 1px solid rgba(16, 185, 129, 0.4);
-            color: #34D399;
+            background: #ECFDF5;
+            border: 1px solid #A7F3D0;
+            color: #059669;
             font-size: 0.74rem;
             font-weight: 700;
-            padding: 0.32rem 0.85rem;
+            padding: 0.34rem 0.88rem;
             border-radius: 999px;
-            box-shadow: 0 0 20px rgba(16, 185, 129, 0.22);
             white-space: nowrap;
         }
 
@@ -182,23 +218,14 @@
         }
 
         @keyframes pulseRing {
-            0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.9); }
-            70% { box-shadow: 0 0 0 9px rgba(16, 185, 129, 0); }
+            0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.8); }
+            70% { box-shadow: 0 0 0 8px rgba(16, 185, 129, 0); }
             100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
         }
 
-        .text-gold-shimmer {
-            background: linear-gradient(90deg, #F59E0B 0%, #FEF08A 45%, #F59E0B 90%);
-            background-size: 200% auto;
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            animation: textShimmer 3.5s linear infinite;
-        }
-
-        @keyframes textShimmer {
-            to { background-position: 200% center; }
-        }
-
+        /* =========================================================
+           KHỐI NỘI DUNG SÁNG & CARD 3D TILT + PHẢN CHIẾU KÍNH
+           ========================================================= */
         @keyframes fadeUpReveal {
             from { opacity: 0; transform: translateY(24px) scale(0.97); }
             to { opacity: 1; transform: translateY(0) scale(1); }
@@ -216,39 +243,40 @@
             background: var(--bg-surface) !important;
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
-            border: 1px solid var(--border-subtle) !important;
+            border: 1px solid rgba(255, 255, 255, 0.95) !important;
             border-radius: 22px !important;
-            color: var(--text-primary) !important;
-            box-shadow: 0 18px 45px -10px rgba(0, 0, 0, 0.65) !important;
+            color: var(--text-main) !important;
+            box-shadow: 0 15px 40px -12px rgba(15, 23, 42, 0.08),
+                        0 0 0 1px rgba(226, 232, 240, 0.8) !important;
         }
 
-        main h1, main h2, main h3, main h4, main h5, main h6,
-        main .text-dark,
-        main .text-body {
-            color: #FFFFFF !important;
+        main h1, main h2, main h3, main h4, main h5, main h6 {
+            color: var(--text-main) !important;
+            letter-spacing: -0.02em;
         }
 
         main p, main .text-muted, main .text-secondary {
-            color: var(--text-secondary) !important;
+            color: var(--text-muted) !important;
         }
 
+        /* Card 3D tương tác */
         .card {
-            background: linear-gradient(160deg, rgba(22, 30, 48, 0.88) 0%, rgba(11, 15, 25, 0.96) 100%) !important;
+            background: rgba(255, 255, 255, 0.94) !important;
             backdrop-filter: blur(18px);
-            border: 1px solid var(--border-subtle) !important;
+            border: 1px solid rgba(226, 232, 240, 0.95) !important;
             border-radius: 20px !important;
             overflow: hidden !important;
             position: relative;
             transform-style: preserve-3d;
             will-change: transform;
-            box-shadow: 0 14px 36px -10px rgba(0, 0, 0, 0.75) !important;
+            box-shadow: 0 12px 32px -8px rgba(15, 23, 42, 0.07) !important;
             transition: border-color 0.3s ease, box-shadow 0.3s ease !important;
         }
 
         .card:hover {
-            border-color: var(--border-gold) !important;
-            box-shadow: 0 26px 52px -12px rgba(0, 0, 0, 0.9),
-                        0 0 32px rgba(245, 158, 11, 0.22) !important;
+            border-color: var(--border-glow) !important;
+            box-shadow: 0 24px 48px -12px rgba(37, 99, 235, 0.16),
+                        0 8px 20px -6px rgba(15, 23, 42, 0.08) !important;
         }
 
         .card-glare {
@@ -256,8 +284,8 @@
             inset: 0;
             background: radial-gradient(
                 circle at var(--glare-x, 50%) var(--glare-y, 50%),
-                rgba(255, 255, 255, 0.18) 0%,
-                rgba(245, 158, 11, 0.07) 32%,
+                rgba(255, 255, 255, 0.75) 0%,
+                rgba(59, 130, 246, 0.08) 35%,
                 transparent 70%
             );
             opacity: 0;
@@ -271,13 +299,14 @@
         }
 
         .card-header {
-            background-color: rgba(255, 255, 255, 0.03) !important;
-            border-bottom: 1px solid var(--border-subtle) !important;
-            color: var(--gold-light) !important;
+            background-color: rgba(248, 250, 252, 0.9) !important;
+            border-bottom: 1px solid #E2E8F0 !important;
+            color: var(--text-main) !important;
             font-weight: 700;
             padding: 1rem 1.25rem;
         }
 
+        /* Ảnh sản phẩm chuẩn kích thước */
         .card img,
         .card-img-top,
         .product-img {
@@ -285,11 +314,11 @@
             height: 205px !important;
             max-width: 100% !important;
             object-fit: contain !important;
-            background: radial-gradient(circle at center, #FFFFFF 58%, #CBD5E1 100%) !important;
+            background: radial-gradient(circle at center, #FFFFFF 60%, #F1F5F9 100%) !important;
             padding: 16px;
             display: block;
             margin: 0 auto;
-            border-bottom: 1px solid var(--border-subtle);
+            border-bottom: 1px solid #F1F5F9;
             transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
         }
 
@@ -297,9 +326,10 @@
             transform: scale(1.07);
         }
 
+        /* Nút bấm hiệu ứng Shimmer & Ripple */
         .btn {
             font-weight: 700;
-            border-radius: 11px !important;
+            border-radius: 12px !important;
             padding: 0.58rem 1.25rem;
             font-size: 0.9rem;
             position: relative;
@@ -308,10 +338,10 @@
         }
 
         .btn-warning, .btn-primary {
-            background: linear-gradient(135deg, #F59E0B 0%, #D97706 100%) !important;
+            background: linear-gradient(135deg, #2563EB 0%, #4F46E5 100%) !important;
             border: none !important;
-            color: #05070D !important;
-            box-shadow: 0 6px 20px rgba(245, 158, 11, 0.38) !important;
+            color: #FFFFFF !important;
+            box-shadow: 0 6px 18px rgba(37, 99, 235, 0.28) !important;
         }
 
         .btn-warning::before, .btn-primary::before {
@@ -321,7 +351,7 @@
             left: -100%;
             width: 60%;
             height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.6), transparent);
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.45), transparent);
             transform: skewX(-25deg);
             transition: left 0.6s ease;
         }
@@ -331,26 +361,26 @@
         }
 
         .btn-warning:hover, .btn-primary:hover {
-            box-shadow: 0 10px 28px rgba(245, 158, 11, 0.6) !important;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(37, 99, 235, 0.4) !important;
         }
 
         .btn-outline-primary, .btn-outline-secondary, .btn-light {
-            background: rgba(255, 255, 255, 0.06) !important;
-            border: 1px solid rgba(255, 255, 255, 0.16) !important;
-            color: #FFFFFF !important;
-            backdrop-filter: blur(10px);
+            background: #FFFFFF !important;
+            border: 1px solid #CBD5E1 !important;
+            color: var(--text-main) !important;
         }
 
         .btn-outline-primary:hover, .btn-outline-secondary:hover, .btn-light:hover {
-            background: rgba(245, 158, 11, 0.16) !important;
-            border-color: var(--gold-primary) !important;
-            color: var(--gold-light) !important;
+            background: #EFF6FF !important;
+            border-color: var(--primary-blue) !important;
+            color: var(--primary-blue) !important;
         }
 
         .btn-ripple {
             position: absolute;
             border-radius: 50%;
-            background: rgba(255, 255, 255, 0.5);
+            background: rgba(255, 255, 255, 0.55);
             transform: scale(0);
             animation: rippleAnim 0.6s linear;
             pointer-events: none;
@@ -360,53 +390,55 @@
             to { transform: scale(4); opacity: 0; }
         }
 
+        /* Ô nhập liệu */
         .form-control, .form-select {
-            background-color: rgba(6, 9, 16, 0.9) !important;
-            border: 1px solid rgba(255, 255, 255, 0.14) !important;
-            color: #FFFFFF !important;
-            border-radius: 11px !important;
-            padding: 0.62rem 1rem;
+            background-color: #FFFFFF !important;
+            border: 1px solid #CBD5E1 !important;
+            color: var(--text-main) !important;
+            border-radius: 12px !important;
+            padding: 0.64rem 1rem;
         }
 
         .form-control:focus, .form-select:focus {
-            border-color: var(--gold-primary) !important;
-            box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.25) !important;
+            border-color: var(--primary-blue) !important;
+            box-shadow: 0 0 0 3.5px rgba(37, 99, 235, 0.16) !important;
         }
 
+        /* Bảng dữ liệu */
         .table {
-            color: var(--text-primary) !important;
+            color: var(--text-main) !important;
             vertical-align: middle;
             margin-bottom: 0;
         }
 
         .table thead th {
-            background-color: rgba(255, 255, 255, 0.04) !important;
-            color: var(--gold-light) !important;
+            background-color: #F8FAFC !important;
+            color: #475569 !important;
             font-size: 0.78rem;
             font-weight: 700;
             text-transform: uppercase;
-            letter-spacing: 0.06em;
-            border-bottom: 1px solid var(--border-subtle) !important;
+            letter-spacing: 0.05em;
+            border-bottom: 1px solid #E2E8F0 !important;
             padding: 0.95rem 1rem;
         }
 
         .table tbody td {
             background-color: transparent !important;
-            color: #E2E8F0 !important;
-            border-bottom: 1px solid var(--border-subtle) !important;
+            color: #1E293B !important;
+            border-bottom: 1px solid #F1F5F9 !important;
             padding: 0.95rem 1rem;
         }
 
         .table tbody tr:hover td {
-            background-color: rgba(245, 158, 11, 0.08) !important;
+            background-color: #F8FAFC !important;
         }
 
         .sku-code, code {
             font-family: 'JetBrains Mono', monospace;
             font-size: 0.82rem;
-            background: rgba(245, 158, 11, 0.14) !important;
-            color: var(--gold-light) !important;
-            border: 1px solid rgba(245, 158, 11, 0.32);
+            background: #EFF6FF !important;
+            color: #1D4ED8 !important;
+            border: 1px solid #BFDBFE;
             padding: 0.24rem 0.6rem;
             border-radius: 7px;
         }
@@ -420,27 +452,171 @@
 
         .wms-footer {
             margin-top: auto;
-            background: rgba(5, 7, 13, 0.9);
+            background: rgba(255, 255, 255, 0.9);
             backdrop-filter: blur(16px);
-            border-top: 1px solid var(--border-subtle);
+            border-top: 1px solid #E2E8F0;
             padding: 1.35rem 0;
             font-size: 0.85rem;
-            color: var(--text-secondary);
+            color: var(--text-muted);
+        }
+
+        /* =========================================================
+           TRỢ LÝ ẢO AI CLOUDBOT NỔI Ở GÓC PHẢI MÀN HÌNH
+           ========================================================= */
+        #ai-assistant-fab {
+            position: fixed;
+            bottom: 26px;
+            right: 26px;
+            z-index: 1050;
+            background: linear-gradient(135deg, #2563EB 0%, #4F46E5 100%);
+            color: #FFFFFF;
+            border: none;
+            border-radius: 999px;
+            padding: 13px 20px;
+            font-weight: 700;
+            font-size: 0.92rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 12px 30px rgba(37, 99, 235, 0.38);
+            cursor: pointer;
+            transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.25s ease;
+        }
+
+        #ai-assistant-fab:hover {
+            transform: translateY(-4px) scale(1.03);
+            box-shadow: 0 16px 36px rgba(37, 99, 235, 0.5);
+        }
+
+        .ai-fab-pulse {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #34D399;
+            box-shadow: 0 0 0 3px rgba(52, 211, 153, 0.35);
+        }
+
+        #ai-chat-window {
+            position: fixed;
+            bottom: 88px;
+            right: 26px;
+            width: 375px;
+            max-width: calc(100vw - 32px);
+            height: 500px;
+            max-height: calc(100vh - 120px);
+            background: rgba(255, 255, 255, 0.96);
+            backdrop-filter: blur(24px);
+            border: 1px solid rgba(203, 213, 225, 0.9);
+            border-radius: 24px;
+            box-shadow: 0 24px 60px rgba(15, 23, 42, 0.2);
+            z-index: 1050;
+            display: none;
+            flex-direction: column;
+            overflow: hidden;
+            animation: chatPopIn 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+
+        @keyframes chatPopIn {
+            from { opacity: 0; transform: translateY(20px) scale(0.95); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        .ai-chat-header {
+            background: linear-gradient(135deg, #2563EB 0%, #4F46E5 100%);
+            color: #FFFFFF;
+            padding: 15px 18px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .ai-chat-body {
+            flex: 1;
+            padding: 16px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            background: #F8FAFC;
+        }
+
+        .ai-msg {
+            max-width: 85%;
+            padding: 10px 14px;
+            border-radius: 16px;
+            font-size: 0.87rem;
+            line-height: 1.48;
+            animation: fadeUpReveal 0.25s ease;
+        }
+
+        .ai-msg-bot {
+            background: #FFFFFF;
+            color: #1E293B;
+            border: 1px solid #E2E8F0;
+            border-bottom-left-radius: 4px;
+            align-self: flex-start;
+            box-shadow: 0 4px 12px rgba(15, 23, 42, 0.04);
+        }
+
+        .ai-msg-user {
+            background: linear-gradient(135deg, #2563EB, #4F46E5);
+            color: #FFFFFF;
+            border-bottom-right-radius: 4px;
+            align-self: flex-end;
+        }
+
+        .ai-quick-chips {
+            padding: 8px 14px;
+            background: #FFFFFF;
+            border-top: 1px solid #F1F5F9;
+            display: flex;
+            gap: 6px;
+            overflow-x: auto;
+            white-space: nowrap;
+        }
+
+        .ai-chip {
+            background: #EFF6FF;
+            color: #1D4ED8;
+            border: 1px solid #BFDBFE;
+            border-radius: 999px;
+            padding: 4px 11px;
+            font-size: 0.76rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .ai-chip:hover {
+            background: #2563EB;
+            color: #FFFFFF;
+        }
+
+        .ai-chat-footer {
+            padding: 10px 12px;
+            background: #FFFFFF;
+            border-top: 1px solid #E2E8F0;
+            display: flex;
+            gap: 8px;
         }
     </style>
     {% block extra_css %}{% endblock %}
 </head>
 <body>
     <div id="scroll-progress"></div>
-    <div class="aurora-bg"><div class="aurora-wave"></div></div>
+    <div class="bright-aurora">
+        <div class="aurora-blob blob-1"></div>
+        <div class="aurora-blob blob-2"></div>
+        <div class="aurora-blob blob-3"></div>
+    </div>
     <canvas id="cloud-particle-canvas"></canvas>
 
     <!-- Thanh điều hướng phân quyền RBAC -->
-    <nav class="navbar navbar-expand-xl navbar-dark wms-navbar sticky-top">
+    <nav class="navbar navbar-expand-xl navbar-light wms-navbar sticky-top">
         <div class="container">
             <a class="navbar-brand wms-brand" href="/">
                 <span class="wms-brand-icon"><i class="bi bi-box-seam-fill"></i></span>
-                <span>Cloud<span class="text-gold-shimmer">WMS</span></span>
+                <span>Cloud<span class="text-gradient-brand">WMS</span></span>
             </a>
 
             <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#wmsMainNav">
@@ -482,7 +658,7 @@
                 <div class="d-flex flex-wrap align-items-center gap-2 mt-3 mt-xl-0">
                     <!-- Nút Xuất CSV chỉ dành cho Admin -->
                     {% if user.is_authenticated and user.is_staff %}
-                    <a href="/export-csv/" class="btn btn-warning btn-sm d-inline-flex align-items-center gap-1">
+                    <a href="/export-csv/" class="btn btn-primary btn-sm d-inline-flex align-items-center gap-1">
                         <i class="bi bi-file-earmark-spreadsheet-fill"></i>
                         <span>Xuất CSV</span>
                     </a>
@@ -495,29 +671,29 @@
                     {% if user.is_authenticated %}
                         <div class="dropdown">
                             <button class="btn btn-outline-secondary btn-sm dropdown-toggle d-flex align-items-center gap-2" type="button" data-bs-toggle="dropdown">
-                                <i class="bi bi-person-circle text-warning"></i>
+                                <i class="bi bi-person-circle text-primary"></i>
                                 <span>{{ user.username }}</span>
                                 {% if user.is_staff %}
-                                    <span class="badge bg-warning text-dark" style="font-size: 0.65rem;">Admin</span>
+                                    <span class="badge bg-primary text-white" style="font-size: 0.65rem;">Admin</span>
                                 {% else %}
                                     <span class="badge bg-info text-dark" style="font-size: 0.65rem;">Khách hàng</span>
                                 {% endif %}
                             </button>
-                            <ul class="dropdown-menu dropdown-menu-end shadow-lg border-secondary rounded-3 mt-2" style="background: #0F1422;">
+                            <ul class="dropdown-menu dropdown-menu-end shadow-lg border-0 rounded-4 mt-2 p-2">
                                 <li><span class="dropdown-item-text small text-muted">Vai trò: {% if user.is_staff %}Quản trị viên{% else %}Khách hàng{% endif %}</span></li>
-                                <li><hr class="dropdown-divider border-secondary"></li>
+                                <li><hr class="dropdown-divider"></li>
                                 {% if user.is_staff %}
-                                    <li><a class="dropdown-item text-light" href="/dashboard/"><i class="bi bi-bar-chart-line me-2 text-warning"></i>Bảng thống kê</a></li>
-                                    <li><a class="dropdown-item text-light" href="/export-csv/"><i class="bi bi-download me-2 text-success"></i>Tải báo cáo CSV</a></li>
+                                    <li><a class="dropdown-item rounded-3" href="/dashboard/"><i class="bi bi-bar-chart-line me-2 text-primary"></i>Bảng thống kê</a></li>
+                                    <li><a class="dropdown-item rounded-3" href="/export-csv/"><i class="bi bi-download me-2 text-success"></i>Tải báo cáo CSV</a></li>
                                 {% else %}
-                                    <li><a class="dropdown-item text-light" href="/orders/create/"><i class="bi bi-cart-plus me-2 text-warning"></i>Tạo đơn đặt hàng</a></li>
-                                    <li><a class="dropdown-item text-light" href="/my-orders/"><i class="bi bi-bag-check me-2 text-info"></i>Đơn hàng của tôi</a></li>
+                                    <li><a class="dropdown-item rounded-3" href="/orders/create/"><i class="bi bi-cart-plus me-2 text-primary"></i>Tạo đơn đặt hàng</a></li>
+                                    <li><a class="dropdown-item rounded-3" href="/my-orders/"><i class="bi bi-bag-check me-2 text-info"></i>Đơn hàng của tôi</a></li>
                                 {% endif %}
-                                <li><hr class="dropdown-divider border-secondary"></li>
+                                <li><hr class="dropdown-divider"></li>
                                 <li>
                                     <form method="post" action="/accounts/logout/">
                                         {% csrf_token %}
-                                        <button type="submit" class="dropdown-item text-danger fw-semibold">
+                                        <button type="submit" class="dropdown-item rounded-3 text-danger fw-semibold">
                                             <i class="bi bi-box-arrow-right me-2"></i>Đăng xuất
                                         </button>
                                     </form>
@@ -525,7 +701,7 @@
                             </ul>
                         </div>
                     {% else %}
-                        <a href="/accounts/login/" class="btn btn-warning btn-sm px-3">
+                        <a href="/accounts/login/" class="btn btn-primary btn-sm px-3">
                             <i class="bi bi-box-arrow-in-right me-1"></i> Đăng nhập
                         </a>
                     {% endif %}
@@ -538,7 +714,7 @@
     <main class="container my-4 my-md-5">
         {% if messages %}
             {% for message in messages %}
-                <div class="alert alert-{{ message.tags|default:'info' }} alert-dismissible fade show border-0 shadow rounded-3 mb-4 reveal-item" role="alert">
+                <div class="alert alert-{{ message.tags|default:'info' }} alert-dismissible fade show border-0 shadow-sm rounded-4 mb-4 reveal-item" role="alert">
                     <i class="bi bi-info-circle-fill me-2"></i> {{ message }}
                     <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
                 </div>
@@ -548,25 +724,67 @@
         {% block content %}{% endblock %}
     </main>
 
+    <!-- Trợ lý ảo AI CloudBot -->
+    <button id="ai-assistant-fab" type="button" onclick="toggleAiChat()">
+        <span class="ai-fab-pulse"></span>
+        <i class="bi bi-robot fs-5"></i>
+        <span>Trợ lý AI</span>
+    </button>
+
+    <div id="ai-chat-window">
+        <div class="ai-chat-header">
+            <div class="d-flex align-items-center gap-2">
+                <i class="bi bi-stars fs-5"></i>
+                <div>
+                    <div class="fw-bold" style="font-size: 0.95rem;">CloudBot AI Assistant</div>
+                    <div style="font-size: 0.72rem; opacity: 0.88;">Hỗ trợ vận hành & giải đáp 24/7</div>
+                </div>
+            </div>
+            <button type="button" class="btn btn-sm text-white p-1" onclick="toggleAiChat()">
+                <i class="bi bi-x-lg"></i>
+            </button>
+        </div>
+
+        <div class="ai-chat-body" id="ai-chat-messages">
+            <div class="ai-msg ai-msg-bot">
+                Xin chào <strong>{% if user.is_authenticated %}{{ user.username }}{% else %}bạn{% endif %}</strong>! 👋 Tôi là <strong>CloudBot AI</strong>. Bạn đang gặp vướng mắc gì khi sử dụng hệ thống quản lý kho <strong>CloudWMS</strong>? Hãy chọn chủ đề bên dưới hoặc nhập câu hỏi nhé!
+            </div>
+        </div>
+
+        <div class="ai-quick-chips">
+            <button type="button" class="ai-chip" onclick="sendQuickAsk('Cách đặt hàng?')">🛒 Cách đặt hàng</button>
+            <button type="button" class="ai-chip" onclick="sendQuickAsk('Phân quyền Admin & Khách?')">🔐 Phân quyền</button>
+            <button type="button" class="ai-chip" onclick="sendQuickAsk('Cách duyệt đơn & trừ kho?')">✅ Duyệt đơn</button>
+            <button type="button" class="ai-chip" onclick="sendQuickAsk('Xuất báo cáo CSV ở đâu?')">📊 Xuất CSV</button>
+        </div>
+
+        <form class="ai-chat-footer" onsubmit="handleAiSubmit(event)">
+            <input type="text" id="ai-user-input" class="form-control form-control-sm" placeholder="Nhập câu hỏi cần hỗ trợ..." autocomplete="off">
+            <button type="submit" class="btn btn-primary btn-sm px-3">
+                <i class="bi bi-send-fill"></i>
+            </button>
+        </form>
+    </div>
+
     <!-- Chân trang -->
     <footer class="wms-footer">
         <div class="container d-flex flex-column flex-sm-row justify-content-between align-items-center gap-2">
             <div>
-                <strong class="text-white">Cloud<span class="text-gold-shimmer">WMS</span></strong> — Hệ Thống Quản Lý Kho Đám Mây (Nhóm 10)
+                <strong class="text-dark">Cloud<span class="text-gradient-brand">WMS</span></strong> — Hệ Thống Quản Lý Kho Đám Mây (Nhóm 10)
             </div>
             <div>
-                Vận hành trên <span class="fw-semibold text-white">Python / Django</span> & <span class="fw-semibold" style="color: #FBBF24;">Render Cloud PaaS</span>
+                Vận hành trên <span class="fw-semibold text-dark">Python / Django</span> & <span class="fw-semibold text-primary">Render Cloud PaaS</span>
             </div>
         </div>
     </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        // 1. Nền mạng lưới hạt đám mây 3D
+        // 1. Mạng lưới hạt đám mây 3D tươi sáng
         const canvas = document.getElementById('cloud-particle-canvas');
         const ctx = canvas.getContext('2d');
         let particles = [];
-        let mouse = { x: null, y: null, radius: 175 };
+        let mouse = { x: null, y: null, radius: 170 };
 
         function resizeCanvas() {
             canvas.width = window.innerWidth;
@@ -588,7 +806,7 @@
                 this.y = Math.random() * canvas.height;
                 this.vx = (Math.random() - 0.5) * 0.55;
                 this.vy = (Math.random() - 0.5) * 0.55;
-                this.size = Math.random() * 2.2 + 0.8;
+                this.size = Math.random() * 2.4 + 1;
                 this.colorType = Math.random();
             }
             update() {
@@ -600,12 +818,10 @@
             draw() {
                 ctx.beginPath();
                 ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-                if (this.colorType > 0.55) {
-                    ctx.fillStyle = 'rgba(245, 158, 11, 0.55)';
-                } else if (this.colorType > 0.25) {
-                    ctx.fillStyle = 'rgba(99, 102, 241, 0.5)';
+                if (this.colorType > 0.5) {
+                    ctx.fillStyle = 'rgba(37, 99, 235, 0.35)';
                 } else {
-                    ctx.fillStyle = 'rgba(6, 182, 212, 0.45)';
+                    ctx.fillStyle = 'rgba(6, 182, 212, 0.35)';
                 }
                 ctx.fill();
             }
@@ -613,7 +829,7 @@
 
         function initParticles() {
             particles = [];
-            const count = Math.min(Math.floor((canvas.width * canvas.height) / 18000), 85);
+            const count = Math.min(Math.floor((canvas.width * canvas.height) / 18000), 80);
             for (let i = 0; i < count; i++) particles.push(new CloudNode());
         }
 
@@ -629,8 +845,8 @@
                     const dist = Math.hypot(dx, dy);
                     if (dist < 135) {
                         ctx.beginPath();
-                        ctx.strokeStyle = `rgba(245, 158, 11, ${(1 - dist / 135) * 0.16})`;
-                        ctx.lineWidth = 0.8;
+                        ctx.strokeStyle = `rgba(37, 99, 235, ${(1 - dist / 135) * 0.14})`;
+                        ctx.lineWidth = 0.85;
                         ctx.moveTo(particles[i].x, particles[i].y);
                         ctx.lineTo(particles[j].x, particles[j].y);
                         ctx.stroke();
@@ -643,8 +859,8 @@
                     const distM = Math.hypot(dxm, dym);
                     if (distM < mouse.radius) {
                         ctx.beginPath();
-                        ctx.strokeStyle = `rgba(254, 240, 138, ${(1 - distM / mouse.radius) * 0.4})`;
-                        ctx.lineWidth = 1;
+                        ctx.strokeStyle = `rgba(79, 70, 229, ${(1 - distM / mouse.radius) * 0.35})`;
+                        ctx.lineWidth = 1.1;
                         ctx.moveTo(particles[i].x, particles[i].y);
                         ctx.lineTo(mouse.x, mouse.y);
                         ctx.stroke();
@@ -657,16 +873,14 @@
         animateParticles();
 
         document.addEventListener('DOMContentLoaded', () => {
-            // 2. Tự động ẩn khối chữ "Kiến trúc & Tính năng cốt lõi" bị thừa trên trang chủ và căn rộng khung tiêu đề
+            // 2. Tự động ẩn khối chữ "Kiến trúc & Tính năng cốt lõi" nếu còn trên trang chủ
             document.querySelectorAll('main h1, main h2, main h3, main h4, main h5, main div').forEach(el => {
                 if (el.children.length <= 2 && el.textContent.includes('Kiến trúc & Tính năng cốt lõi')) {
                     const rightCol = el.closest('[class*="col-"]');
                     if (rightCol && rightCol.parentElement) {
                         const leftCol = rightCol.previousElementSibling;
                         rightCol.remove();
-                        if (leftCol) {
-                            leftCol.className = 'col-12';
-                        }
+                        if (leftCol) leftCol.className = 'col-12';
                     }
                 }
             });
@@ -732,6 +946,65 @@
             const scrolled = height > 0 ? (winScroll / height) * 100 : 0;
             document.getElementById('scroll-progress').style.width = scrolled + '%';
         });
+
+        // 5. Logic Trợ lý ảo AI CloudBot
+        function toggleAiChat() {
+            const chatWin = document.getElementById('ai-chat-window');
+            if (chatWin.style.display === 'flex') {
+                chatWin.style.display = 'none';
+            } else {
+                chatWin.style.display = 'flex';
+                document.getElementById('ai-user-input').focus();
+            }
+        }
+
+        function appendMessage(text, sender) {
+            const box = document.getElementById('ai-chat-messages');
+            const msg = document.createElement('div');
+            msg.className = sender === 'user' ? 'ai-msg ai-msg-user' : 'ai-msg ai-msg-bot';
+            msg.innerHTML = text;
+            box.appendChild(msg);
+            box.scrollTop = box.scrollHeight;
+        }
+
+        function getBotResponse(query) {
+            const q = query.toLowerCase();
+            if (q.includes('đặt hàng') || q.includes('tạo đơn') || q.includes('mua')) {
+                return '🛒 <strong>Hướng dẫn đặt hàng:</strong><br>1. Đăng nhập tài khoản Khách hàng.<br>2. Vào mục <strong>Kho sản phẩm</strong> hoặc <strong>Trang chủ</strong>, chọn sản phẩm còn hàng và bấm nút <strong>Đặt hàng</strong>.<br>3. Nhập số lượng cần xuất và gửi yêu cầu. Bạn có thể theo dõi trạng thái duyệt tại mục <strong>Đơn của tôi</strong>.';
+            }
+            if (q.includes('duyệt') || q.includes('trừ kho') || q.includes('quản lý đơn')) {
+                return '✅ <strong>Quy trình duyệt đơn & trừ kho tự động:</strong><br>Chỉ tài khoản <strong>Admin</strong> mới có quyền vào mục <strong>Quản lý đơn</strong>. Khi Admin bấm <em>Duyệt</em>, hệ thống sẽ tự động trừ số lượng tồn kho tương ứng và ghi lại nhật ký vào bảng <code>StockHistory</code>.';
+            }
+            if (q.includes('csv') || q.includes('xuất') || q.includes('báo cáo') || q.includes('excel')) {
+                return '📊 <strong>Xuất báo cáo Excel/CSV:</strong><br>Đăng nhập bằng tài khoản <strong>Admin</strong>, bấm nút <strong>Xuất CSV</strong> màu xanh trên thanh điều hướng (hoặc mở mục <strong>Thống kê</strong>) để tải toàn bộ danh mục tồn kho và giá trị hàng hóa chuẩn UTF-8 mở trực tiếp bằng Excel.';
+            }
+            if (q.includes('quyền') || q.includes('admin') || q.includes('khách') || q.includes('đăng nhập')) {
+                return '🔐 <strong>Cơ chế phân quyền RBAC:</strong><br>• <strong>Khách hàng:</strong> Xem kho sản phẩm, tạo đơn đặt hàng và theo dõi đơn cá nhân.<br>• <strong>Admin:</strong> Toàn quyền xem biểu đồ thống kê, thêm/sửa/xóa hàng hóa, duyệt/từ chối đơn và xuất báo cáo CSV.';
+            }
+            if (q.includes('thống kê') || q.includes('dashboard') || q.includes('biểu đồ')) {
+                return '📈 <strong>Bảng thống kê tổng quan:</strong><br>Mục <strong>Thống kê</strong> dành riêng cho <strong>Admin</strong>, hiển thị tổng giá trị hàng tồn kho, cảnh báo mặt hàng sắp hết (tồn ≤ 5) và lịch sử biến động xuất/nhập kho.';
+            }
+            return '🤖 Tôi đã ghi nhận câu hỏi của bạn! Bạn có thể kiểm tra nhanh:<br>• <strong>Tra cứu & Đặt hàng:</strong> Mục <em>Kho sản phẩm</em>.<br>• <strong>Theo dõi đơn cá nhân:</strong> Mục <em>Đơn của tôi</em>.<br>• <strong>Quản trị & Thống kê:</strong> Đăng nhập bằng tài khoản <em>Admin</em>.';
+        }
+
+        function sendQuickAsk(question) {
+            appendMessage(question, 'user');
+            setTimeout(() => {
+                appendMessage(getBotResponse(question), 'bot');
+            }, 350);
+        }
+
+        function handleAiSubmit(e) {
+            e.preventDefault();
+            const input = document.getElementById('ai-user-input');
+            const text = input.value.trim();
+            if (!text) return;
+            appendMessage(text, 'user');
+            input.value = '';
+            setTimeout(() => {
+                appendMessage(getBotResponse(text), 'bot');
+            }, 400);
+        }
     </script>
     {% block extra_js %}{% endblock %}
 </body>
