@@ -17,11 +17,9 @@
     <style>
         :root {
             --bg-void: #05070D;
-            --bg-surface: rgba(14, 19, 32, 0.76);
+            --bg-surface: rgba(14, 19, 32, 0.78);
             --gold-primary: #F59E0B;
             --gold-light: #FDE68A;
-            --indigo-accent: #6366F1;
-            --cyan-accent: #06B6D4;
             --border-subtle: rgba(255, 255, 255, 0.09);
             --border-gold: rgba(245, 158, 11, 0.55);
             --text-primary: #F8FAFC;
@@ -30,7 +28,6 @@
             --mouse-y: 25vh;
         }
 
-        /* Thanh tiến trình cuộn trang */
         #scroll-progress {
             position: fixed;
             top: 0;
@@ -55,7 +52,6 @@
             -webkit-font-smoothing: antialiased;
         }
 
-        /* Nền cực quang Aurora tinh tế */
         .aurora-bg {
             position: fixed;
             inset: 0;
@@ -82,7 +78,6 @@
             100% { transform: translate(3%, 4%) scale(1.06); }
         }
 
-        /* Canvas mạng lưới đám mây 3D tương tác */
         #cloud-particle-canvas {
             position: fixed;
             inset: 0;
@@ -92,7 +87,6 @@
             z-index: -2;
         }
 
-        /* Spotlight ánh sáng theo con trỏ chuột */
         body::after {
             content: "";
             position: fixed;
@@ -107,9 +101,8 @@
             z-index: -1;
         }
 
-        /* Navbar Kính Mờ Cao Cấp */
         .wms-navbar {
-            background: rgba(5, 7, 13, 0.82) !important;
+            background: rgba(5, 7, 13, 0.85) !important;
             backdrop-filter: blur(22px);
             -webkit-backdrop-filter: blur(22px);
             border-bottom: 1px solid var(--border-subtle);
@@ -206,25 +199,15 @@
             to { background-position: 200% center; }
         }
 
-        /* =========================================================
-           KHỐI NỘI DUNG & CARD 3D TILT + PHẢN CHIẾU KÍNH
-           ========================================================= */
         @keyframes fadeUpReveal {
-            from {
-                opacity: 0;
-                transform: translateY(24px) scale(0.97);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0) scale(1);
-            }
+            from { opacity: 0; transform: translateY(24px) scale(0.97); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
         }
 
         .reveal-item {
             animation: fadeUpReveal 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
         }
 
-        /* Khối Hero & Filter của các trang con */
         main .bg-white,
         main .bg-light,
         main .p-4.rounded,
@@ -249,7 +232,6 @@
             color: var(--text-secondary) !important;
         }
 
-        /* Card 3D tương tác */
         .card {
             background: linear-gradient(160deg, rgba(22, 30, 48, 0.88) 0%, rgba(11, 15, 25, 0.96) 100%) !important;
             backdrop-filter: blur(18px);
@@ -296,7 +278,6 @@
             padding: 1rem 1.25rem;
         }
 
-        /* Khóa kích thước chuẩn cho toàn bộ ảnh sản phẩm */
         .card img,
         .card-img-top,
         .product-img {
@@ -316,7 +297,6 @@
             transform: scale(1.07);
         }
 
-        /* Nút bấm Ánh Vàng Kim + Shimmer */
         .btn {
             font-weight: 700;
             border-radius: 11px !important;
@@ -380,7 +360,6 @@
             to { transform: scale(4); opacity: 0; }
         }
 
-        /* Input & Select */
         .form-control, .form-select {
             background-color: rgba(6, 9, 16, 0.9) !important;
             border: 1px solid rgba(255, 255, 255, 0.14) !important;
@@ -394,7 +373,6 @@
             box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.25) !important;
         }
 
-        /* Bảng dữ liệu */
         .table {
             color: var(--text-primary) !important;
             vertical-align: middle;
@@ -457,7 +435,7 @@
     <div class="aurora-bg"><div class="aurora-wave"></div></div>
     <canvas id="cloud-particle-canvas"></canvas>
 
-    <!-- Thanh điều hướng chuẩn xác 100% theo urls.py của dự án -->
+    <!-- Thanh điều hướng phân quyền RBAC -->
     <nav class="navbar navbar-expand-xl navbar-dark wms-navbar sticky-top">
         <div class="container">
             <a class="navbar-brand wms-brand" href="/">
@@ -471,31 +449,41 @@
 
             <div class="collapse navbar-collapse" id="wmsMainNav">
                 <ul class="navbar-nav me-auto ms-xl-3 gap-1">
+                    <!-- Menu chung cho tất cả người dùng -->
                     <li class="nav-item">
                         <a class="nav-link wms-nav-link" href="/"><i class="bi bi-house-door-fill me-1"></i> Trang chủ</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link wms-nav-link" href="/dashboard/"><i class="bi bi-bar-chart-line-fill me-1"></i> Thống kê</a>
-                    </li>
-                    <li class="nav-item">
                         <a class="nav-link wms-nav-link" href="/products/"><i class="bi bi-boxes me-1"></i> Kho sản phẩm</a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link wms-nav-link" href="/orders/"><i class="bi bi-receipt-cutoff me-1"></i> Quản lý đơn</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link wms-nav-link" href="/my-orders/"><i class="bi bi-bag-check-fill me-1"></i> Đơn của tôi</a>
-                    </li>
-                    {% if user.is_staff %}
-                    <li class="nav-item">
-                        <a class="nav-link wms-nav-link" href="/admin/"><i class="bi bi-shield-lock-fill me-1"></i> Quản trị</a>
-                    </li>
+
+                    {% if user.is_authenticated %}
+                        {% if user.is_staff %}
+                            <!-- CHỈ TÀI KHOẢN ADMIN MỚI THẤY CÁC MỤC QUẢN TRỊ NÀY -->
+                            <li class="nav-item">
+                                <a class="nav-link wms-nav-link" href="/dashboard/"><i class="bi bi-bar-chart-line-fill me-1"></i> Thống kê</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link wms-nav-link" href="/orders/"><i class="bi bi-receipt-cutoff me-1"></i> Quản lý đơn</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link wms-nav-link" href="/admin/"><i class="bi bi-shield-lock-fill me-1"></i> Quản trị</a>
+                            </li>
+                        {% else %}
+                            <!-- TÀI KHOẢN KHÁCH HÀNG: CHỈ CÓ CHỨC NĂNG ĐẶT & XEM ĐƠN CÁ NHÂN -->
+                            <li class="nav-item">
+                                <a class="nav-link wms-nav-link" href="/orders/create/"><i class="bi bi-cart-plus-fill me-1"></i> Đặt hàng</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link wms-nav-link" href="/my-orders/"><i class="bi bi-bag-check-fill me-1"></i> Đơn của tôi</a>
+                            </li>
+                        {% endif %}
                     {% endif %}
                 </ul>
 
                 <div class="d-flex flex-wrap align-items-center gap-2 mt-3 mt-xl-0">
-                    <!-- Nút Xuất CSV trỏ đúng /export-csv/ -->
-                    {% if user.is_staff %}
+                    <!-- Nút Xuất CSV chỉ dành cho Admin -->
+                    {% if user.is_authenticated and user.is_staff %}
                     <a href="/export-csv/" class="btn btn-warning btn-sm d-inline-flex align-items-center gap-1">
                         <i class="bi bi-file-earmark-spreadsheet-fill"></i>
                         <span>Xuất CSV</span>
@@ -514,15 +502,18 @@
                                 {% if user.is_staff %}
                                     <span class="badge bg-warning text-dark" style="font-size: 0.65rem;">Admin</span>
                                 {% else %}
-                                    <span class="badge bg-secondary" style="font-size: 0.65rem;">Customer</span>
+                                    <span class="badge bg-info text-dark" style="font-size: 0.65rem;">Khách hàng</span>
                                 {% endif %}
                             </button>
                             <ul class="dropdown-menu dropdown-menu-end shadow-lg border-secondary rounded-3 mt-2" style="background: #0F1422;">
-                                <li><span class="dropdown-item-text small text-muted">Vai trò: {% if user.is_staff %}Quản trị kho{% else %}Khách hàng{% endif %}</span></li>
+                                <li><span class="dropdown-item-text small text-muted">Vai trò: {% if user.is_staff %}Quản trị viên{% else %}Khách hàng{% endif %}</span></li>
                                 <li><hr class="dropdown-divider border-secondary"></li>
-                                <li><a class="dropdown-item text-light" href="/dashboard/"><i class="bi bi-bar-chart-line me-2 text-warning"></i>Bảng thống kê</a></li>
                                 {% if user.is_staff %}
-                                <li><a class="dropdown-item text-light" href="/export-csv/"><i class="bi bi-download me-2 text-success"></i>Tải báo cáo CSV</a></li>
+                                    <li><a class="dropdown-item text-light" href="/dashboard/"><i class="bi bi-bar-chart-line me-2 text-warning"></i>Bảng thống kê</a></li>
+                                    <li><a class="dropdown-item text-light" href="/export-csv/"><i class="bi bi-download me-2 text-success"></i>Tải báo cáo CSV</a></li>
+                                {% else %}
+                                    <li><a class="dropdown-item text-light" href="/orders/create/"><i class="bi bi-cart-plus me-2 text-warning"></i>Tạo đơn đặt hàng</a></li>
+                                    <li><a class="dropdown-item text-light" href="/my-orders/"><i class="bi bi-bag-check me-2 text-info"></i>Đơn hàng của tôi</a></li>
                                 {% endif %}
                                 <li><hr class="dropdown-divider border-secondary"></li>
                                 <li>
@@ -573,7 +564,7 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        // 1. Mạng lưới hạt đám mây 3D tương tác
+        // 1. Nền mạng lưới hạt đám mây 3D
         const canvas = document.getElementById('cloud-particle-canvas');
         const ctx = canvas.getContext('2d');
         let particles = [];
@@ -667,8 +658,22 @@
         initParticles();
         animateParticles();
 
-        // 2. 3D Tilt + Phản chiếu kính trên Card
         document.addEventListener('DOMContentLoaded', () => {
+            // 2. Tự động ẩn khối chữ "Kiến trúc & Tính năng cốt lõi" bị thừa trên trang chủ và căn rộng khung tiêu đề
+            document.querySelectorAll('main h1, main h2, main h3, main h4, main h5, main div').forEach(el => {
+                if (el.children.length <= 2 && el.textContent.includes('Kiến trúc & Tính năng cốt lõi')) {
+                    const rightCol = el.closest('[class*="col-"]');
+                    if (rightCol && rightCol.parentElement) {
+                        const leftCol = rightCol.previousElementSibling;
+                        rightCol.remove();
+                        if (leftCol) {
+                            leftCol.className = 'col-12';
+                        }
+                    }
+                }
+            });
+
+            // 3. Hiệu ứng 3D Tilt + Phản chiếu kính trên Card
             const cards = document.querySelectorAll('main .card');
             cards.forEach((card, index) => {
                 card.classList.add('reveal-item');
@@ -698,7 +703,7 @@
                 });
             });
 
-            // 3. Hiệu ứng gợn sóng khi bấm nút
+            // 4. Hiệu ứng gợn sóng khi bấm nút
             document.querySelectorAll('.btn').forEach(btn => {
                 btn.addEventListener('click', function(e) {
                     const circle = document.createElement('span');
