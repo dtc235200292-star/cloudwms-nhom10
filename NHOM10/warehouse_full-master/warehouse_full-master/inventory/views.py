@@ -1,740 +1,289 @@
-<!DOCTYPE html>
-<html lang="vi" data-bs-theme="dark">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}CloudWMS — Nền Tảng Quản Trị Kho Đám Mây{% endblock %}</title>
-
-    <!-- Google Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-
-    <!-- Bootstrap 5.3 & Bootstrap Icons -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-
-    <style>
-        :root {
-            --bg-void: #05070D;
-            --bg-surface: rgba(14, 19, 32, 0.78);
-            --gold-primary: #F59E0B;
-            --gold-light: #FDE68A;
-            --border-subtle: rgba(255, 255, 255, 0.09);
-            --border-gold: rgba(245, 158, 11, 0.55);
-            --text-primary: #F8FAFC;
-            --text-secondary: #94A3B8;
-            --mouse-x: 50vw;
-            --mouse-y: 25vh;
-        }
-
-        #scroll-progress {
-            position: fixed;
-            top: 0;
-            left: 0;
-            height: 3px;
-            width: 0%;
-            background: linear-gradient(90deg, #F59E0B, #FEF08A, #6366F1, #06B6D4);
-            z-index: 9999;
-            box-shadow: 0 0 15px rgba(245, 158, 11, 0.9);
-            transition: width 0.08s ease-out;
-        }
-
-        body {
-            font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
-            background-color: var(--bg-void) !important;
-            color: var(--text-primary) !important;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            overflow-x: hidden;
-            position: relative;
-            -webkit-font-smoothing: antialiased;
-        }
-
-        .aurora-bg {
-            position: fixed;
-            inset: 0;
-            z-index: -3;
-            overflow: hidden;
-            pointer-events: none;
-        }
-
-        .aurora-wave {
-            position: absolute;
-            width: 140%;
-            height: 60%;
-            top: -15%;
-            left: -20%;
-            background: radial-gradient(ellipse at 25% 35%, rgba(245, 158, 11, 0.13), transparent 55%),
-                        radial-gradient(ellipse at 75% 25%, rgba(99, 102, 241, 0.18), transparent 55%),
-                        radial-gradient(ellipse at 50% 65%, rgba(6, 182, 212, 0.11), transparent 55%);
-            filter: blur(80px);
-            animation: auroraDrift 18s ease-in-out infinite alternate;
-        }
-
-        @keyframes auroraDrift {
-            0% { transform: translate(0, 0) scale(1); }
-            100% { transform: translate(3%, 4%) scale(1.06); }
-        }
-
-        #cloud-particle-canvas {
-            position: fixed;
-            inset: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            z-index: -2;
-        }
-
-        body::after {
-            content: "";
-            position: fixed;
-            inset: 0;
-            background: radial-gradient(
-                650px circle at var(--mouse-x) var(--mouse-y),
-                rgba(245, 158, 11, 0.1),
-                rgba(99, 102, 241, 0.05) 42%,
-                transparent 75%
-            );
-            pointer-events: none;
-            z-index: -1;
-        }
-
-        .wms-navbar {
-            background: rgba(5, 7, 13, 0.85) !important;
-            backdrop-filter: blur(22px);
-            -webkit-backdrop-filter: blur(22px);
-            border-bottom: 1px solid var(--border-subtle);
-            padding: 0.8rem 0;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.55);
-        }
-
-        .wms-brand {
-            font-weight: 800;
-            font-size: 1.32rem;
-            letter-spacing: -0.02em;
-            color: #FFFFFF !important;
-            display: flex;
-            align-items: center;
-            gap: 0.7rem;
-        }
-
-        .wms-brand-icon {
-            width: 40px;
-            height: 40px;
-            border-radius: 11px;
-            background: linear-gradient(135deg, #F59E0B 0%, #B45309 100%);
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            color: #05070D;
-            font-size: 1.2rem;
-            box-shadow: 0 0 25px rgba(245, 158, 11, 0.5), inset 0 1px 2px rgba(255, 255, 255, 0.7);
-            transition: transform 0.45s cubic-bezier(0.34, 1.56, 0.64, 1);
-        }
-
-        .wms-brand:hover .wms-brand-icon {
-            transform: rotateY(180deg) scale(1.08);
-        }
-
-        .wms-nav-link {
-            color: var(--text-secondary) !important;
-            font-weight: 600;
-            font-size: 0.9rem;
-            padding: 0.5rem 0.9rem !important;
-            border-radius: 10px;
-            transition: all 0.22s ease;
-            white-space: nowrap;
-        }
-
-        .wms-nav-link:hover, .wms-nav-link.active {
-            color: #FFFFFF !important;
-            background: rgba(245, 158, 11, 0.14);
-            box-shadow: inset 0 0 0 1px rgba(245, 158, 11, 0.25);
-        }
-
-        .wms-nav-link.active i {
-            color: #FBBF24;
-        }
-
-        .cloud-status-pill {
-            display: inline-flex;
-            align-items: center;
-            gap: 7px;
-            background: rgba(16, 185, 129, 0.12);
-            border: 1px solid rgba(16, 185, 129, 0.4);
-            color: #34D399;
-            font-size: 0.74rem;
-            font-weight: 700;
-            padding: 0.32rem 0.85rem;
-            border-radius: 999px;
-            box-shadow: 0 0 20px rgba(16, 185, 129, 0.22);
-            white-space: nowrap;
-        }
-
-        .pulse-dot {
-            width: 7px;
-            height: 7px;
-            background-color: #10B981;
-            border-radius: 50%;
-            animation: pulseRing 1.8s infinite;
-        }
-
-        @keyframes pulseRing {
-            0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.9); }
-            70% { box-shadow: 0 0 0 9px rgba(16, 185, 129, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
-        }
-
-        .text-gold-shimmer {
-            background: linear-gradient(90deg, #F59E0B 0%, #FEF08A 45%, #F59E0B 90%);
-            background-size: 200% auto;
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            animation: textShimmer 3.5s linear infinite;
-        }
-
-        @keyframes textShimmer {
-            to { background-position: 200% center; }
-        }
-
-        @keyframes fadeUpReveal {
-            from { opacity: 0; transform: translateY(24px) scale(0.97); }
-            to { opacity: 1; transform: translateY(0) scale(1); }
-        }
-
-        .reveal-item {
-            animation: fadeUpReveal 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
-        }
-
-        main .bg-white,
-        main .bg-light,
-        main .p-4.rounded,
-        main .p-5.rounded,
-        main .shadow-sm {
-            background: var(--bg-surface) !important;
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border: 1px solid var(--border-subtle) !important;
-            border-radius: 22px !important;
-            color: var(--text-primary) !important;
-            box-shadow: 0 18px 45px -10px rgba(0, 0, 0, 0.65) !important;
-        }
-
-        main h1, main h2, main h3, main h4, main h5, main h6,
-        main .text-dark,
-        main .text-body {
-            color: #FFFFFF !important;
-        }
-
-        main p, main .text-muted, main .text-secondary {
-            color: var(--text-secondary) !important;
-        }
-
-        .card {
-            background: linear-gradient(160deg, rgba(22, 30, 48, 0.88) 0%, rgba(11, 15, 25, 0.96) 100%) !important;
-            backdrop-filter: blur(18px);
-            border: 1px solid var(--border-subtle) !important;
-            border-radius: 20px !important;
-            overflow: hidden !important;
-            position: relative;
-            transform-style: preserve-3d;
-            will-change: transform;
-            box-shadow: 0 14px 36px -10px rgba(0, 0, 0, 0.75) !important;
-            transition: border-color 0.3s ease, box-shadow 0.3s ease !important;
-        }
-
-        .card:hover {
-            border-color: var(--border-gold) !important;
-            box-shadow: 0 26px 52px -12px rgba(0, 0, 0, 0.9),
-                        0 0 32px rgba(245, 158, 11, 0.22) !important;
-        }
-
-        .card-glare {
-            position: absolute;
-            inset: 0;
-            background: radial-gradient(
-                circle at var(--glare-x, 50%) var(--glare-y, 50%),
-                rgba(255, 255, 255, 0.18) 0%,
-                rgba(245, 158, 11, 0.07) 32%,
-                transparent 70%
-            );
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity 0.25s ease;
-            z-index: 3;
-        }
-
-        .card:hover .card-glare {
-            opacity: 1;
-        }
-
-        .card-header {
-            background-color: rgba(255, 255, 255, 0.03) !important;
-            border-bottom: 1px solid var(--border-subtle) !important;
-            color: var(--gold-light) !important;
-            font-weight: 700;
-            padding: 1rem 1.25rem;
-        }
-
-        .card img,
-        .card-img-top,
-        .product-img {
-            width: 100% !important;
-            height: 205px !important;
-            max-width: 100% !important;
-            object-fit: contain !important;
-            background: radial-gradient(circle at center, #FFFFFF 58%, #CBD5E1 100%) !important;
-            padding: 16px;
-            display: block;
-            margin: 0 auto;
-            border-bottom: 1px solid var(--border-subtle);
-            transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
-        }
-
-        .card:hover img {
-            transform: scale(1.07);
-        }
-
-        .btn {
-            font-weight: 700;
-            border-radius: 11px !important;
-            padding: 0.58rem 1.25rem;
-            font-size: 0.9rem;
-            position: relative;
-            overflow: hidden;
-            transition: transform 0.2s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.25s ease;
-        }
-
-        .btn-warning, .btn-primary {
-            background: linear-gradient(135deg, #F59E0B 0%, #D97706 100%) !important;
-            border: none !important;
-            color: #05070D !important;
-            box-shadow: 0 6px 20px rgba(245, 158, 11, 0.38) !important;
-        }
-
-        .btn-warning::before, .btn-primary::before {
-            content: "";
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 60%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.6), transparent);
-            transform: skewX(-25deg);
-            transition: left 0.6s ease;
-        }
-
-        .btn-warning:hover::before, .btn-primary:hover::before {
-            left: 140%;
-        }
-
-        .btn-warning:hover, .btn-primary:hover {
-            box-shadow: 0 10px 28px rgba(245, 158, 11, 0.6) !important;
-        }
-
-        .btn-outline-primary, .btn-outline-secondary, .btn-light {
-            background: rgba(255, 255, 255, 0.06) !important;
-            border: 1px solid rgba(255, 255, 255, 0.16) !important;
-            color: #FFFFFF !important;
-            backdrop-filter: blur(10px);
-        }
-
-        .btn-outline-primary:hover, .btn-outline-secondary:hover, .btn-light:hover {
-            background: rgba(245, 158, 11, 0.16) !important;
-            border-color: var(--gold-primary) !important;
-            color: var(--gold-light) !important;
-        }
-
-        .btn-ripple {
-            position: absolute;
-            border-radius: 50%;
-            background: rgba(255, 255, 255, 0.5);
-            transform: scale(0);
-            animation: rippleAnim 0.6s linear;
-            pointer-events: none;
-        }
-
-        @keyframes rippleAnim {
-            to { transform: scale(4); opacity: 0; }
-        }
-
-        .form-control, .form-select {
-            background-color: rgba(6, 9, 16, 0.9) !important;
-            border: 1px solid rgba(255, 255, 255, 0.14) !important;
-            color: #FFFFFF !important;
-            border-radius: 11px !important;
-            padding: 0.62rem 1rem;
-        }
-
-        .form-control:focus, .form-select:focus {
-            border-color: var(--gold-primary) !important;
-            box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.25) !important;
-        }
-
-        .table {
-            color: var(--text-primary) !important;
-            vertical-align: middle;
-            margin-bottom: 0;
-        }
-
-        .table thead th {
-            background-color: rgba(255, 255, 255, 0.04) !important;
-            color: var(--gold-light) !important;
-            font-size: 0.78rem;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.06em;
-            border-bottom: 1px solid var(--border-subtle) !important;
-            padding: 0.95rem 1rem;
-        }
-
-        .table tbody td {
-            background-color: transparent !important;
-            color: #E2E8F0 !important;
-            border-bottom: 1px solid var(--border-subtle) !important;
-            padding: 0.95rem 1rem;
-        }
-
-        .table tbody tr:hover td {
-            background-color: rgba(245, 158, 11, 0.08) !important;
-        }
-
-        .sku-code, code {
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.82rem;
-            background: rgba(245, 158, 11, 0.14) !important;
-            color: var(--gold-light) !important;
-            border: 1px solid rgba(245, 158, 11, 0.32);
-            padding: 0.24rem 0.6rem;
-            border-radius: 7px;
-        }
-
-        .badge {
-            font-weight: 700;
-            padding: 0.45em 0.85em;
-            border-radius: 999px;
-            letter-spacing: 0.02em;
-        }
-
-        .wms-footer {
-            margin-top: auto;
-            background: rgba(5, 7, 13, 0.9);
-            backdrop-filter: blur(16px);
-            border-top: 1px solid var(--border-subtle);
-            padding: 1.35rem 0;
-            font-size: 0.85rem;
-            color: var(--text-secondary);
-        }
-    </style>
-    {% block extra_css %}{% endblock %}
-</head>
-<body>
-    <div id="scroll-progress"></div>
-    <div class="aurora-bg"><div class="aurora-wave"></div></div>
-    <canvas id="cloud-particle-canvas"></canvas>
-
-    <!-- Thanh điều hướng phân quyền RBAC -->
-    <nav class="navbar navbar-expand-xl navbar-dark wms-navbar sticky-top">
-        <div class="container">
-            <a class="navbar-brand wms-brand" href="/">
-                <span class="wms-brand-icon"><i class="bi bi-box-seam-fill"></i></span>
-                <span>Cloud<span class="text-gold-shimmer">WMS</span></span>
-            </a>
-
-            <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#wmsMainNav">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-
-            <div class="collapse navbar-collapse" id="wmsMainNav">
-                <ul class="navbar-nav me-auto ms-xl-3 gap-1">
-                    <!-- Trang chủ hiển thị danh mục sản phẩm cho tất cả người dùng -->
-                    <li class="nav-item">
-                        <a class="nav-link wms-nav-link" href="/"><i class="bi bi-house-door-fill me-1"></i> Trang chủ</a>
-                    </li>
-
-                    {% if user.is_authenticated %}
-                        {% if user.is_staff %}
-                            <!-- KHU VỰC DÀNH RIÊNG CHO ADMIN -->
-                            <li class="nav-item">
-                                <a class="nav-link wms-nav-link" href="/dashboard/"><i class="bi bi-bar-chart-line-fill me-1"></i> Thống kê</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link wms-nav-link" href="/products/"><i class="bi bi-boxes me-1"></i> Kho sản phẩm</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link wms-nav-link" href="/orders/"><i class="bi bi-receipt-cutoff me-1"></i> Quản lý đơn</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link wms-nav-link" href="/admin/"><i class="bi bi-shield-lock-fill me-1"></i> Quản trị</a>
-                            </li>
-                        {% else %}
-                            <!-- KHU VỰC DÀNH RIÊNG CHO KHÁCH HÀNG -->
-                            <li class="nav-item">
-                                <a class="nav-link wms-nav-link" href="/orders/create/"><i class="bi bi-cart-plus-fill me-1"></i> Đặt hàng</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link wms-nav-link" href="/my-orders/"><i class="bi bi-bag-check-fill me-1"></i> Đơn của tôi</a>
-                            </li>
-                        {% endif %}
-                    {% endif %}
-                </ul>
-
-                <div class="d-flex flex-wrap align-items-center gap-2 mt-3 mt-xl-0">
-                    <!-- Nút Xuất CSV chỉ dành cho Admin -->
-                    {% if user.is_authenticated and user.is_staff %}
-                    <a href="/export-csv/" class="btn btn-warning btn-sm d-inline-flex align-items-center gap-1">
-                        <i class="bi bi-file-earmark-spreadsheet-fill"></i>
-                        <span>Xuất CSV</span>
-                    </a>
-                    {% endif %}
-
-                    <span class="cloud-status-pill d-none d-xxl-inline-flex">
-                        <span class="pulse-dot"></span> Render Live
-                    </span>
-
-                    {% if user.is_authenticated %}
-                        <div class="dropdown">
-                            <button class="btn btn-outline-secondary btn-sm dropdown-toggle d-flex align-items-center gap-2" type="button" data-bs-toggle="dropdown">
-                                <i class="bi bi-person-circle text-warning"></i>
-                                <span>{{ user.username }}</span>
-                                {% if user.is_staff %}
-                                    <span class="badge bg-warning text-dark" style="font-size: 0.65rem;">Admin</span>
-                                {% else %}
-                                    <span class="badge bg-info text-dark" style="font-size: 0.65rem;">Khách hàng</span>
-                                {% endif %}
-                            </button>
-                            <ul class="dropdown-menu dropdown-menu-end shadow-lg border-secondary rounded-3 mt-2" style="background: #0F1422;">
-                                <li><span class="dropdown-item-text small text-muted">Vai trò: {% if user.is_staff %}Quản trị viên{% else %}Khách hàng{% endif %}</span></li>
-                                <li><hr class="dropdown-divider border-secondary"></li>
-                                {% if user.is_staff %}
-                                    <li><a class="dropdown-item text-light" href="/dashboard/"><i class="bi bi-bar-chart-line me-2 text-warning"></i>Bảng thống kê</a></li>
-                                    <li><a class="dropdown-item text-light" href="/export-csv/"><i class="bi bi-download me-2 text-success"></i>Tải báo cáo CSV</a></li>
-                                {% else %}
-                                    <li><a class="dropdown-item text-light" href="/orders/create/"><i class="bi bi-cart-plus me-2 text-warning"></i>Tạo đơn đặt hàng</a></li>
-                                    <li><a class="dropdown-item text-light" href="/my-orders/"><i class="bi bi-bag-check me-2 text-info"></i>Đơn hàng của tôi</a></li>
-                                {% endif %}
-                                <li><hr class="dropdown-divider border-secondary"></li>
-                                <li>
-                                    <form method="post" action="/accounts/logout/">
-                                        {% csrf_token %}
-                                        <button type="submit" class="dropdown-item text-danger fw-semibold">
-                                            <i class="bi bi-box-arrow-right me-2"></i>Đăng xuất
-                                        </button>
-                                    </form>
-                                </li>
-                            </ul>
-                        </div>
-                    {% else %}
-                        <a href="/accounts/login/" class="btn btn-warning btn-sm px-3">
-                            <i class="bi bi-box-arrow-in-right me-1"></i> Đăng nhập
-                        </a>
-                    {% endif %}
-                </div>
-            </div>
-        </div>
-    </nav>
-
-    <!-- Nội dung chính -->
-    <main class="container my-4 my-md-5">
-        {% if messages %}
-            {% for message in messages %}
-                <div class="alert alert-{{ message.tags|default:'info' }} alert-dismissible fade show border-0 shadow rounded-3 mb-4 reveal-item" role="alert">
-                    <i class="bi bi-info-circle-fill me-2"></i> {{ message }}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                </div>
-            {% endfor %}
-        {% endif %}
-
-        {% block content %}{% endblock %}
-    </main>
-
-    <!-- Chân trang -->
-    <footer class="wms-footer">
-        <div class="container d-flex flex-column flex-sm-row justify-content-between align-items-center gap-2">
-            <div>
-                <strong class="text-white">Cloud<span class="text-gold-shimmer">WMS</span></strong> — Hệ Thống Quản Lý Kho Đám Mây (Nhóm 10)
-            </div>
-            <div>
-                Vận hành trên <span class="fw-semibold text-white">Python / Django</span> & <span class="fw-semibold" style="color: #FBBF24;">Render Cloud PaaS</span>
-            </div>
-        </div>
-    </footer>
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    <script>
-        // 1. Nền mạng lưới hạt đám mây 3D
-        const canvas = document.getElementById('cloud-particle-canvas');
-        const ctx = canvas.getContext('2d');
-        let particles = [];
-        let mouse = { x: null, y: null, radius: 175 };
-
-        function resizeCanvas() {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-        }
-        window.addEventListener('resize', resizeCanvas);
-        resizeCanvas();
-
-        window.addEventListener('mousemove', (e) => {
-            mouse.x = e.clientX;
-            mouse.y = e.clientY;
-            document.documentElement.style.setProperty('--mouse-x', e.clientX + 'px');
-            document.documentElement.style.setProperty('--mouse-y', e.clientY + 'px');
-        });
-
-        class CloudNode {
-            constructor() {
-                this.x = Math.random() * canvas.width;
-                this.y = Math.random() * canvas.height;
-                this.vx = (Math.random() - 0.5) * 0.55;
-                this.vy = (Math.random() - 0.5) * 0.55;
-                this.size = Math.random() * 2.2 + 0.8;
-                this.colorType = Math.random();
-            }
-            update() {
-                this.x += this.vx;
-                this.y += this.vy;
-                if (this.x < 0 || this.x > canvas.width) this.vx *= -1;
-                if (this.y < 0 || this.y > canvas.height) this.vy *= -1;
-            }
-            draw() {
-                ctx.beginPath();
-                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-                if (this.colorType > 0.55) {
-                    ctx.fillStyle = 'rgba(245, 158, 11, 0.55)';
-                } else if (this.colorType > 0.25) {
-                    ctx.fillStyle = 'rgba(99, 102, 241, 0.5)';
-                } else {
-                    ctx.fillStyle = 'rgba(6, 182, 212, 0.45)';
-                }
-                ctx.fill();
-            }
-        }
-
-        function initParticles() {
-            particles = [];
-            const count = Math.min(Math.floor((canvas.width * canvas.height) / 18000), 85);
-            for (let i = 0; i < count; i++) particles.push(new CloudNode());
-        }
-
-        function animateParticles() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            for (let i = 0; i < particles.length; i++) {
-                particles[i].update();
-                particles[i].draw();
-
-                for (let j = i + 1; j < particles.length; j++) {
-                    const dx = particles[i].x - particles[j].x;
-                    const dy = particles[i].y - particles[j].y;
-                    const dist = Math.hypot(dx, dy);
-                    if (dist < 135) {
-                        ctx.beginPath();
-                        ctx.strokeStyle = `rgba(245, 158, 11, ${(1 - dist / 135) * 0.16})`;
-                        ctx.lineWidth = 0.8;
-                        ctx.moveTo(particles[i].x, particles[i].y);
-                        ctx.lineTo(particles[j].x, particles[j].y);
-                        ctx.stroke();
-                    }
-                }
-
-                if (mouse.x !== null) {
-                    const dxm = particles[i].x - mouse.x;
-                    const dym = particles[i].y - mouse.y;
-                    const distM = Math.hypot(dxm, dym);
-                    if (distM < mouse.radius) {
-                        ctx.beginPath();
-                        ctx.strokeStyle = `rgba(254, 240, 138, ${(1 - distM / mouse.radius) * 0.4})`;
-                        ctx.lineWidth = 1;
-                        ctx.moveTo(particles[i].x, particles[i].y);
-                        ctx.lineTo(mouse.x, mouse.y);
-                        ctx.stroke();
-                    }
-                }
-            }
-            requestAnimationFrame(animateParticles);
-        }
-        initParticles();
-        animateParticles();
-
-        document.addEventListener('DOMContentLoaded', () => {
-            // 2. Tự động ẩn khối chữ "Kiến trúc & Tính năng cốt lõi" bị thừa trên trang chủ và căn rộng khung tiêu đề
-            document.querySelectorAll('main h1, main h2, main h3, main h4, main h5, main div').forEach(el => {
-                if (el.children.length <= 2 && el.textContent.includes('Kiến trúc & Tính năng cốt lõi')) {
-                    const rightCol = el.closest('[class*="col-"]');
-                    if (rightCol && rightCol.parentElement) {
-                        const leftCol = rightCol.previousElementSibling;
-                        rightCol.remove();
-                        if (leftCol) {
-                            leftCol.className = 'col-12';
-                        }
-                    }
-                }
-            });
-
-            // 3. Hiệu ứng 3D Tilt + Phản chiếu kính trên Card
-            const cards = document.querySelectorAll('main .card');
-            cards.forEach((card, index) => {
-                card.classList.add('reveal-item');
-                card.style.animationDelay = Math.min(index * 0.05, 0.5) + 's';
-
-                const glare = document.createElement('div');
-                glare.className = 'card-glare';
-                card.appendChild(glare);
-
-                card.addEventListener('mousemove', (e) => {
-                    const rect = card.getBoundingClientRect();
-                    const x = e.clientX - rect.left;
-                    const y = e.clientY - rect.top;
-                    const centerX = rect.width / 2;
-                    const centerY = rect.height / 2;
-
-                    const rotateX = ((y - centerY) / centerY) * -6;
-                    const rotateY = ((x - centerX) / centerX) * 6;
-
-                    card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(-6px) scale(1.015)`;
-                    card.style.setProperty('--glare-x', `${(x / rect.width) * 100}%`);
-                    card.style.setProperty('--glare-y', `${(y / rect.height) * 100}%`);
-                });
-
-                card.addEventListener('mouseleave', () => {
-                    card.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg) translateY(0) scale(1)';
-                });
-            });
-
-            // 4. Hiệu ứng gợn sóng khi bấm nút
-            document.querySelectorAll('.btn').forEach(btn => {
-                btn.addEventListener('click', function(e) {
-                    const circle = document.createElement('span');
-                    const diameter = Math.max(this.clientWidth, this.clientHeight);
-                    const rect = this.getBoundingClientRect();
-                    circle.style.width = circle.style.height = `${diameter}px`;
-                    circle.style.left = `${e.clientX - rect.left - diameter / 2}px`;
-                    circle.style.top = `${e.clientY - rect.top - diameter / 2}px`;
-                    circle.classList.add('btn-ripple');
-                    const oldRipple = this.querySelector('.btn-ripple');
-                    if (oldRipple) oldRipple.remove();
-                    this.appendChild(circle);
-                });
-            });
-
-            // Đánh dấu link active trên Navbar
-            const currentPath = window.location.pathname;
-            document.querySelectorAll('.wms-nav-link').forEach(link => {
-                if (link.getAttribute('href') === currentPath) {
-                    link.classList.add('active');
-                }
-            });
-        });
-
-        window.addEventListener('scroll', () => {
-            const winScroll = document.documentElement.scrollTop || document.body.scrollTop;
-            const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
-            const scrolled = height > 0 ? (winScroll / height) * 100 : 0;
-            document.getElementById('scroll-progress').style.width = scrolled + '%';
-        });
-    </script>
-    {% block extra_js %}{% endblock %}
-</body>
-</html>
+import csv
+from django.http import HttpResponse
+from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib.auth.decorators import login_required, user_passes_test
+from django.contrib import messages
+from django.db.models import Q, Count, Sum, F
+
+from .models import Product, Order, Category, Supplier, StockHistory
+from .forms import ProductForm, OrderForm, CategoryForm, SupplierForm
+
+
+def is_admin(user):
+    return user.is_authenticated and user.is_staff
+
+
+def home(request):
+    q = request.GET.get("q", "").strip()
+    cat_id = request.GET.get("category", "")
+    products = Product.objects.select_related("category", "supplier").filter(status="active").order_by("-created_at")
+    categories = Category.objects.all()
+
+    if q:
+        products = products.filter(
+            Q(name__icontains=q) |
+            Q(sku__icontains=q) |
+            Q(category__name__icontains=q)
+        )
+    if cat_id:
+        products = products.filter(category_id=cat_id)
+
+    return render(request, "inventory/home.html", {
+        "products": products,
+        "categories": categories,
+        "q": q,
+        "selected_category": cat_id,
+    })
+
+
+@login_required
+@user_passes_test(is_admin)
+def dashboard(request):
+    total_products = Product.objects.count()
+    total_orders = Order.objects.count()
+    pending_orders = Order.objects.filter(status="pending").count()
+    approved_orders = Order.objects.filter(status="approved").count()
+
+    inventory_agg = Product.objects.aggregate(
+        total_val=Sum(F("quantity") * F("price")),
+        total_items=Sum("quantity")
+    )
+    total_inventory_value = inventory_agg["total_val"] or 0
+    total_stock_items = inventory_agg["total_items"] or 0
+
+    low_stock_products = Product.objects.select_related("category").filter(quantity__lte=5).order_by("quantity")
+    recent_orders = Order.objects.select_related("user", "product").order_by("-created_at")[:10]
+    recent_histories = StockHistory.objects.select_related("product").order_by("-created_at")[:8]
+
+    order_stats = Order.objects.values("status").annotate(total=Count("id"))
+    category_stats = Category.objects.annotate(total_products=Count("products"))
+
+    return render(request, "inventory/dashboard.html", {
+        "total_products": total_products,
+        "total_orders": total_orders,
+        "pending_orders": pending_orders,
+        "approved_orders": approved_orders,
+        "total_inventory_value": total_inventory_value,
+        "total_stock_items": total_stock_items,
+        "low_stock_products": low_stock_products,
+        "recent_orders": recent_orders,
+        "recent_histories": recent_histories,
+        "order_stats": order_stats,
+        "category_stats": category_stats,
+    })
+
+
+@login_required
+@user_passes_test(is_admin)
+def export_inventory_csv(request):
+    """Xuất báo cáo tồn kho ra file CSV (mở trực tiếp bằng Excel có tiếng Việt chuẩn UTF-8 BOM)"""
+    response = HttpResponse(content_type="text/csv; charset=utf-8-sig")
+    response["Content-Disposition"] = 'attachment; filename="bao_cao_ton_kho_nhom10.csv"'
+
+    writer = csv.writer(response)
+    writer.writerow(["Mã SKU", "Tên sản phẩm", "Danh mục", "Nhà cung cấp", "Số lượng tồn", "Đơn giá (VNĐ)", "Thành tiền (VNĐ)", "Trạng thái"])
+
+    products = Product.objects.select_related("category", "supplier").all()
+    for p in products:
+        writer.writerow([
+            p.sku,
+            p.name,
+            p.category.name if p.category else "Chưa phân loại",
+            p.supplier.name if p.supplier else "Không có",
+            p.quantity,
+            p.price,
+            p.quantity * p.price,
+            p.get_status_display(),
+        ])
+
+    return response
+
+
+@login_required
+def product_list(request):
+    q = request.GET.get("q", "").strip()
+    if request.user.is_staff:
+        products = Product.objects.select_related("category", "supplier").all().order_by("-created_at")
+    else:
+        products = Product.objects.select_related("category", "supplier").filter(status="active").order_by("-created_at")
+
+    if q:
+        products = products.filter(
+            Q(name__icontains=q) |
+            Q(sku__icontains=q) |
+            Q(category__name__icontains=q)
+        )
+
+    return render(request, "inventory/product_list.html", {
+        "products": products,
+        "q": q,
+    })
+
+
+@login_required
+@user_passes_test(is_admin)
+def product_create(request):
+    form = ProductForm(request.POST or None, request.FILES or None)
+
+    if form.is_valid():
+        product = form.save()
+        if product.quantity > 0:
+            StockHistory.objects.create(
+                product=product,
+                action="import",
+                quantity=product.quantity,
+                note="Khởi tạo sản phẩm mới"
+            )
+        messages.success(request, f"Đã thêm sản phẩm '{product.name}' vào kho.")
+        return redirect("product_list")
+
+    return render(request, "inventory/form.html", {
+        "form": form,
+        "title": "Thêm sản phẩm mới"
+    })
+
+
+@login_required
+@user_passes_test(is_admin)
+def product_update(request, pk):
+    product = get_object_or_404(Product, pk=pk)
+    old_quantity = product.quantity
+
+    form = ProductForm(request.POST or None, request.FILES or None, instance=product)
+
+    if form.is_valid():
+        product = form.save()
+
+        if product.quantity != old_quantity:
+            diff = product.quantity - old_quantity
+            StockHistory.objects.create(
+                product=product,
+                action="import" if diff > 0 else "export",
+                quantity=abs(diff),
+                note=f"Điều chỉnh tồn kho ({old_quantity} → {product.quantity})"
+            )
+
+        messages.success(request, f"Đã cập nhật thông tin '{product.name}'.")
+        return redirect("product_list")
+
+    return render(request, "inventory/form.html", {
+        "form": form,
+        "title": "Cập nhật sản phẩm"
+    })
+
+
+@login_required
+@user_passes_test(is_admin)
+def product_delete(request, pk):
+    product = get_object_or_404(Product, pk=pk)
+
+    if request.method == "POST":
+        name = product.name
+        product.delete()
+        messages.success(request, f"Đã xóa sản phẩm '{name}'.")
+        return redirect("product_list")
+
+    return render(request, "inventory/confirm_delete.html", {
+        "object": product,
+        "title": "Xóa sản phẩm"
+    })
+
+
+@login_required
+def order_create(request):
+    product_id = request.GET.get("product")
+    initial = {}
+
+    if product_id:
+        initial["product"] = get_object_or_404(Product, pk=product_id, status="active")
+
+    form = OrderForm(request.POST or None, initial=initial)
+
+    if form.is_valid():
+        order = form.save(commit=False)
+        order.user = request.user
+
+        if order.quantity <= 0:
+            messages.error(request, "Số lượng đặt hàng phải lớn hơn 0.")
+            return redirect("order_create")
+
+        if order.product.quantity < order.quantity:
+            messages.error(request, f"Kho chỉ còn {order.product.quantity} sản phẩm, không đủ số lượng bạn yêu cầu.")
+            return redirect("home")
+
+        order.save()
+        messages.success(request, "Tạo đơn đặt hàng thành công! Vui lòng chờ quản trị viên duyệt.")
+        return redirect("my_orders")
+
+    return render(request, "inventory/form.html", {
+        "form": form,
+        "title": "Tạo đơn đặt hàng"
+    })
+
+
+@login_required
+def my_orders(request):
+    orders = Order.objects.filter(user=request.user).select_related("product").order_by("-created_at")
+    return render(request, "inventory/my_orders.html", {
+        "orders": orders
+    })
+
+
+@login_required
+@user_passes_test(is_admin)
+def order_list(request):
+    status_filter = request.GET.get("status", "")
+    orders = Order.objects.select_related("user", "product").order_by("-created_at")
+    if status_filter:
+        orders = orders.filter(status=status_filter)
+
+    return render(request, "inventory/order_list.html", {
+        "orders": orders,
+        "status_filter": status_filter,
+    })
+
+
+@login_required
+@user_passes_test(is_admin)
+def order_approve(request, pk):
+    order = get_object_or_404(Order, pk=pk)
+
+    if order.status != "pending":
+        messages.warning(request, "Đơn hàng này đã được xử lý trước đó.")
+        return redirect("order_list")
+
+    if order.product.quantity < order.quantity:
+        messages.error(request, "Tồn kho không đủ số lượng để duyệt đơn hàng này.")
+        return redirect("order_list")
+
+    product = order.product
+    product.quantity -= order.quantity
+    product.save()
+
+    order.status = "approved"
+    order.save()
+
+    StockHistory.objects.create(
+        product=product,
+        action="order",
+        quantity=order.quantity,
+        note=f"Xuất kho theo đơn hàng #{order.id} ({order.user.username})"
+    )
+
+    messages.success(request, f"Đã duyệt đơn hàng #{order.id} và tự động trừ tồn kho.")
+    return redirect("order_list")
+
+
+@login_required
+@user_passes_test(is_admin)
+def order_reject(request, pk):
+    order = get_object_or_404(Order, pk=pk)
+    if order.status != "pending":
+        messages.warning(request, "Đơn hàng này đã được xử lý trước đó.")
+        return redirect("order_list")
+
+    order.status = "rejected"
+    order.save()
+
+    messages.info(request, f"Đã từ chối đơn hàng #{order.id}.")
+    return redirect("order_list")
