@@ -3,6 +3,8 @@ from datetime import timedelta
 from django.http import HttpResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required, user_passes_test
+from django.contrib.auth.signals import user_logged_in
+from django.dispatch import receiver
 from django.contrib import messages
 from django.db.models import Q, Sum, F
 from django.utils import timezone
@@ -349,7 +351,7 @@ def order_create(request):
                 if hasattr(order, "note"):
                     order.note = shipping_summary
                 order.save()
-                messages.success(request, f"Đặt hàng thành công! Thời gian giao dự kiến: {eta_str}.")
+                messages.success(request, f"Tạo đơn hàng thành công! Thời gian giao dự kiến: {eta_str}.")
                 return redirect("my_orders")
     else:
         form = OrderForm(initial=initial_data)
@@ -435,3 +437,9 @@ def order_invoice(request, pk):
         "order": order,
         "total_amount": total_amount,
     })
+
+
+@receiver(user_logged_in)
+def notify_user_logged_in(sender, request, user, **kwargs):
+    role = "Quản trị viên (Admin)" if user.is_staff else "Khách hàng"
+    messages.success(request, f"Đăng nhập thành công! Chào mừng {user.username} ({role}) quay trở lại CloudWMS.")
