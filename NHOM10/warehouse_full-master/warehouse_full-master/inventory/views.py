@@ -38,14 +38,26 @@ def home(request):
 def dashboard(request):
     total_products = Product.objects.count()
     total_stock = Product.objects.aggregate(total=Sum("quantity"))["total"] or 0
+    out_of_stock_count = Product.objects.filter(quantity=0).count()
     low_stock_products = Product.objects.filter(quantity__lte=5).order_by("quantity")
+
     pending_orders = Order.objects.filter(status="pending").count()
     approved_orders = Order.objects.filter(status="approved").count()
+    rejected_orders = Order.objects.filter(status="rejected").count()
+
+    total_imported = StockHistory.objects.filter(action="import").aggregate(s=Sum("quantity"))["s"] or 0
+    total_exported = StockHistory.objects.filter(action="export").aggregate(s=Sum("quantity"))["s"] or 0
 
     total_value = Product.objects.aggregate(
         val=Sum(F("quantity") * F("price"))
     )["val"] or 0
 
+    # Doanh thu từ các đơn hàng đã duyệt
+    approved_revenue = Order.objects.filter(status="approved").aggregate(
+        rev=Sum(F("quantity") * F("product__price"))
+    )["rev"] or 0
+
+    # Thống kê tồn kho theo danh mục
     categories = Category.objects.all()
     cat_labels = []
     cat_quantities = []
@@ -54,17 +66,33 @@ def dashboard(request):
         qty = Product.objects.filter(category=cat).aggregate(s=Sum("quantity"))["s"] or 0
         cat_quantities.append(qty)
 
-    recent_histories = StockHistory.objects.select_related("product").order_by("-created_at")[:10]
+    # Top 5 sản phẩm xuất kho nhiều nhất
+    top_products = (
+        Order.objects.filter(status="approved")
+        .values("product__name", "product__sku")
+        .annotate(total_sold=Sum("quantity"))
+        .order_by("-total_sold")[:5]
+    )
+
+    recent_orders = Order.objects.select_related("product", "user").order_by("-created_at")[:6]
+    recent_histories = StockHistory.objects.select_related("product").order_by("-created_at")[:8]
 
     return render(request, "inventory/dashboard.html", {
         "total_products": total_products,
         "total_stock": total_stock,
+        "out_of_stock_count": out_of_stock_count,
         "low_stock_products": low_stock_products,
         "pending_orders": pending_orders,
         "approved_orders": approved_orders,
+        "rejected_orders": rejected_orders,
+        "total_imported": total_imported,
+        "total_exported": total_exported,
         "total_value": total_value,
+        "approved_revenue": approved_revenue,
         "cat_labels": cat_labels,
         "cat_quantities": cat_quantities,
+        "top_products": top_products,
+        "recent_orders": recent_orders,
         "recent_histories": recent_histories,
     })
 
@@ -115,7 +143,7 @@ def product_create(request):
                     product=product,
                     action="import",
                     quantity=product.quantity,
-                    note="Khởi tạo sản phẩm mới"
+                    note="Nhập tồn kho ban đầu khi tạo sản phẩm mới"
                 )
             messages.success(request, "Thêm sản phẩm mới thành công!")
             return redirect("product_list")
@@ -128,24 +156,20 @@ def product_create(request):
 @user_passes_test(is_admin)
 def product_update(request, pk):
     product = get_object_or_404(Product, pk=pk)
-    old_qty = product.quantity
     if request.method == "POST":
         form = ProductForm(request.POST, request.FILES, instance=product)
+        if "quantity" in form.fields:
+            form.fields["quantity"].disabled = True
         if form.is_valid():
-            updated_product = form.save()
-            diff = updated_product.quantity - old_qty
-            if diff != 0:
-                StockHistory.objects.create(
-                    product=updated_product,
-                    action="import" if diff > 0 else "export",
-                    quantity=abs(diff),
-                    note=f"Cập nhật tồn kho từ {old_qty} thành {updated_product.quantity}"
-                )
-            messages.success(request, "Cập nhật sản phẩm thành công!")
+            form.save()
+            messages.success(request, "Đã cập nhật thông tin sản phẩm. Để thay đổi tồn kho, vui lòng lập Phiếu Nhập Kho.")
             return redirect("product_list")
     else:
         form = ProductForm(instance=product)
-    return render(request, "inventory/product_form.html", {"form": form, "title": "Cập nhật sản phẩm"})
+        if "quantity" in form.fields:
+            form.fields["quantity"].disabled = True
+            form.fields["quantity"].help_text = "Khóa chỉnh sửa trực tiếp — Vui lòng dùng chức năng Lập Phiếu Nhập Kho để cộng tồn kho."
+    return render(request, "inventory/product_form.html", {"form": form, "title": "Cập nhật thông tin sản phẩm"})
 
 
 @login_required
@@ -162,8 +186,9 @@ def product_delete(request, pk):
 @login_required
 @user_passes_test(is_admin)
 def stock_import(request):
-    """Chức năng Nhập kho nhanh dành cho Admin"""
+    """Chức năng Lập Phiếu Nhập Kho chuyên biệt dành cho Admin"""
     products = Product.objects.select_related("category").all().order_by("name")
+    selected_product_id = request.GET.get("product", "").strip()
 
     if request.method == "POST":
         product_id = request.POST.get("product_id")
@@ -174,10 +199,11 @@ def stock_import(request):
             qty = 0
 
         if not product_id or qty <= 0:
-            messages.error(request, "Vui lòng chọn sản phẩm và nhập số lượng lớn hơn 0.")
+            messages.error(request, "Vui lòng chọn sản phẩm và nhập số lượng nhập kho lớn hơn 0.")
             return redirect("stock_import")
 
         product = get_object_or_404(Product, pk=product_id)
+        old_qty = product.quantity
         product.quantity += qty
         product.save()
 
@@ -185,14 +211,18 @@ def stock_import(request):
             product=product,
             action="import",
             quantity=qty,
-            note=note or f"Nhập kho nhanh bởi {request.user.username}"
+            note=note or f"Phiếu nhập kho (+{qty}) bởi {request.user.username}"
         )
 
-        messages.success(request, f"Đã nhập thêm {qty} sản phẩm '{product.name}' vào kho (Tồn mới: {product.quantity}).")
-        return redirect("product_list")
+        messages.success(
+            request,
+            f"Nhập kho thành công +{qty} '{product.name}' (Tồn cũ: {old_qty} → Tồn mới: {product.quantity})."
+        )
+        return redirect("dashboard")
 
     return render(request, "inventory/stock_import.html", {
-        "products": products
+        "products": products,
+        "selected_product_id": selected_product_id,
     })
 
 
@@ -271,9 +301,7 @@ def order_reject(request, pk):
 
 @login_required
 def order_cancel(request, pk):
-    """Khách hàng tự hủy đơn khi đơn vẫn đang ở trạng thái Chờ duyệt"""
     order = get_object_or_404(Order, pk=pk, user=request.user)
-
     if order.status != "pending":
         messages.warning(request, "Chỉ có thể hủy đơn hàng đang ở trạng thái Chờ duyệt.")
         return redirect("my_orders")
@@ -288,7 +316,6 @@ def order_cancel(request, pk):
 
 @login_required
 def order_invoice(request, pk):
-    """Trang xem & In Phiếu Xuất Kho / Hóa Đơn"""
     if request.user.is_staff:
         order = get_object_or_404(Order, pk=pk)
     else:
