@@ -12,15 +12,14 @@
     <style>
         :root {
             --brand-primary: #1D4ED8;
-            --brand-primary-dark: #1E40AF;
             --brand-secondary: #0284C7;
             --brand-accent: #4338CA;
-            --surface-glass: rgba(255, 255, 255, 0.90);
-            --border-subtle: rgba(203, 213, 225, 0.88);
+            --surface-glass: rgba(255, 255, 255, 0.86);
+            --border-subtle: rgba(203, 213, 225, 0.85);
             --text-dark: #0F172A;
             --text-muted: #475569;
-            --shadow-soft: 0 10px 30px -10px rgba(15, 23, 42, 0.07);
-            --shadow-hover: 0 22px 45px -15px rgba(29, 78, 216, 0.16);
+            --shadow-soft: 0 12px 32px -10px rgba(15, 23, 42, 0.08);
+            --shadow-hover: 0 24px 48px -14px rgba(29, 78, 216, 0.18);
         }
 
         * {
@@ -30,37 +29,259 @@
         body {
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
             color: var(--text-dark);
-            background-color: #F4F7FB !important;
-            background-image:
-                radial-gradient(at 0% 0%, rgba(59, 130, 246, 0.16) 0px, transparent 52%),
-                radial-gradient(at 100% 0%, rgba(6, 182, 212, 0.16) 0px, transparent 52%),
-                radial-gradient(at 100% 100%, rgba(99, 102, 241, 0.13) 0px, transparent 52%),
-                radial-gradient(at 0% 100%, rgba(14, 165, 233, 0.12) 0px, transparent 52%),
-                linear-gradient(rgba(148, 163, 184, 0.13) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(148, 163, 184, 0.13) 1px, transparent 1px) !important;
-            background-size: 100% 100%, 100% 100%, 100% 100%, 100% 100%, 36px 36px, 36px 36px !important;
-            background-attachment: fixed !important;
+            background-color: #EEF4FB !important;
             min-height: 100vh;
             display: flex;
             flex-direction: column;
+            overflow-x: hidden;
             -webkit-font-smoothing: antialiased;
         }
 
-        /* Thanh tiến trình cuộn trang trên đỉnh màn hình */
+        /* =========================================================
+           1. HỆ THỐNG NỀN 3D SINH ĐỘNG (3D AURORA + ORBS + GRID)
+           ========================================================= */
+        #bg-3d-stage {
+            position: fixed;
+            inset: 0;
+            z-index: -2;
+            overflow: hidden;
+            pointer-events: none;
+            background:
+                radial-gradient(circle at 12% 18%, rgba(59, 130, 246, 0.22) 0%, transparent 45%),
+                radial-gradient(circle at 88% 15%, rgba(6, 182, 212, 0.22) 0%, transparent 45%),
+                radial-gradient(circle at 75% 85%, rgba(99, 102, 241, 0.18) 0%, transparent 50%),
+                radial-gradient(circle at 18% 82%, rgba(16, 185, 129, 0.12) 0%, transparent 45%),
+                linear-gradient(180deg, #F8FAFC 0%, #EBF2FC 100%);
+        }
+
+        /* Lưới phối cảnh không gian 3D */
+        .bg-3d-perspective-grid {
+            position: absolute;
+            bottom: -15%;
+            left: -25%;
+            width: 150%;
+            height: 65%;
+            background-image:
+                linear-gradient(rgba(37, 99, 235, 0.12) 1.5px, transparent 1.5px),
+                linear-gradient(90deg, rgba(37, 99, 235, 0.12) 1.5px, transparent 1.5px);
+            background-size: 48px 48px;
+            transform: perspective(650px) rotateX(62deg);
+            transform-origin: center top;
+            mask-image: linear-gradient(to bottom, transparent 0%, rgba(0, 0, 0, 0.7) 45%, rgba(0, 0, 0, 0.95) 100%);
+            -webkit-mask-image: linear-gradient(to bottom, transparent 0%, rgba(0, 0, 0, 0.7) 45%, rgba(0, 0, 0, 0.95) 100%);
+            animation: gridMove3D 14s linear infinite;
+        }
+
+        @keyframes gridMove3D {
+            0% { background-position: 0 0, 0 0; }
+            100% { background-position: 0 48px, 0 48px; }
+        }
+
+        /* Các khối cầu kính 3D lơ lửng */
+        .floating-orb-3d {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(2px);
+            opacity: 0.75;
+            animation: orbFloat3D 16s ease-in-out infinite alternate;
+        }
+
+        .orb-1 {
+            width: 340px;
+            height: 340px;
+            top: 6%;
+            left: -4%;
+            background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.9), rgba(59, 130, 246, 0.28) 55%, rgba(29, 78, 216, 0.05));
+            box-shadow: inset -12px -12px 30px rgba(29, 78, 216, 0.14), 0 20px 50px rgba(59, 130, 246, 0.15);
+            animation-duration: 15s;
+        }
+
+        .orb-2 {
+            width: 280px;
+            height: 280px;
+            top: 14%;
+            right: -3%;
+            background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.92), rgba(6, 182, 212, 0.28) 55%, rgba(2, 132, 199, 0.05));
+            box-shadow: inset -10px -10px 25px rgba(6, 182, 212, 0.16), 0 20px 50px rgba(6, 182, 212, 0.15);
+            animation-duration: 19s;
+            animation-delay: -4s;
+        }
+
+        .orb-3 {
+            width: 220px;
+            height: 220px;
+            bottom: 12%;
+            left: 42%;
+            background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.88), rgba(99, 102, 241, 0.24) 55%, rgba(67, 56, 202, 0.04));
+            box-shadow: inset -8px -8px 20px rgba(99, 102, 241, 0.15);
+            animation-duration: 21s;
+            animation-delay: -8s;
+        }
+
+        @keyframes orbFloat3D {
+            0% { transform: translate3d(0, 0, 0) scale(1) rotate(0deg); }
+            50% { transform: translate3d(28px, -24px, 30px) scale(1.06) rotate(8deg); }
+            100% { transform: translate3d(-18px, 22px, -20px) scale(0.97) rotate(-6deg); }
+        }
+
+        #cloud-particle-canvas {
+            position: fixed;
+            inset: 0;
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        /* =========================================================
+           2. THÔNG BÁO TOAST NỔI CHUYÊN NGHIỆP (TỰ ẨN SAU 5 GIÂY)
+           ========================================================= */
+        #toast-notification-stack {
+            position: fixed;
+            top: 82px;
+            right: 24px;
+            z-index: 1080;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            max-width: 410px;
+            width: calc(100vw - 32px);
+            pointer-events: none;
+        }
+
+        .pro-toast {
+            pointer-events: auto;
+            position: relative;
+            overflow: hidden;
+            border-radius: 18px;
+            padding: 15px 18px 18px 18px;
+            color: #FFFFFF;
+            box-shadow: 0 20px 42px -10px rgba(6, 78, 59, 0.38), 0 4px 12px rgba(15, 23, 42, 0.12);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            border: 1px solid rgba(255, 255, 255, 0.28);
+            display: flex;
+            align-items: flex-start;
+            gap: 13px;
+            animation: toastSlideIn 0.42s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+        }
+
+        /* Khung xanh chuyên nghiệp cho thông báo thành công & mặc định */
+        .pro-toast-success, .pro-toast-info {
+            background: linear-gradient(135deg, #059669 0%, #0D9488 55%, #047857 100%);
+        }
+
+        .pro-toast-warning {
+            background: linear-gradient(135deg, #D97706 0%, #B45309 100%);
+            box-shadow: 0 20px 42px -10px rgba(180, 83, 9, 0.38);
+        }
+
+        .pro-toast-error, .pro-toast-danger {
+            background: linear-gradient(135deg, #DC2626 0%, #B91C1C 100%);
+            box-shadow: 0 20px 42px -10px rgba(185, 28, 28, 0.38);
+        }
+
+        .pro-toast-icon {
+            width: 38px;
+            height: 38px;
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+            flex-shrink: 0;
+        }
+
+        .pro-toast-body {
+            flex-grow: 1;
+        }
+
+        .pro-toast-title {
+            font-weight: 800;
+            font-size: 0.92rem;
+            letter-spacing: 0.01em;
+            margin-bottom: 2px;
+        }
+
+        .pro-toast-msg {
+            font-size: 0.86rem;
+            line-height: 1.42;
+            opacity: 0.96;
+        }
+
+        .pro-toast-close {
+            background: rgba(255, 255, 255, 0.16);
+            border: none;
+            color: #FFFFFF;
+            width: 26px;
+            height: 26px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: background 0.2s;
+            flex-shrink: 0;
+        }
+
+        .pro-toast-close:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        /* Thanh tiến trình đếm ngược 5 giây */
+        .pro-toast-progress {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            height: 4px;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.85);
+            transform-origin: left center;
+            animation: toastCountdown 5s linear forwards;
+        }
+
+        @keyframes toastCountdown {
+            from { transform: scaleX(1); }
+            to { transform: scaleX(0); }
+        }
+
+        @keyframes toastSlideIn {
+            from {
+                opacity: 0;
+                transform: translate3d(40px, -10px, 0) scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: translate3d(0, 0, 0) scale(1);
+            }
+        }
+
+        @keyframes toastSlideOut {
+            from {
+                opacity: 1;
+                transform: translate3d(0, 0, 0) scale(1);
+            }
+            to {
+                opacity: 0;
+                transform: translate3d(45px, 0, 0) scale(0.94);
+            }
+        }
+
+        /* =========================================================
+           3. NAVBAR, GLASS CARD 3D & COMPONENT STYLING
+           ========================================================= */
         #scroll-progress-bar {
             position: fixed;
             top: 0;
             left: 0;
             height: 3.5px;
             width: 0%;
-            background: linear-gradient(90deg, #1D4ED8, #06B6D4, #4F46E5);
+            background: linear-gradient(90deg, #1D4ED8, #06B6D4, #10B981);
             z-index: 9999;
             transition: width 0.12s ease-out;
         }
 
-        /* Navbar kính mờ nổi */
         .navbar {
-            background: rgba(255, 255, 255, 0.88) !important;
+            background: rgba(255, 255, 255, 0.84) !important;
             backdrop-filter: blur(18px);
             -webkit-backdrop-filter: blur(18px);
             border-bottom: 1px solid var(--border-subtle) !important;
@@ -88,11 +309,11 @@
             justify-content: center;
             font-size: 1.2rem;
             box-shadow: 0 8px 18px rgba(29, 78, 216, 0.28);
-            transition: transform 0.25s ease;
+            transition: transform 0.3s ease;
         }
 
         .navbar-brand:hover .brand-logo-box {
-            transform: rotate(-6deg) scale(1.05);
+            transform: rotateY(180deg);
         }
 
         .nav-link {
@@ -109,36 +330,50 @@
             background: rgba(29, 78, 216, 0.08);
         }
 
-        /* Hiệu ứng xuất hiện mượt mà */
         .reveal-item {
             animation: fadeUpReveal 0.48s cubic-bezier(0.22, 1, 0.36, 1) both;
         }
 
         @keyframes fadeUpReveal {
-            from {
-                opacity: 0;
-                transform: translateY(14px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+            from { opacity: 0; transform: translateY(14px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
-        /* Card & Glassmorphism 3D */
         .card, .hero-showcase, #catalog-section {
+            position: relative;
             background: var(--surface-glass) !important;
             backdrop-filter: blur(16px);
             -webkit-backdrop-filter: blur(16px);
-            border: 1px solid var(--border-subtle) !important;
+            border: 1px solid rgba(255, 255, 255, 0.9) !important;
+            outline: 1px solid rgba(203, 213, 225, 0.75);
             border-radius: 22px !important;
             box-shadow: var(--shadow-soft) !important;
-            transition: transform 0.28s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.28s ease, border-color 0.28s ease !important;
+            transform-style: preserve-3d;
+            transition: transform 0.25s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.25s ease, outline-color 0.25s ease !important;
+        }
+
+        .card::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            border-radius: 22px;
+            background: radial-gradient(
+                380px circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
+                rgba(59, 130, 246, 0.11),
+                transparent 45%
+            );
+            opacity: 0;
+            transition: opacity 0.25s ease;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .card:hover::before {
+            opacity: 1;
         }
 
         .card:hover {
-            transform: translateY(-4px);
-            border-color: rgba(59, 130, 246, 0.48) !important;
+            outline-color: rgba(59, 130, 246, 0.5);
             box-shadow: var(--shadow-hover) !important;
         }
 
@@ -153,10 +388,9 @@
         }
 
         .card:hover .card-img-top {
-            transform: scale(1.03);
+            transform: scale(1.04);
         }
 
-        /* Nút bấm chuẩn SaaS */
         .btn-primary {
             background: linear-gradient(135deg, #1D4ED8 0%, #4338CA 100%) !important;
             border: none !important;
@@ -177,7 +411,7 @@
             color: #1D4ED8 !important;
             border-radius: 12px !important;
             font-weight: 600 !important;
-            background: rgba(255, 255, 255, 0.75) !important;
+            background: rgba(255, 255, 255, 0.8) !important;
         }
 
         .btn-outline-primary:hover {
@@ -190,7 +424,6 @@
             font-weight: 600 !important;
         }
 
-        /* Form Inputs độ tương phản cao */
         .form-control, .form-select {
             border-radius: 12px !important;
             border: 1.5px solid #CBD5E1 !important;
@@ -198,7 +431,6 @@
             color: var(--text-dark) !important;
             background-color: #FFFFFF !important;
             font-weight: 500;
-            transition: border-color 0.2s ease, box-shadow 0.2s ease;
         }
 
         .form-control:focus, .form-select:focus {
@@ -206,13 +438,6 @@
             box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.14) !important;
         }
 
-        .form-control:disabled, .form-select:disabled {
-            background-color: #F1F5F9 !important;
-            color: #64748B !important;
-            cursor: not-allowed;
-        }
-
-        /* Typography & Badges */
         .text-gradient-brand {
             background: linear-gradient(135deg, #1D4ED8 0%, #0284C7 50%, #4338CA 100%);
             -webkit-background-clip: text;
@@ -237,12 +462,6 @@
             border-radius: 8px;
         }
 
-        /* Bảng dữ liệu hiện đại */
-        .table {
-            color: var(--text-dark);
-            margin-bottom: 0;
-        }
-
         .table thead th {
             background: #F8FAFC;
             color: #475569;
@@ -258,10 +477,6 @@
             padding: 0.95rem 0.85rem;
             border-bottom: 1px solid #F1F5F9;
             vertical-align: middle;
-        }
-
-        .table tbody tr:hover {
-            background-color: rgba(239, 246, 255, 0.55);
         }
 
         /* CloudBot AI Widget (Chỉ hiển thị cho tài khoản khách hàng) */
@@ -312,7 +527,6 @@
             line-height: 1.45;
             max-width: 86%;
             align-self: flex-start;
-            box-shadow: 0 2px 6px rgba(15, 23, 42, 0.04);
         }
 
         .user-msg {
@@ -324,13 +538,56 @@
             line-height: 1.45;
             max-width: 86%;
             align-self: flex-end;
-            box-shadow: 0 4px 12px rgba(29, 78, 216, 0.24);
         }
     </style>
     {% block extra_css %}{% endblock %}
 </head>
 <body>
+<!-- Sân khấu nền 3D sinh động -->
+<div id="bg-3d-stage">
+    <div class="floating-orb-3d orb-1"></div>
+    <div class="floating-orb-3d orb-2"></div>
+    <div class="floating-orb-3d orb-3"></div>
+    <div class="bg-3d-perspective-grid"></div>
+</div>
+<canvas id="cloud-particle-canvas"></canvas>
+
 <div id="scroll-progress-bar"></div>
+
+<!-- Khung thông báo Toast nổi chuyên nghiệp tự tắt sau 5 giây -->
+{% if messages %}
+<div id="toast-notification-stack">
+    {% for message in messages %}
+    <div class="pro-toast pro-toast-{{ message.tags|default:'success' }}" role="alert">
+        <div class="pro-toast-icon">
+            {% if "error" in message.tags or "danger" in message.tags %}
+                <i class="bi bi-exclamation-octagon-fill"></i>
+            {% elif "warning" in message.tags %}
+                <i class="bi bi-exclamation-triangle-fill"></i>
+            {% else %}
+                <i class="bi bi-check-circle-fill"></i>
+            {% endif %}
+        </div>
+        <div class="pro-toast-body">
+            <div class="pro-toast-title">
+                {% if "error" in message.tags or "danger" in message.tags %}
+                    Thao tác chưa hoàn tất
+                {% elif "warning" in message.tags %}
+                    Lưu ý hệ thống
+                {% else %}
+                    Thông báo hệ thống
+                {% endif %}
+            </div>
+            <div class="pro-toast-msg">{{ message }}</div>
+        </div>
+        <button type="button" class="pro-toast-close" onclick="dismissProToast(this.parentElement)" aria-label="Đóng">
+            <i class="bi bi-x-lg" style="font-size: 0.75rem;"></i>
+        </button>
+        <div class="pro-toast-progress"></div>
+    </div>
+    {% endfor %}
+</div>
+{% endif %}
 
 <nav class="navbar navbar-expand-lg sticky-top py-2.5">
     <div class="container">
@@ -417,15 +674,6 @@
 </nav>
 
 <main class="container py-4 flex-grow-1">
-    {% if messages %}
-        {% for message in messages %}
-            <div class="alert alert-{{ message.tags|default:'info' }} alert-dismissible fade show rounded-4 shadow-sm border-0 mb-4 reveal-item" role="alert">
-                <i class="bi bi-info-circle-fill me-2"></i>{{ message }}
-                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-            </div>
-        {% endfor %}
-    {% endif %}
-
     {% block content %}{% endblock %}
 </main>
 
@@ -519,6 +767,94 @@
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script>
+    // 1. Tự động đóng thông báo Toast sau đúng 5 giây (5000ms)
+    function dismissProToast(toastEl) {
+        if (!toastEl || toastEl.dataset.closing === "true") return;
+        toastEl.dataset.closing = "true";
+        toastEl.style.animation = "toastSlideOut 0.35s ease forwards";
+        setTimeout(() => toastEl.remove(), 350);
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+        document.querySelectorAll(".pro-toast").forEach((toast, idx) => {
+            setTimeout(() => dismissProToast(toast), 5000 + (idx * 350));
+        });
+
+        // 2. Hiệu ứng 3D Tilt + Spotlight phản chiếu theo chuột cho từng Card
+        document.querySelectorAll(".card").forEach(card => {
+            card.addEventListener("mousemove", (e) => {
+                const rect = card.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                card.style.setProperty("--mouse-x", `${x}px`);
+                card.style.setProperty("--mouse-y", `${y}px`);
+
+                const centerX = rect.width / 2;
+                const centerY = rect.height / 2;
+                const rotateX = ((y - centerY) / centerY) * -2.2;
+                const rotateY = ((x - centerX) / centerX) * 2.2;
+                card.style.transform = `perspective(1100px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(-4px)`;
+            });
+
+            card.addEventListener("mouseleave", () => {
+                card.style.transform = "perspective(1100px) rotateX(0deg) rotateY(0deg) translateY(0px)";
+            });
+        });
+
+        // 3. Mạng lưới hạt đám mây 3D chuyển động nhẹ trên nền
+        const canvas = document.getElementById("cloud-particle-canvas");
+        if (canvas) {
+            const ctx = canvas.getContext("2d");
+            let width = canvas.width = window.innerWidth;
+            let height = canvas.height = window.innerHeight;
+
+            window.addEventListener("resize", () => {
+                width = canvas.width = window.innerWidth;
+                height = canvas.height = window.innerHeight;
+            });
+
+            const particles = Array.from({ length: 34 }, () => ({
+                x: Math.random() * width,
+                y: Math.random() * height,
+                vx: (Math.random() - 0.5) * 0.45,
+                vy: (Math.random() - 0.5) * 0.45,
+                r: Math.random() * 2.4 + 1.2
+            }));
+
+            function animateParticles() {
+                ctx.clearRect(0, 0, width, height);
+                for (let i = 0; i < particles.length; i++) {
+                    const p = particles[i];
+                    p.x += p.vx;
+                    p.y += p.vy;
+                    if (p.x < 0 || p.x > width) p.vx *= -1;
+                    if (p.y < 0 || p.y > height) p.vy *= -1;
+
+                    ctx.beginPath();
+                    ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+                    ctx.fillStyle = "rgba(37, 99, 235, 0.25)";
+                    ctx.fill();
+
+                    for (let j = i + 1; j < particles.length; j++) {
+                        const p2 = particles[j];
+                        const dist = Math.hypot(p.x - p2.x, p.y - p2.y);
+                        if (dist < 145) {
+                            ctx.beginPath();
+                            ctx.moveTo(p.x, p.y);
+                            ctx.lineTo(p2.x, p2.y);
+                            ctx.strokeStyle = `rgba(37, 99, 235, ${0.12 * (1 - dist / 145)})`;
+                            ctx.lineWidth = 1;
+                            ctx.stroke();
+                        }
+                    }
+                }
+                requestAnimationFrame(animateParticles);
+            }
+            animateParticles();
+        }
+    });
+
+    // Thanh tiến trình cuộn trang
     window.addEventListener('scroll', () => {
         const winScroll = document.documentElement.scrollTop;
         const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
