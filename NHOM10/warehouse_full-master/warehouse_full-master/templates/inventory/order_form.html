@@ -1,1 +1,63 @@
 
+{% extends "base.html" %}
+
+{% block title %}Tạo đơn đặt hàng — CloudWMS{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-7">
+        <div class="card p-4 p-md-5 reveal-item">
+            <div class="mb-4">
+                <span class="badge bg-primary mb-2">ĐẶT HÀNG TRỰC TUYẾN</span>
+                <h3 class="fw-bold mb-1">
+                    <i class="bi bi-cart-plus-fill text-primary me-2"></i>Tạo Đơn Đặt Hàng Mới
+                </h3>
+                <p class="text-muted mb-0">
+                    Chọn sản phẩm và nhập số lượng cần xuất kho. Hệ thống sẽ tự động kiểm tra tồn kho khả dụng.
+                </p>
+            </div>
+
+            <form method="post">
+                {% csrf_token %}
+
+                {% if form.non_field_errors %}
+                    <div class="alert alert-danger rounded-4">
+                        {{ form.non_field_errors }}
+                    </div>
+                {% endif %}
+
+                {% for field in form %}
+                    <div class="mb-3">
+                        <label class="form-label fw-bold" for="{{ field.id_for_label }}">
+                            {{ field.label }}
+                        </label>
+                        {{ field }}
+                        {% if field.help_text %}
+                            <div class="form-text">{{ field.help_text }}</div>
+                        {% endif %}
+                        {% for error in field.errors %}
+                            <div class="text-danger small mt-1">{{ error }}</div>
+                        {% endfor %}
+                    </div>
+                {% endfor %}
+
+                <div class="d-flex flex-wrap gap-2 mt-4">
+                    <button type="submit" class="btn btn-primary px-4">
+                        <i class="bi bi-send-check-fill me-1"></i> Gửi đơn đặt hàng
+                    </button>
+                    <a href="{% url 'home' %}" class="btn btn-outline-secondary">
+                        Quay lại trang chủ
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        document.querySelectorAll("form select").forEach(el => el.classList.add("form-select"));
+        document.querySelectorAll("form input:not([type='hidden']):not([type='checkbox']), form textarea").forEach(el => el.classList.add("form-control"));
+    });
+</script>
+{% endblock %}
