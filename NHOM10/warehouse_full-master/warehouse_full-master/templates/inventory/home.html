@@ -2,7 +2,7 @@
 {% block title %}Trang chủ — CloudWMS Quản Lý Kho Đám Mây{% endblock %}
 
 {% block content %}
-<!-- 1. HERO SHOWCASE CHUẨN MODERN SAAS -->
+<!-- 1. HERO SHOWCASE GỌN GÀNG, SẮC NÉT -->
 <div class="hero-showcase p-4 p-lg-5 mb-4 reveal-item">
     <div class="row align-items-center g-4 position-relative" style="z-index: 3;">
         <div class="col-lg-7">
@@ -12,14 +12,10 @@
                 Cloud Warehouse System • Nhóm 10
             </div>
 
-            <h1 class="display-5 fw-black mb-3" style="letter-spacing: -0.035em; line-height: 1.15; color: #0F172A;">
+            <h1 class="display-5 fw-black mb-4" style="letter-spacing: -0.035em; line-height: 1.16; color: #0F172A;">
                 Quản Lý Kho Hàng &<br>
                 <span class="text-gradient-brand">Đặt Đơn Trực Tuyến</span>
             </h1>
-
-            <p class="lead text-secondary mb-4" style="font-size: 1.02rem; max-width: 560px; line-height: 1.65;">
-                Tra cứu danh mục vật tư theo thời gian thực, đặt hàng nhanh gọn với số lượng tồn kho minh bạch, theo dõi lộ trình giao nhận 4 bước và in phiếu xuất kho chuẩn A4 trên nền tảng đám mây.
-            </p>
 
             <div class="d-flex flex-wrap gap-3 hero-action-group">
                 {% if user.is_authenticated %}
@@ -49,11 +45,11 @@
             </div>
         </div>
 
-        <!-- Thẻ sản phẩm tiêu điểm nổi bật (Ẩn trên điện thoại nhỏ để tránh chiếm màn hình) -->
+        <!-- Thẻ sản phẩm tiêu điểm nổi bật -->
         <div class="col-lg-5 d-none d-md-block">
             {% with featured=products.first %}
             {% if featured %}
-            <div class="card border-0 shadow-lg p-3 p-md-4" style="background: rgba(255,255,255,0.92) !important;">
+            <div class="card border-0 shadow-lg p-3 p-md-4" style="background: rgba(255,255,255,0.95) !important;">
                 <div class="d-flex justify-content-between align-items-center mb-3">
                     <span class="badge bg-primary px-3 py-2 rounded-pill">
                         <i class="bi bi-lightning-charge-fill me-1"></i>Sản phẩm nổi bật
@@ -63,9 +59,9 @@
 
                 <div class="text-center bg-light rounded-4 p-3 mb-3 border">
                     {% if featured.image %}
-                        <img src="{{ featured.image.url }}" alt="{{ featured.name }}" style="height: 155px; object-fit: contain;">
+                        <img src="{{ featured.image.url }}" alt="{{ featured.name }}" style="height: 150px; object-fit: contain;">
                     {% else %}
-                        <div class="d-flex align-items-center justify-content-center text-muted" style="height: 155px;">
+                        <div class="d-flex align-items-center justify-content-center text-muted" style="height: 150px;">
                             <i class="bi bi-box-seam display-4"></i>
                         </div>
                     {% endif %}
@@ -100,7 +96,7 @@
     </div>
 </div>
 
-<!-- 2. DẢI CHỈ SỐ VẬN HÀNH TRỰC TIẾP (BENTO METRICS STRIP) -->
+<!-- 2. DẢI CHỈ SỐ VẬN HÀNH TRỰC TIẾP -->
 <div class="row g-2 g-md-3 mb-4 reveal-item">
     <div class="col-6 col-lg-3">
         <div class="card p-3 h-100">
@@ -164,11 +160,10 @@
 <div id="catalog-section" class="p-3 p-md-4 mb-4 reveal-item">
     <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-2 mb-3">
         <div>
-            <h4 class="fw-bold mb-1 d-flex align-items-center gap-2" style="font-size: 1.15rem;">
+            <h4 class="fw-bold mb-0 d-flex align-items-center gap-2" style="font-size: 1.15rem;">
                 <i class="bi bi-grid-3x3-gap-fill text-primary"></i>
                 <span>Danh mục hàng hóa</span>
             </h4>
-            <p class="text-muted small mb-0">Chọn danh mục, gõ tên/mã SKU hoặc lọc nhanh theo tình trạng tồn kho</p>
         </div>
 
         <div class="d-flex flex-wrap gap-2">
@@ -207,7 +202,7 @@
     </form>
 </div>
 
-<!-- 4. LƯỚI SẢN PHẨM HIỂN THỊ (2 CỘT TRÊN MOBILE, 3 CỘT TRÊN DESKTOP) -->
+<!-- 4. LƯỚI SẢN PHẨM HIỂN THỊ -->
 <div class="row g-2 g-md-4" id="product-grid">
     {% for p in products %}
     <div class="col-6 col-md-4 product-card-col" data-stock="{% if p.quantity > 5 %}in-stock{% elif p.quantity > 0 %}low-stock{% else %}out-stock{% endif %}">
