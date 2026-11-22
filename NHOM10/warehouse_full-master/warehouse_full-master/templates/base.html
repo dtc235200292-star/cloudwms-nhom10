@@ -14,19 +14,19 @@
             --brand-primary: #1D4ED8;
             --brand-secondary: #0284C7;
             --brand-accent: #4F46E5;
-            --surface-glass: rgba(255, 255, 255, 0.82);
-            --surface-glass-strong: rgba(255, 255, 255, 0.92);
-            --border-crystal: rgba(255, 255, 255, 0.95);
-            --border-slate: rgba(203, 213, 225, 0.78);
+            --surface-glass: rgba(255, 255, 255, 0.78);
+            --surface-glass-hover: rgba(255, 255, 255, 0.92);
+            --border-crystal: rgba(255, 255, 255, 0.96);
+            --border-slate: rgba(203, 213, 225, 0.72);
             --text-dark: #0F172A;
             --text-muted: #475569;
             --shadow-bento:
                 0 1px 2px rgba(15, 23, 42, 0.04),
-                0 12px 32px -8px rgba(15, 23, 42, 0.08),
-                0 24px 60px -16px rgba(29, 78, 216, 0.08);
+                0 14px 34px -8px rgba(15, 23, 42, 0.08),
+                0 28px 65px -18px rgba(29, 78, 216, 0.11);
             --shadow-bento-hover:
-                0 4px 12px rgba(29, 78, 216, 0.08),
-                0 24px 48px -12px rgba(29, 78, 216, 0.18);
+                0 8px 20px rgba(29, 78, 216, 0.10),
+                0 28px 56px -12px rgba(29, 78, 216, 0.22);
         }
 
         * {
@@ -36,7 +36,7 @@
         body {
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
             color: var(--text-dark);
-            background-color: #EAF1FA !important;
+            background-color: #E8F0FA !important;
             min-height: 100vh;
             display: flex;
             flex-direction: column;
@@ -45,52 +45,88 @@
         }
 
         /* =========================================================
-           1. NỀN KHÔNG GIAN 3D ENTERPRISE (AURORA + 3D CANVAS + GRID)
+           1. HỆ THỐNG NỀN 3D WEBGL + AURORA MESH + CURSOR AURA
            ========================================================= */
-        #enterprise-bg-stage {
+        #aurora-backdrop {
             position: fixed;
             inset: 0;
             z-index: -3;
+            overflow: hidden;
             pointer-events: none;
-            background:
-                radial-gradient(ellipse 80% 55% at 15% 10%, rgba(59, 130, 246, 0.24) 0%, transparent 60%),
-                radial-gradient(ellipse 75% 55% at 88% 12%, rgba(6, 182, 212, 0.24) 0%, transparent 60%),
-                radial-gradient(ellipse 70% 60% at 82% 88%, rgba(99, 102, 241, 0.20) 0%, transparent 60%),
-                radial-gradient(ellipse 65% 50% at 12% 88%, rgba(14, 165, 233, 0.16) 0%, transparent 60%),
-                linear-gradient(180deg, #F8FAFC 0%, #E6EFFB 100%);
+            background: linear-gradient(160deg, #F8FAFC 0%, #EBF2FC 45%, #E0ECFA 100%);
         }
 
-        /* Sàn lưới phối cảnh 3D không gian sâu */
-        .space-floor-grid {
+        .aurora-blob {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(85px);
+            opacity: 0.65;
+            animation: auroraDrift 20s ease-in-out infinite alternate;
+        }
+
+        .blob-blue {
+            width: 560px;
+            height: 560px;
+            top: -12%;
+            left: -8%;
+            background: radial-gradient(circle, rgba(59, 130, 246, 0.45), rgba(37, 99, 235, 0.05));
+        }
+
+        .blob-cyan {
+            width: 520px;
+            height: 520px;
+            top: 8%;
+            right: -10%;
+            background: radial-gradient(circle, rgba(6, 182, 212, 0.42), rgba(2, 132, 199, 0.05));
+            animation-delay: -6s;
+        }
+
+        .blob-indigo {
+            width: 580px;
+            height: 580px;
+            bottom: -15%;
+            left: 28%;
+            background: radial-gradient(circle, rgba(99, 102, 241, 0.35), rgba(79, 70, 229, 0.04));
+            animation-delay: -12s;
+        }
+
+        @keyframes auroraDrift {
+            0% { transform: translate3d(0, 0, 0) scale(1); }
+            50% { transform: translate3d(55px, 35px, 0) scale(1.1); }
+            100% { transform: translate3d(-40px, -25px, 0) scale(0.95); }
+        }
+
+        /* Lưới chấm kiến trúc công nghệ */
+        .tech-dot-matrix {
             position: fixed;
-            bottom: -18%;
-            left: -30%;
-            width: 160%;
-            height: 68%;
+            inset: 0;
             z-index: -2;
             pointer-events: none;
-            background-image:
-                linear-gradient(rgba(29, 78, 216, 0.14) 1.5px, transparent 1.5px),
-                linear-gradient(90deg, rgba(29, 78, 216, 0.14) 1.5px, transparent 1.5px);
-            background-size: 56px 56px;
-            transform: perspective(620px) rotateX(65deg);
-            transform-origin: center top;
-            mask-image: linear-gradient(to bottom, transparent 0%, rgba(0, 0, 0, 0.65) 40%, rgba(0, 0, 0, 0.95) 100%);
-            -webkit-mask-image: linear-gradient(to bottom, transparent 0%, rgba(0, 0, 0, 0.65) 40%, rgba(0, 0, 0, 0.95) 100%);
-            animation: floorGridFlow 12s linear infinite;
+            background-image: radial-gradient(rgba(29, 78, 216, 0.16) 1.25px, transparent 1.25px);
+            background-size: 28px 28px;
+            mask-image: radial-gradient(ellipse 85% 80% at 50% 45%, #000 35%, transparent 100%);
+            -webkit-mask-image: radial-gradient(ellipse 85% 80% at 50% 45%, #000 35%, transparent 100%);
         }
 
-        @keyframes floorGridFlow {
-            0% { background-position: 0 0, 0 0; }
-            100% { background-position: 0 56px, 0 56px; }
-        }
-
-        /* Canvas 3D Globe & Isometric Cubes */
-        #enterprise-3d-canvas {
+        /* Canvas WebGL 3D Three.js */
+        #webgl-3d-stage {
             position: fixed;
             inset: 0;
             z-index: -1;
             pointer-events: none;
+        }
+
+        /* Vùng hào quang đuổi theo con trỏ chuột */
+        #cursor-aura-follower {
+            position: fixed;
+            width: 480px;
+            height: 480px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(59, 130, 246, 0.11) 0%, rgba(6, 182, 212, 0.05) 40%, transparent 70%);
+            transform: translate(-50%, -50%);
+            pointer-events: none;
+            z-index: 0;
+            transition: width 0.3s, height 0.3s;
         }
 
         /* =========================================================
@@ -116,10 +152,10 @@
             border-radius: 18px;
             padding: 16px 18px 19px 18px;
             color: #FFFFFF;
-            box-shadow: 0 22px 46px -10px rgba(6, 78, 59, 0.42), 0 6px 16px rgba(15, 23, 42, 0.14);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            border: 1px solid rgba(255, 255, 255, 0.34);
+            box-shadow: 0 22px 46px -10px rgba(6, 78, 59, 0.45), 0 6px 16px rgba(15, 23, 42, 0.14);
+            backdrop-filter: blur(18px);
+            -webkit-backdrop-filter: blur(18px);
+            border: 1px solid rgba(255, 255, 255, 0.36);
             display: flex;
             align-items: flex-start;
             gap: 14px;
@@ -132,12 +168,10 @@
 
         .pro-toast-warning {
             background: linear-gradient(135deg, #D97706 0%, #B45309 100%);
-            box-shadow: 0 22px 46px -10px rgba(180, 83, 9, 0.4);
         }
 
         .pro-toast-error, .pro-toast-danger {
             background: linear-gradient(135deg, #DC2626 0%, #B91C1C 100%);
-            box-shadow: 0 22px 46px -10px rgba(185, 28, 28, 0.4);
         }
 
         .pro-toast-icon {
@@ -152,22 +186,9 @@
             flex-shrink: 0;
         }
 
-        .pro-toast-body {
-            flex-grow: 1;
-        }
-
-        .pro-toast-title {
-            font-weight: 800;
-            font-size: 0.94rem;
-            letter-spacing: 0.01em;
-            margin-bottom: 2px;
-        }
-
-        .pro-toast-msg {
-            font-size: 0.87rem;
-            line-height: 1.44;
-            opacity: 0.97;
-        }
+        .pro-toast-body { flex-grow: 1; }
+        .pro-toast-title { font-weight: 800; font-size: 0.94rem; margin-bottom: 2px; }
+        .pro-toast-msg { font-size: 0.87rem; line-height: 1.44; opacity: 0.97; }
 
         .pro-toast-close {
             background: rgba(255, 255, 255, 0.18);
@@ -184,9 +205,7 @@
             flex-shrink: 0;
         }
 
-        .pro-toast-close:hover {
-            background: rgba(255, 255, 255, 0.34);
-        }
+        .pro-toast-close:hover { background: rgba(255, 255, 255, 0.35); }
 
         .pro-toast-progress {
             position: absolute;
@@ -194,7 +213,7 @@
             left: 0;
             height: 4px;
             width: 100%;
-            background: rgba(255, 255, 255, 0.9);
+            background: rgba(255, 255, 255, 0.92);
             transform-origin: left center;
             animation: toastCountdown 5s linear forwards;
         }
@@ -215,7 +234,7 @@
         }
 
         /* =========================================================
-           3. NAVBAR & BENTO GLASS CARDS 3D CHUẨN ENTERPRISE
+           3. SMART NAVBAR, BENTO 3D CARDS & SHIMMER BUTTONS
            ========================================================= */
         #scroll-progress-bar {
             position: fixed;
@@ -229,11 +248,21 @@
         }
 
         .navbar {
-            background: rgba(255, 255, 255, 0.82) !important;
-            backdrop-filter: blur(20px) saturate(180%);
-            -webkit-backdrop-filter: blur(20px) saturate(180%);
-            border-bottom: 1px solid rgba(203, 213, 225, 0.8) !important;
-            box-shadow: 0 4px 28px -6px rgba(15, 23, 42, 0.07);
+            background: rgba(255, 255, 255, 0.78) !important;
+            backdrop-filter: blur(22px) saturate(190%);
+            -webkit-backdrop-filter: blur(22px) saturate(190%);
+            border-bottom: 1px solid rgba(203, 213, 225, 0.75) !important;
+            box-shadow: 0 4px 28px -6px rgba(15, 23, 42, 0.06);
+            transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+            padding-top: 0.75rem;
+            padding-bottom: 0.75rem;
+        }
+
+        .navbar.navbar-scrolled {
+            background: rgba(255, 255, 255, 0.93) !important;
+            padding-top: 0.45rem;
+            padding-bottom: 0.45rem;
+            box-shadow: 0 12px 32px -8px rgba(15, 23, 42, 0.12);
         }
 
         .navbar-brand {
@@ -257,11 +286,11 @@
             justify-content: center;
             font-size: 1.25rem;
             box-shadow: 0 10px 22px rgba(29, 78, 216, 0.32), inset 0 1px 1px rgba(255, 255, 255, 0.45);
-            transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+            transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
         }
 
         .navbar-brand:hover .brand-logo-box {
-            transform: rotateY(180deg) scale(1.06);
+            transform: rotateY(180deg) scale(1.08);
         }
 
         .nav-link {
@@ -276,29 +305,36 @@
         .nav-link:hover, .nav-link.active {
             color: var(--brand-primary) !important;
             background: rgba(29, 78, 216, 0.09);
+            transform: translateY(-1px);
         }
 
-        .reveal-item {
-            animation: fadeUpReveal 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
+        /* Hiệu ứng xuất hiện 3D Staggered Reveal */
+        .reveal-item, .card {
+            opacity: 0;
+            transform: translateY(22px) scale(0.985);
+            transition:
+                opacity 0.55s cubic-bezier(0.22, 1, 0.36, 1),
+                transform 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+                box-shadow 0.3s ease,
+                outline-color 0.3s ease !important;
         }
 
-        @keyframes fadeUpReveal {
-            from { opacity: 0; transform: translateY(16px); }
-            to { opacity: 1; transform: translateY(0); }
+        .reveal-item.is-visible, .card.is-visible {
+            opacity: 1;
+            transform: translateY(0) scale(1);
         }
 
-        /* Hệ thống Bento Card kính 3D đa lớp */
+        /* Bento Glass Card 3D + Specular Glare */
         .card, .hero-showcase, #catalog-section {
             position: relative;
             background: var(--surface-glass) !important;
-            backdrop-filter: blur(20px) saturate(160%);
-            -webkit-backdrop-filter: blur(20px) saturate(160%);
+            backdrop-filter: blur(22px) saturate(175%);
+            -webkit-backdrop-filter: blur(22px) saturate(175%);
             border: 1.5px solid var(--border-crystal) !important;
             outline: 1px solid var(--border-slate);
             border-radius: 24px !important;
             box-shadow: var(--shadow-bento) !important;
             transform-style: preserve-3d;
-            transition: transform 0.25s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.25s ease, outline-color 0.25s ease !important;
         }
 
         .card::before, .hero-showcase::before {
@@ -307,14 +343,15 @@
             inset: 0;
             border-radius: 24px;
             background: radial-gradient(
-                420px circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
-                rgba(59, 130, 246, 0.13),
-                transparent 45%
+                440px circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
+                rgba(59, 130, 246, 0.14),
+                rgba(6, 182, 212, 0.05) 35%,
+                transparent 60%
             );
             opacity: 0;
             transition: opacity 0.25s ease;
             pointer-events: none;
-            z-index: 1;
+            z-index: 2;
         }
 
         .card:hover::before, .hero-showcase:hover::before {
@@ -322,7 +359,8 @@
         }
 
         .card:hover {
-            outline-color: rgba(37, 99, 235, 0.55);
+            background: var(--surface-glass-hover) !important;
+            outline-color: rgba(37, 99, 235, 0.58);
             box-shadow: var(--shadow-bento-hover) !important;
         }
 
@@ -333,27 +371,45 @@
             padding: 18px;
             border-bottom: 1px solid rgba(226, 232, 240, 0.8);
             border-radius: 24px 24px 0 0 !important;
-            transition: transform 0.38s cubic-bezier(0.22, 1, 0.36, 1);
+            transition: transform 0.42s cubic-bezier(0.22, 1, 0.36, 1);
         }
 
         .card:hover .card-img-top {
-            transform: scale(1.045) translateY(-2px);
+            transform: scale(1.055) translateY(-3px);
         }
 
-        /* Nút bấm cao cấp */
+        /* Shimmer Sweep Button (Ánh sáng lướt qua nút bấm) */
         .btn-primary {
+            position: relative;
+            overflow: hidden;
             background: linear-gradient(135deg, #1D4ED8 0%, #3730A3 100%) !important;
-            border: 1px solid rgba(255, 255, 255, 0.2) !important;
+            border: 1px solid rgba(255, 255, 255, 0.22) !important;
             border-radius: 13px !important;
             font-weight: 600 !important;
             color: #FFFFFF !important;
             box-shadow: 0 8px 20px rgba(29, 78, 216, 0.28), inset 0 1px 1px rgba(255, 255, 255, 0.35);
-            transition: all 0.22s ease !important;
+            transition: transform 0.22s ease, box-shadow 0.22s ease !important;
+        }
+
+        .btn-primary::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: -120%;
+            width: 70%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.32), transparent);
+            transform: skewX(-22deg);
+            transition: left 0.65s ease;
+        }
+
+        .btn-primary:hover::after {
+            left: 140%;
         }
 
         .btn-primary:hover {
             transform: translateY(-2px);
-            box-shadow: 0 12px 28px rgba(29, 78, 216, 0.38);
+            box-shadow: 0 14px 30px rgba(29, 78, 216, 0.4);
         }
 
         .btn-outline-primary {
@@ -362,11 +418,13 @@
             border-radius: 13px !important;
             font-weight: 600 !important;
             background: rgba(255, 255, 255, 0.85) !important;
+            transition: all 0.22s ease !important;
         }
 
         .btn-outline-primary:hover {
             background: #1D4ED8 !important;
             color: #FFFFFF !important;
+            transform: translateY(-1.5px);
         }
 
         .btn-outline-secondary, .btn-outline-danger, .btn-success {
@@ -429,6 +487,44 @@
             vertical-align: middle;
         }
 
+        /* Nút cuộn nhanh lên đầu trang góc dưới trái */
+        #back-to-top-3d {
+            position: fixed;
+            bottom: 24px;
+            left: 24px;
+            width: 46px;
+            height: 46px;
+            border-radius: 15px;
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(12px);
+            border: 1.5px solid #CBD5E1;
+            color: #1D4ED8;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.15rem;
+            box-shadow: 0 10px 25px rgba(15, 23, 42, 0.12);
+            cursor: pointer;
+            opacity: 0;
+            transform: translateY(15px);
+            pointer-events: none;
+            transition: all 0.25s ease;
+            z-index: 1040;
+        }
+
+        #back-to-top-3d.visible {
+            opacity: 1;
+            transform: translateY(0);
+            pointer-events: auto;
+        }
+
+        #back-to-top-3d:hover {
+            background: #1D4ED8;
+            color: #FFFFFF;
+            border-color: #1D4ED8;
+            transform: translateY(-3px);
+        }
+
         /* CloudBot AI Widget (Chỉ hiển thị cho tài khoản khách hàng) */
         #cloudbot-widget {
             position: fixed;
@@ -442,6 +538,12 @@
             padding: 0.78rem 1.4rem !important;
             font-weight: 700 !important;
             box-shadow: 0 14px 32px rgba(29, 78, 216, 0.38) !important;
+            animation: pulseGlow 3s infinite;
+        }
+
+        @keyframes pulseGlow {
+            0%, 100% { box-shadow: 0 12px 28px rgba(29, 78, 216, 0.35), 0 0 0 0 rgba(37, 99, 235, 0.4); }
+            50% { box-shadow: 0 14px 32px rgba(29, 78, 216, 0.45), 0 0 0 10px rgba(37, 99, 235, 0); }
         }
 
         #cloudbot-box {
@@ -454,7 +556,6 @@
             overflow: hidden;
             margin-bottom: 14px;
             display: none;
-            animation: fadeUpReveal 0.25s ease-out;
         }
 
         .cloudbot-messages {
@@ -493,10 +594,15 @@
     {% block extra_css %}{% endblock %}
 </head>
 <body>
-<!-- Sân khấu đồ họa 3D không gian đám mây -->
-<div id="enterprise-bg-stage"></div>
-<div class="space-floor-grid"></div>
-<canvas id="enterprise-3d-canvas"></canvas>
+<!-- Sân khấu đồ họa 3D đa tầng -->
+<div id="aurora-backdrop">
+    <div class="aurora-blob blob-blue"></div>
+    <div class="aurora-blob blob-cyan"></div>
+    <div class="aurora-blob blob-indigo"></div>
+</div>
+<div class="tech-dot-matrix"></div>
+<div id="webgl-3d-stage"></div>
+<div id="cursor-aura-follower"></div>
 
 <div id="scroll-progress-bar"></div>
 
@@ -535,7 +641,7 @@
 </div>
 {% endif %}
 
-<nav class="navbar navbar-expand-lg sticky-top py-2.5">
+<nav class="navbar navbar-expand-lg sticky-top" id="mainNavbar">
     <div class="container">
         <a class="navbar-brand" href="{% url 'home' %}">
             <span class="brand-logo-box"><i class="bi bi-box-seam-fill"></i></span>
@@ -619,16 +725,21 @@
     </div>
 </nav>
 
-<main class="container py-4 flex-grow-1">
+<main class="container py-4 flex-grow-1 position-relative" style="z-index: 1;">
     {% block content %}{% endblock %}
 </main>
 
-<footer class="py-4 mt-5 border-top bg-white bg-opacity-75">
+<footer class="py-4 mt-5 border-top bg-white bg-opacity-75 position-relative" style="z-index: 1;">
     <div class="container d-flex flex-column flex-md-row justify-content-between align-items-center gap-2 small text-muted">
         <div><strong>CloudWMS Enterprise</strong> — Hệ Thống Quản Lý Kho Đám Mây & Đặt Đơn Trực Tuyến (Nhóm 10)</div>
-        <div>Kiến trúc: Python • Django • Cloud PaaS</div>
+        <div>Nền tảng: Python • Django • WebGL 3D • Cloud PaaS</div>
     </div>
 </footer>
+
+<!-- Nút cuộn lên đầu trang -->
+<button type="button" id="back-to-top-3d" onclick="window.scrollTo({top: 0, behavior: 'smooth'})" title="Lên đầu trang">
+    <i class="bi bi-arrow-up-short fs-4"></i>
+</button>
 
 <!-- TRỢ LÝ ẢO CLOUDBOT: CHỈ HIỂN THỊ CHO KHÁCH HÀNG (ẨN HOÀN TOÀN VỚI ADMIN) -->
 {% if not user.is_staff %}
@@ -712,6 +823,9 @@
 {% endif %}
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<!-- Thư viện đồ họa WebGL 3D Three.js -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
 <script>
     // 1. Tự động đóng thông báo Toast sau đúng 5 giây (5000ms)
     function dismissProToast(toastEl) {
@@ -726,7 +840,21 @@
             setTimeout(() => dismissProToast(toast), 5000 + (idx * 350));
         });
 
-        // 2. Hiệu ứng 3D Tilt + Spotlight phản chiếu theo chuột cho từng Card
+        // 2. Staggered Scroll Reveal (Hiệu ứng trồi 3D theo từng nhịp khi cuộn)
+        const revealObserver = new IntersectionObserver((entries) => {
+            entries.forEach((entry, i) => {
+                if (entry.isIntersecting) {
+                    setTimeout(() => {
+                        entry.target.classList.add("is-visible");
+                    }, i * 55);
+                    revealObserver.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.08 });
+
+        document.querySelectorAll(".reveal-item, .card").forEach(el => revealObserver.observe(el));
+
+        // 3. 3D Magnetic Tilt + Specular Glare cho toàn bộ Card
         document.querySelectorAll(".card, .hero-showcase").forEach(card => {
             card.addEventListener("mousemove", (e) => {
                 const rect = card.getBoundingClientRect();
@@ -735,195 +863,165 @@
                 card.style.setProperty("--mouse-x", `${x}px`);
                 card.style.setProperty("--mouse-y", `${y}px`);
 
-                if (card.classList.contains("card")) {
+                if (card.classList.contains("card") && card.classList.contains("is-visible")) {
                     const centerX = rect.width / 2;
                     const centerY = rect.height / 2;
-                    const rotateX = ((y - centerY) / centerY) * -2.2;
-                    const rotateY = ((x - centerX) / centerX) * 2.2;
-                    card.style.transform = `perspective(1100px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(-4px)`;
+                    const rotateX = ((y - centerY) / centerY) * -3.2;
+                    const rotateY = ((x - centerX) / centerX) * 3.2;
+                    card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(-5px) scale(1.01)`;
                 }
             });
 
             card.addEventListener("mouseleave", () => {
-                if (card.classList.contains("card")) {
-                    card.style.transform = "perspective(1100px) rotateX(0deg) rotateY(0deg) translateY(0px)";
+                if (card.classList.contains("card") && card.classList.contains("is-visible")) {
+                    card.style.transform = "perspective(1000px) rotateX(0deg) rotateY(0deg) translateY(0px) scale(1)";
                 }
             });
         });
 
-        // 3. ENGINE ĐỒ HỌA 3D THỰC THỤ: QUẢ CẦU MẠNG LƯỚI CLOUD 3D + KHỐI HỘP KHO VẬN 3D XOAY THEO CHUỘT
-        const canvas = document.getElementById("enterprise-3d-canvas");
-        if (canvas) {
-            const ctx = canvas.getContext("2d");
-            let width = canvas.width = window.innerWidth;
-            let height = canvas.height = window.innerHeight;
-            let mouseX = 0, mouseY = 0;
-            let targetMouseX = 0, targetMouseY = 0;
+        // 4. Hào quang đuổi theo con trỏ chuột
+        const aura = document.getElementById("cursor-aura-follower");
+        window.addEventListener("mousemove", (e) => {
+            if (aura) {
+                aura.style.left = `${e.clientX}px`;
+                aura.style.top = `${e.clientY}px`;
+            }
+        });
+
+        // 5. ENGINE ĐỒ HỌA WEBGL 3D THREE.JS (QUẢ CẦU LÕI + VÒNG QUỸ ĐẠO + 450 HẠT KHÔNG GIAN)
+        const container = document.getElementById("webgl-3d-stage");
+        if (container && typeof THREE !== "undefined") {
+            const scene = new THREE.Scene();
+            const camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.1, 1000);
+            camera.position.z = 26;
+
+            const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+            container.appendChild(renderer.domElement);
+
+            // Nhóm cụm kiến trúc 3D chính đặt lệch góc phải tạo chiều sâu cho Hero Banner
+            const mainGroup = new THREE.Group();
+            mainGroup.position.set(6.5, 1.5, -2);
+            scene.add(mainGroup);
+
+            // Lõi cầu đa diện 3D (Icosahedron Wireframe + Inner Core)
+            const geoOuter = new THREE.IcosahedronGeometry(6.2, 2);
+            const matOuter = new THREE.MeshBasicMaterial({
+                color: 0x1d4ed8,
+                wireframe: true,
+                transparent: true,
+                opacity: 0.16
+            });
+            const outerSphere = new THREE.Mesh(geoOuter, matOuter);
+            mainGroup.add(outerSphere);
+
+            const geoInner = new THREE.OctahedronGeometry(3.8, 1);
+            const matInner = new THREE.MeshBasicMaterial({
+                color: 0x06b6d4,
+                wireframe: true,
+                transparent: true,
+                opacity: 0.24
+            });
+            const innerCore = new THREE.Mesh(geoInner, matInner);
+            mainGroup.add(innerCore);
+
+            // 3 Vòng quỹ đạo dữ liệu xoay 3D
+            const createOrbitRing = (radius, tube, color, rx, ry) => {
+                const ringGeo = new THREE.TorusGeometry(radius, tube, 12, 90);
+                const ringMat = new THREE.MeshBasicMaterial({
+                    color: color,
+                    transparent: true,
+                    opacity: 0.22
+                });
+                const ring = new THREE.Mesh(ringGeo, ringMat);
+                ring.rotation.x = rx;
+                ring.rotation.y = ry;
+                mainGroup.add(ring);
+                return ring;
+            };
+
+            const ring1 = createOrbitRing(8.4, 0.045, 0x2563eb, 1.15, 0.35);
+            const ring2 = createOrbitRing(9.8, 0.035, 0x06b6d4, -0.95, 0.65);
+            const ring3 = createOrbitRing(11.2, 0.03, 0x4f46e5, 0.45, -0.85);
+
+            // Đám mây 450 hạt không gian 3D
+            const particleCount = 450;
+            const particleGeo = new THREE.BufferGeometry();
+            const positions = new Float32Array(particleCount * 3);
+            for (let i = 0; i < particleCount * 3; i += 3) {
+                positions[i] = (Math.random() - 0.5) * 65;
+                positions[i + 1] = (Math.random() - 0.5) * 42;
+                positions[i + 2] = (Math.random() - 0.5) * 35;
+            }
+            particleGeo.setAttribute("position", new THREE.BufferAttribute(positions, 3));
+            const particleMat = new THREE.PointsMaterial({
+                color: 0x1d4ed8,
+                size: 0.16,
+                transparent: true,
+                opacity: 0.42
+            });
+            const particleCloud = new THREE.Points(particleGeo, particleMat);
+            scene.add(particleCloud);
+
+            let targetX = 0, targetY = 0;
+            window.addEventListener("mousemove", (e) => {
+                targetX = (e.clientX / window.innerWidth - 0.5) * 2;
+                targetY = (e.clientY / window.innerHeight - 0.5) * 2;
+            });
 
             window.addEventListener("resize", () => {
-                width = canvas.width = window.innerWidth;
-                height = canvas.height = window.innerHeight;
+                camera.aspect = window.innerWidth / window.innerHeight;
+                camera.updateProjectionMatrix();
+                renderer.setSize(window.innerWidth, window.innerHeight);
             });
 
-            window.addEventListener("mousemove", (e) => {
-                targetMouseX = (e.clientX / width - 0.5) * 2;
-                targetMouseY = (e.clientY / height - 0.5) * 2;
-            });
+            function animateWebGL() {
+                requestAnimationFrame(animateWebGL);
 
-            // Tạo các điểm trên bề mặt Quả cầu 3D (Fibonacci Sphere)
-            const sphereNodes = [];
-            const numNodes = 95;
-            const radius = Math.min(width, height) * 0.34;
-            for (let i = 0; i < numNodes; i++) {
-                const phi = Math.acos(1 - 2 * (i + 0.5) / numNodes);
-                const theta = Math.PI * (1 + Math.sqrt(5)) * i;
-                sphereNodes.push({
-                    x: radius * Math.sin(phi) * Math.cos(theta),
-                    y: radius * Math.sin(phi) * Math.sin(theta),
-                    z: radius * Math.cos(phi)
-                });
+                outerSphere.rotation.y += 0.0025;
+                outerSphere.rotation.x += 0.0012;
+
+                innerCore.rotation.y -= 0.0045;
+                innerCore.rotation.z += 0.0025;
+
+                ring1.rotation.z += 0.004;
+                ring2.rotation.z -= 0.0032;
+                ring3.rotation.x += 0.0028;
+
+                particleCloud.rotation.y += 0.0008;
+
+                // Camera nghiêng mượt theo vị trí chuột
+                camera.position.x += (targetX * 2.8 - camera.position.x) * 0.04;
+                camera.position.y += (-targetY * 2.0 - camera.position.y) * 0.04;
+                camera.lookAt(0, 0, 0);
+
+                renderer.render(scene, camera);
             }
-
-            // Tạo các khối hộp lập phương 3D (Warehouse Logistics Cubes) bay trong không gian
-            const cubes = Array.from({ length: 7 }, (_, idx) => ({
-                x: (Math.random() - 0.5) * width * 1.1,
-                y: (Math.random() - 0.5) * height * 0.9,
-                z: Math.random() * 400 - 150,
-                size: 20 + (idx % 4) * 9,
-                rotX: Math.random() * Math.PI,
-                rotY: Math.random() * Math.PI,
-                speedX: (Math.random() - 0.5) * 0.012,
-                speedY: (Math.random() - 0.5) * 0.012,
-                floatPhase: Math.random() * Math.PI * 2
-            }));
-
-            const cubeVertices = [
-                [-1, -1, -1], [1, -1, -1], [1, 1, -1], [-1, 1, -1],
-                [-1, -1,  1], [1, -1,  1], [1, 1,  1], [-1, 1,  1]
-            ];
-            const cubeEdges = [
-                [0,1],[1,2],[2,3],[3,0],
-                [4,5],[5,6],[6,7],[7,4],
-                [0,4],[1,5],[2,6],[3,7]
-            ];
-
-            let angleY = 0;
-            let angleX = 0.25;
-
-            function project3D(x, y, z, cx, cy, fov = 780) {
-                const scale = fov / (fov + z);
-                return {
-                    px: cx + x * scale,
-                    py: cy + y * scale,
-                    scale: scale,
-                    z: z
-                };
-            }
-
-            function rotatePoint(x, y, z, ax, ay) {
-                // Xoay quanh trục Y
-                let cosY = Math.cos(ay), sinY = Math.sin(ay);
-                let x1 = x * cosY - z * sinY;
-                let z1 = z * cosY + x * sinY;
-                // Xoay quanh trục X
-                let cosX = Math.cos(ax), sinX = Math.sin(ax);
-                let y2 = y * cosX - z1 * sinX;
-                let z2 = z1 * cosX + y * sinX;
-                return { x: x1, y: y2, z: z2 };
-            }
-
-            function render3DScene() {
-                ctx.clearRect(0, 0, width, height);
-
-                mouseX += (targetMouseX - mouseX) * 0.05;
-                mouseY += (targetMouseY - mouseY) * 0.05;
-
-                angleY += 0.0028;
-                const currentAx = angleX + mouseY * 0.35;
-                const currentAy = angleY + mouseX * 0.45;
-
-                // Tâm quả cầu 3D đặt lệch sang phải/giữa tạo chiều sâu cho Hero Banner
-                const globeCenterX = width * 0.72 - mouseX * 28;
-                const globeCenterY = height * 0.38 - mouseY * 22;
-
-                const projectedNodes = sphereNodes.map(n => {
-                    const r = rotatePoint(n.x, n.y, n.z, currentAx, currentAy);
-                    return project3D(r.x, r.y, r.z, globeCenterX, globeCenterY, 850);
-                });
-
-                // Vẽ các đường kết nối đám mây trên quả cầu 3D
-                for (let i = 0; i < projectedNodes.length; i++) {
-                    for (let j = i + 1; j < projectedNodes.length; j++) {
-                        const a = projectedNodes[i];
-                        const b = projectedNodes[j];
-                        const d = Math.hypot(a.px - b.px, a.py - b.py);
-                        if (d < 88) {
-                            const depthAlpha = Math.max(0.03, ((a.scale + b.scale) * 0.5 - 0.65) * 0.42);
-                            ctx.beginPath();
-                            ctx.moveTo(a.px, a.py);
-                            ctx.lineTo(b.px, b.py);
-                            ctx.strokeStyle = `rgba(29, 78, 216, ${depthAlpha})`;
-                            ctx.lineWidth = 1.1;
-                            ctx.stroke();
-                        }
-                    }
-                }
-
-                // Vẽ các nút dữ liệu phát sáng trên quả cầu 3D
-                projectedNodes.forEach(p => {
-                    const alpha = Math.max(0.12, (p.scale - 0.6) * 0.85);
-                    ctx.beginPath();
-                    ctx.arc(p.px, p.py, Math.max(1.5, 3.2 * p.scale), 0, Math.PI * 2);
-                    ctx.fillStyle = p.z < 0 ? `rgba(2, 132, 199, ${alpha})` : `rgba(99, 102, 241, ${alpha * 0.55})`;
-                    ctx.fill();
-                });
-
-                // Vẽ các khối hộp lập phương kho vận 3D (Isometric Wireframe Cubes)
-                const sceneCenterX = width * 0.5 - mouseX * 35;
-                const sceneCenterY = height * 0.5 - mouseY * 25;
-
-                cubes.forEach(c => {
-                    c.rotX += c.speedX;
-                    c.rotY += c.speedY;
-                    c.floatPhase += 0.015;
-                    const offsetY = Math.sin(c.floatPhase) * 14;
-
-                    const verts2D = cubeVertices.map(v => {
-                        const r = rotatePoint(v[0] * c.size, v[1] * c.size, v[2] * c.size, c.rotX, c.rotY);
-                        return project3D(c.x + r.x, c.y + offsetY + r.y, c.z + r.z, sceneCenterX, sceneCenterY, 750);
-                    });
-
-                    ctx.beginPath();
-                    cubeEdges.forEach(([i1, i2]) => {
-                        ctx.moveTo(verts2D[i1].px, verts2D[i1].py);
-                        ctx.lineTo(verts2D[i2].px, verts2D[i2].py);
-                    });
-                    ctx.strokeStyle = "rgba(37, 99, 235, 0.22)";
-                    ctx.lineWidth = 1.3;
-                    ctx.stroke();
-
-                    // Đỉnh khối hộp phát sáng
-                    verts2D.forEach(v => {
-                        ctx.beginPath();
-                        ctx.arc(v.px, v.py, 2.2 * v.scale, 0, Math.PI * 2);
-                        ctx.fillStyle = "rgba(6, 182, 212, 0.45)";
-                        ctx.fill();
-                    });
-                });
-
-                requestAnimationFrame(render3DScene);
-            }
-            render3DScene();
+            animateWebGL();
         }
     });
 
-    // Thanh tiến trình cuộn trang
-    window.addEventListener('scroll', () => {
+    // Thanh tiến trình cuộn trang + Co giãn Navbar + Nút Back-to-top
+    window.addEventListener("scroll", () => {
         const winScroll = document.documentElement.scrollTop;
         const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
         const scrolled = height > 0 ? (winScroll / height) * 100 : 0;
-        const bar = document.getElementById('scroll-progress-bar');
-        if (bar) bar.style.width = scrolled + '%';
+
+        const bar = document.getElementById("scroll-progress-bar");
+        if (bar) bar.style.width = scrolled + "%";
+
+        const nav = document.getElementById("mainNavbar");
+        if (nav) {
+            if (winScroll > 35) nav.classList.add("navbar-scrolled");
+            else nav.classList.remove("navbar-scrolled");
+        }
+
+        const topBtn = document.getElementById("back-to-top-3d");
+        if (topBtn) {
+            if (winScroll > 260) topBtn.classList.add("visible");
+            else topBtn.classList.remove("visible");
+        }
     });
 </script>
 {% block extra_js %}{% endblock %}
