@@ -2,91 +2,219 @@
 
 {% block title %}Trang chủ — CloudWMS Quản Trị Kho Đám Mây{% endblock %}
 
+{% block extra_css %}
+<style>
+    /* Hero Banner cao cấp */
+    .hero-showcase {
+        position: relative;
+        background: linear-gradient(135deg, rgba(255, 255, 255, 0.96) 0%, rgba(239, 246, 255, 0.92) 55%, rgba(236, 254, 255, 0.94) 100%) !important;
+        border: 1px solid #CBD5E1 !important;
+        border-radius: 28px !important;
+        overflow: hidden;
+        box-shadow: 0 24px 60px -15px rgba(29, 78, 216, 0.14) !important;
+    }
+
+    .hero-glow-orb {
+        position: absolute;
+        width: 340px;
+        height: 340px;
+        border-radius: 50%;
+        background: radial-gradient(circle, rgba(59, 130, 246, 0.18), rgba(6, 182, 212, 0.08) 50%, transparent 72%);
+        top: -80px;
+        right: -60px;
+        pointer-events: none;
+    }
+
+    /* Thẻ trưng bày sản phẩm 3D nổi bật bên phải Hero */
+    .spotlight-card {
+        background: #FFFFFF !important;
+        border: 1.5px solid #BFDBFE !important;
+        border-radius: 24px !important;
+        padding: 1.35rem;
+        box-shadow: 0 20px 45px -12px rgba(29, 78, 216, 0.2) !important;
+        animation: floatSpotlight 5s ease-in-out infinite alternate;
+        position: relative;
+    }
+
+    @keyframes floatSpotlight {
+        0% { transform: translateY(0px); }
+        100% { transform: translateY(-8px); }
+    }
+
+    .spotlight-img-wrap {
+        background: radial-gradient(circle at center, #FFFFFF 55%, #EFF6FF 100%);
+        border-radius: 16px;
+        padding: 14px;
+        height: 175px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: 1px solid #E2E8F0;
+    }
+
+    .spotlight-img-wrap img {
+        max-height: 145px;
+        width: auto !important;
+        height: auto !important;
+        object-fit: contain !important;
+        border: none !important;
+        background: transparent !important;
+        padding: 0 !important;
+    }
+
+    /* Thanh lọc nhanh dạng Pill */
+    .filter-pill-btn {
+        border-radius: 999px !important;
+        padding: 0.42rem 1.05rem !important;
+        font-size: 0.82rem !important;
+        font-weight: 700 !important;
+        border: 1.5px solid #CBD5E1 !important;
+        background: #FFFFFF !important;
+        color: #334155 !important;
+        transition: all 0.2s ease !important;
+    }
+
+    .filter-pill-btn:hover, .filter-pill-btn.active {
+        background: linear-gradient(135deg, #1D4ED8 0%, #4338CA 100%) !important;
+        color: #FFFFFF !important;
+        border-color: transparent !important;
+        box-shadow: 0 6px 16px rgba(29, 78, 216, 0.25) !important;
+    }
+
+    /* Thẻ sản phẩm tinh gọn & sang trọng */
+    .product-card-modern .product-title-clamp {
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        min-height: 2.75rem;
+        line-height: 1.38;
+    }
+
+    .product-card-modern .product-desc-clamp {
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        min-height: 2.5rem;
+    }
+</style>
+{% endblock %}
+
 {% block content %}
-<!-- Hero Banner 2 cột hiện đại -->
-<div class="p-4 p-md-5 mb-4 reveal-item">
-    <div class="row align-items-center g-4">
+<!-- HERO BANNER: BỐ CỤC CÂN ĐỐI & SẢN PHẨM TIÊU BIỂU 3D -->
+<div class="hero-showcase p-4 p-md-5 mb-4 reveal-item">
+    <div class="hero-glow-orb"></div>
+    <div class="row align-items-center g-4 position-relative">
         <div class="col-lg-7">
-            <span class="badge bg-warning text-dark mb-3 px-3 py-2">
-                <i class="bi bi-cloud-check-fill me-1"></i> Cloud Warehouse System • Nhóm 10
-            </span>
-            <h1 class="display-5 fw-bold mb-3" style="line-height: 1.2;">
-                Quản Lý Kho Hàng & <span class="text-gradient-brand">Đặt Đơn Trực Tuyến</span>
+            <div class="d-inline-flex align-items-center gap-2 px-3 py-1 rounded-pill mb-3" style="background: #FEF3C7; border: 1px solid #FCD34D; color: #92400E; font-size: 0.8rem; font-weight: 700;">
+                <i class="bi bi-stars text-warning"></i>
+                <span>Cloud Warehouse System • Nhóm 10</span>
+            </div>
+
+            <h1 class="display-5 fw-bold mb-3" style="line-height: 1.18; letter-spacing: -0.02em;">
+                Quản Lý Kho Hàng & <br class="d-none d-md-inline">
+                <span class="text-gradient-brand">Đặt Đơn Trực Tuyến</span>
             </h1>
-            <p class="lead mb-4">
-                Nền tảng quản trị tồn kho tập trung trên điện toán đám mây: tra cứu hàng hóa theo thời gian thực, đặt đơn tự động trừ kho và xuất phiếu chứng từ trực tuyến.
+
+            <p class="lead mb-4" style="font-size: 1.05rem; max-width: 580px;">
+                Tra cứu danh mục vật tư theo thời gian thực, đặt hàng nhanh gọn với số lượng tồn kho minh bạch và theo dõi tiến độ xử lý đơn ngay trên nền tảng đám mây.
             </p>
-            <div class="d-flex flex-wrap gap-3">
+
+            <div class="d-flex flex-wrap align-items-center gap-3">
                 {% if user.is_authenticated %}
                     {% if user.is_staff %}
-                        <a href="{% url 'dashboard' %}" class="btn btn-primary px-4 py-2">
+                        <a href="{% url 'dashboard' %}" class="btn btn-primary px-4 py-2.5">
                             <i class="bi bi-bar-chart-line-fill me-2"></i> Bảng thống kê kho
                         </a>
-                        <a href="{% url 'stock_import' %}" class="btn btn-outline-primary px-4 py-2">
+                        <a href="{% url 'stock_import' %}" class="btn btn-outline-primary px-4 py-2.5">
                             <i class="bi bi-box-arrow-in-down me-2"></i> Nhập kho nhanh
                         </a>
                     {% else %}
-                        <a href="{% url 'order_create' %}" class="btn btn-primary px-4 py-2">
+                        <a href="{% url 'order_create' %}" class="btn btn-primary px-4 py-2.5">
                             <i class="bi bi-cart-plus-fill me-2"></i> Đặt hàng ngay
                         </a>
-                        <a href="{% url 'my_orders' %}" class="btn btn-outline-primary px-4 py-2">
+                        <a href="{% url 'my_orders' %}" class="btn btn-outline-primary px-4 py-2.5">
                             <i class="bi bi-bag-check-fill me-2"></i> Đơn hàng của tôi
                         </a>
                     {% endif %}
                 {% else %}
-                    <a href="/accounts/login/" class="btn btn-primary px-4 py-2">
-                        <i class="bi bi-box-arrow-in-right me-2"></i> Đăng nhập hệ thống
+                    <a href="/accounts/login/" class="btn btn-primary px-4 py-2.5">
+                        <i class="bi bi-box-arrow-in-right me-2"></i> Đăng nhập đặt hàng
                     </a>
-                    <a href="#catalog-section" class="btn btn-outline-primary px-4 py-2">
-                        <i class="bi bi-search me-2"></i> Xem danh mục kho
+                    <a href="#catalog-section" class="btn btn-outline-primary px-4 py-2.5">
+                        <i class="bi bi-grid-fill me-2"></i> Khám phá sản phẩm
                     </a>
                 {% endif %}
             </div>
         </div>
 
-        <!-- Thẻ Live Cloud Monitor bên phải -->
+        <!-- Sản phẩm nổi bật tương tác bên phải (thay thế khối trạng thái thừa) -->
         <div class="col-lg-5">
-            <div class="card border-0 shadow-sm p-4" style="background: linear-gradient(145deg, #F8FAFC 0%, #EFF6FF 100%) !important;">
-                <div class="d-flex justify-content-between align-items-center mb-3">
-                    <span class="fw-bold text-primary"><i class="bi bi-cpu-fill me-2"></i>Trạng Thái Hệ Thống Cloud</span>
-                    <span class="badge bg-success">Online 24/7</span>
+            {% with featured=products.first %}
+            {% if featured %}
+            <div class="spotlight-card">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <span class="badge bg-primary"><i class="bi bi-lightning-charge-fill me-1"></i>Sản phẩm nổi bật</span>
+                    <code>{{ featured.sku }}</code>
                 </div>
-                <div class="row g-3 text-center">
-                    <div class="col-6">
-                        <div class="p-3 bg-white rounded-4 border">
-                            <div class="fs-3 fw-bold text-primary">{{ products|length }}</div>
-                            <div class="small text-muted">Mặt hàng đang mở</div>
+
+                <div class="spotlight-img-wrap my-2">
+                    {% if featured.image %}
+                        <img src="{{ featured.image.url }}" alt="{{ featured.name }}">
+                    {% else %}
+                        <i class="bi bi-box-seam text-primary" style="font-size: 3.5rem;"></i>
+                    {% endif %}
+                </div>
+
+                <div class="mt-3">
+                    <div class="small text-primary fw-bold">{{ featured.category.name|default:"Vật tư tiêu hao" }}</div>
+                    <h6 class="fw-bold mb-2 text-truncate">{{ featured.name }}</h6>
+                    <div class="d-flex justify-content-between align-items-center pt-2 border-top">
+                        <div>
+                            <span class="fs-5 fw-bold text-primary">{{ featured.price|floatformat:0 }} đ</span>
+                            <span class="small text-muted ms-1">• Còn {{ featured.quantity }}</span>
                         </div>
-                    </div>
-                    <div class="col-6">
-                        <div class="p-3 bg-white rounded-4 border">
-                            <div class="fs-3 fw-bold text-success">{{ categories|length }}</div>
-                            <div class="small text-muted">Nhóm danh mục</div>
-                        </div>
-                    </div>
-                    <div class="col-12">
-                        <div class="p-3 bg-white rounded-4 border d-flex justify-content-between align-items-center text-start">
-                            <div>
-                                <div class="fw-bold small">Đồng bộ tồn kho thời gian thực</div>
-                                <div class="text-muted" style="font-size: 0.78rem;">Tự động kiểm tra định mức & lưu vết lịch sử</div>
-                            </div>
-                            <i class="bi bi-shield-check fs-2 text-primary"></i>
-                        </div>
+                        {% if user.is_authenticated and user.is_staff %}
+                            <a href="{% url 'product_update' featured.pk %}" class="btn btn-outline-primary btn-sm">Cập nhật</a>
+                        {% elif featured.quantity > 0 %}
+                            <a href="{% url 'order_create' %}?product={{ featured.pk }}" class="btn btn-primary btn-sm px-3">
+                                Đặt nhanh <i class="bi bi-arrow-right ms-1"></i>
+                            </a>
+                        {% endif %}
                     </div>
                 </div>
             </div>
+            {% endif %}
+            {% endwith %}
         </div>
     </div>
 </div>
 
-<!-- Thanh tìm kiếm & lọc danh mục -->
+<!-- THANH TÌM KIẾM & BỘ LỌC NHANH -->
 <div id="catalog-section" class="p-4 mb-4 reveal-item">
-    <form method="get" class="row g-3 align-items-center">
-        <div class="col-lg-4">
-            <h5 class="fw-bold mb-0"><i class="bi bi-grid-3x3-gap-fill text-primary me-2"></i>Danh mục hàng hóa</h5>
-            <small class="text-muted">Tìm theo tên sản phẩm, mã SKU hoặc nhóm hàng</small>
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 pb-3 mb-3 border-bottom">
+        <div>
+            <h4 class="fw-bold mb-1"><i class="bi bi-grid-3x3-gap-fill text-primary me-2"></i>Danh mục hàng hóa</h4>
+            <p class="small text-muted mb-0">Chọn danh mục, gõ tên/mã SKU hoặc lọc nhanh theo tình trạng tồn kho</p>
         </div>
-        <div class="col-md-4 col-lg-3">
+
+        <!-- Bộ lọc 1 chạm ngay trên trình duyệt -->
+        <div class="d-flex flex-wrap gap-2" id="quick-stock-filters">
+            <button type="button" class="btn filter-pill-btn active" data-filter="all">
+                Tất cả ({{ products|length }})
+            </button>
+            <button type="button" class="btn filter-pill-btn" data-filter="in-stock">
+                <i class="bi bi-check-circle-fill text-success me-1"></i> Sẵn hàng
+            </button>
+            <button type="button" class="btn filter-pill-btn" data-filter="low-stock">
+                <i class="bi bi-exclamation-triangle-fill text-warning me-1"></i> Sắp hết
+            </button>
+        </div>
+    </div>
+
+    <form method="get" class="row g-3 align-items-center">
+        <div class="col-md-4">
             <select name="category" class="form-select" onchange="this.form.submit()">
                 <option value="">-- Tất cả danh mục --</option>
                 {% for cat in categories %}
@@ -96,15 +224,18 @@
                 {% endfor %}
             </select>
         </div>
-        <div class="col-md-5 col-lg-3">
-            <input type="text" name="q" value="{{ q }}" class="form-control" placeholder="Nhập tên hoặc mã SKU...">
+        <div class="col-md-6">
+            <div class="input-group">
+                <span class="input-group-text bg-white border-end-0" style="border-radius: 12px 0 0 12px; border: 1.5px solid #CBD5E1;">
+                    <i class="bi bi-search text-primary"></i>
+                </span>
+                <input type="text" name="q" value="{{ q }}" class="form-control border-start-0" style="border-radius: 0 12px 12px 0 !important;" placeholder="Nhập tên sản phẩm hoặc mã SKU (VD: SKU-VT01)...">
+            </div>
         </div>
-        <div class="col-md-3 col-lg-2 d-flex gap-2">
-            <button type="submit" class="btn btn-primary w-100">
-                <i class="bi bi-search me-1"></i> Tìm
-            </button>
+        <div class="col-md-2 d-flex gap-2">
+            <button type="submit" class="btn btn-primary w-100">Tìm kiếm</button>
             {% if q or selected_category %}
-                <a href="{% url 'home' %}" class="btn btn-outline-secondary" title="Xóa bộ lọc">
+                <a href="{% url 'home' %}" class="btn btn-outline-secondary" title="Đặt lại">
                     <i class="bi bi-arrow-counterclockwise"></i>
                 </a>
             {% endif %}
@@ -112,11 +243,12 @@
     </form>
 </div>
 
-<!-- Lưới sản phẩm -->
-<div class="row g-4">
+<!-- LƯỚI SẢN PHẨM HIỆN ĐẠI -->
+<div class="row g-4" id="product-grid">
     {% for product in products %}
-    <div class="col-sm-6 col-lg-4">
-        <div class="card h-100">
+    <div class="col-sm-6 col-lg-4 product-grid-item"
+         data-stock-status="{% if product.quantity > 10 %}in-stock{% elif product.quantity > 0 %}low-stock{% else %}out-stock{% endif %}">
+        <div class="card h-100 product-card-modern">
             <div class="position-relative">
                 {% if product.image %}
                     <img src="{{ product.image.url }}" class="card-img-top" alt="{{ product.name }}">
@@ -143,32 +275,42 @@
 
             <div class="card-body d-flex flex-column p-4">
                 <div class="small text-primary fw-bold mb-1">
-                    <i class="bi bi-tag-fill me-1"></i>{{ product.category.name|default:"Vật tư chung" }}
+                    <i class="bi bi-tag-fill me-1"></i>{{ product.category.name|default:"Vật tư tiêu hao" }}
                 </div>
-                <h5 class="card-title fw-bold mb-2">{{ product.name }}</h5>
-                <p class="small text-muted mb-3 flex-grow-1">
-                    {{ product.description|default:"Hàng chính hãng đạt chuẩn lưu kho CloudWMS, sẵn sàng xuất giao ngay."|truncatechars:85 }}
+                <h5 class="card-title fw-bold mb-2 product-title-clamp">{{ product.name }}</h5>
+                <p class="small text-muted mb-3 product-desc-clamp">
+                    {{ product.description|default:"Hàng chính hãng đạt chuẩn lưu kho CloudWMS, sẵn sàng xuất giao ngay." }}
                 </p>
 
-                <div class="d-flex justify-content-between align-items-center pt-3 border-top">
+                <div class="mt-auto pt-3 border-top d-flex justify-content-between align-items-center gap-2">
                     <div>
-                        <span class="small text-muted d-block">Đơn giá</span>
+                        <span class="small text-muted d-block" style="font-size: 0.74rem;">Đơn giá</span>
                         <span class="fs-5 fw-bold text-primary">{{ product.price|floatformat:0 }} đ</span>
                     </div>
 
-                    {% if user.is_authenticated and user.is_staff %}
-                        <a href="{% url 'product_update' product.pk %}" class="btn btn-outline-primary btn-sm">
-                            <i class="bi bi-pencil-square me-1"></i> Quản lý
-                        </a>
-                    {% else %}
-                        {% if product.quantity > 0 %}
-                            <a href="{% url 'order_create' %}?product={{ product.pk }}" class="btn btn-primary btn-sm px-3">
-                                <i class="bi bi-cart-plus-fill me-1"></i> Đặt hàng
+                    <div class="d-flex align-items-center gap-2">
+                        <!-- Nút Xem nhanh chi tiết -->
+                        <button type="button"
+                                class="btn btn-outline-secondary btn-sm px-2.5"
+                                title="Xem nhanh chi tiết"
+                                onclick="openQuickView('{{ product.name|escapejs }}', '{{ product.sku|escapejs }}', '{{ product.category.name|default:'Vật tư tiêu hao'|escapejs }}', '{{ product.price|floatformat:0 }}', '{{ product.quantity }}', '{{ product.description|default:'Hàng chính hãng đạt chuẩn lưu kho CloudWMS, kiểm định chất lượng đầy đủ trước khi xuất kho.'|escapejs }}', '{% if product.image %}{{ product.image.url }}{% endif %}', '{% url 'order_create' %}?product={{ product.pk }}')">
+                            <i class="bi bi-eye-fill"></i>
+                        </button>
+
+                        {% if user.is_authenticated and user.is_staff %}
+                            <a href="{% url 'product_update' product.pk %}" class="btn btn-outline-primary btn-sm">
+                                <i class="bi bi-pencil-square me-1"></i> Sửa
                             </a>
                         {% else %}
-                            <button class="btn btn-outline-secondary btn-sm" disabled>Hết hàng</button>
+                            {% if product.quantity > 0 %}
+                                <a href="{% url 'order_create' %}?product={{ product.pk }}" class="btn btn-primary btn-sm px-3">
+                                    <i class="bi bi-cart-plus-fill me-1"></i> Đặt hàng
+                                </a>
+                            {% else %}
+                                <button class="btn btn-outline-secondary btn-sm" disabled>Hết hàng</button>
+                            {% endif %}
                         {% endif %}
-                    {% endif %}
+                    </div>
                 </div>
             </div>
         </div>
@@ -184,4 +326,112 @@
     </div>
     {% endfor %}
 </div>
+
+<!-- MODAL XEM NHANH CHI TIẾT SẢN PHẨM -->
+<div class="modal fade" id="quickViewModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content border-0 rounded-4 shadow-lg overflow-hidden">
+            <div class="modal-header border-bottom bg-light px-4 py-3">
+                <h5 class="modal-title fw-bold"><i class="bi bi-box-seam-fill text-primary me-2"></i>Chi tiết hàng hóa</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body p-4">
+                <div class="row g-4 align-items-center">
+                    <div class="col-md-5 text-center">
+                        <div class="p-3 bg-light rounded-4 border">
+                            <img id="qv-img" src="" alt="" class="img-fluid" style="max-height: 220px; object-fit: contain;">
+                            <div id="qv-no-img" class="py-5 d-none"><i class="bi bi-box-seam text-muted" style="font-size: 4rem;"></i></div>
+                        </div>
+                    </div>
+                    <div class="col-md-7">
+                        <div class="d-flex align-items-center gap-2 mb-2">
+                            <code id="qv-sku"></code>
+                            <span id="qv-cat" class="badge bg-primary"></span>
+                        </div>
+                        <h4 id="qv-name" class="fw-bold mb-2"></h4>
+                        <p id="qv-desc" class="text-muted small mb-3"></p>
+
+                        <div class="p-3 rounded-4 bg-light border d-flex justify-content-between align-items-center mb-4">
+                            <div>
+                                <div class="small text-muted">Đơn giá niêm yết</div>
+                                <div id="qv-price" class="fs-4 fw-bold text-primary"></div>
+                            </div>
+                            <div class="text-end">
+                                <div class="small text-muted">Tồn kho khả dụng</div>
+                                <div id="qv-qty" class="fs-5 fw-bold text-success"></div>
+                            </div>
+                        </div>
+
+                        <div class="d-flex gap-2">
+                            <a id="qv-order-btn" href="#" class="btn btn-primary px-4 flex-grow-1">
+                                <i class="bi bi-cart-plus-fill me-2"></i> Đặt hàng sản phẩm này
+                            </a>
+                            <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Đóng</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Lọc nhanh trạng thái Sẵn hàng / Sắp hết không cần reload trang
+    document.querySelectorAll('#quick-stock-filters .filter-pill-btn').forEach(btn => {
+        btn.addEventListener('click', function () {
+            document.querySelectorAll('#quick-stock-filters .filter-pill-btn').forEach(b => b.classList.remove('active'));
+            this.classList.add('active');
+
+            const filter = this.getAttribute('data-filter');
+            document.querySelectorAll('.product-grid-item').forEach(item => {
+                if (filter === 'all' || item.getAttribute('data-stock-status') === filter) {
+                    item.style.display = '';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+        });
+    });
+
+    // Mở popup Xem nhanh sản phẩm
+    function openQuickView(name, sku, cat, price, qty, desc, imgUrl, orderUrl) {
+        document.getElementById('qv-name').textContent = name;
+        document.getElementById('qv-sku').textContent = sku;
+        document.getElementById('qv-cat').textContent = cat;
+        document.getElementById('qv-price').textContent = price + ' đ';
+        document.getElementById('qv-desc').textContent = desc;
+
+        const qtyNum = parseInt(qty, 10);
+        const qtyEl = document.getElementById('qv-qty');
+        const orderBtn = document.getElementById('qv-order-btn');
+
+        if (qtyNum > 0) {
+            qtyEl.textContent = qtyNum + ' sản phẩm';
+            qtyEl.className = 'fs-5 fw-bold text-success';
+            orderBtn.href = orderUrl;
+            orderBtn.classList.remove('disabled');
+        } else {
+            qtyEl.textContent = 'Tạm hết hàng';
+            qtyEl.className = 'fs-5 fw-bold text-danger';
+            orderBtn.href = '#';
+            orderBtn.classList.add('disabled');
+        }
+
+        const imgEl = document.getElementById('qv-img');
+        const noImgEl = document.getElementById('qv-no-img');
+        if (imgUrl) {
+            imgEl.src = imgUrl;
+            imgEl.classList.remove('d-none');
+            noImgEl.classList.add('d-none');
+        } else {
+            imgEl.classList.add('d-none');
+            noImgEl.classList.remove('d-none');
+        }
+
+        const modal = new bootstrap.Modal(document.getElementById('quickViewModal'));
+        modal.show();
+    }
+</script>
 {% endblock %}
