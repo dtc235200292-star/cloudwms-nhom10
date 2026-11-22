@@ -6,14 +6,19 @@
 <div class="row justify-content-center">
     <div class="col-lg-7">
         <div class="card p-4 p-md-5 reveal-item">
-            <div class="mb-4">
-                <span class="badge bg-success mb-2">NGHIỆP VỤ NHẬP KHO (STOCK-IN)</span>
-                <h3 class="fw-bold mb-1">
-                    <i class="bi bi-box-arrow-in-down text-success me-2"></i>Lập Phiếu Nhập Kho
-                </h3>
-                <p class="text-muted mb-0">
-                    Chọn sản phẩm và nhập số lượng hàng mới về kho. Hệ thống tự động cộng dồn vào tồn kho hiện tại và ghi nhật ký lịch sử.
-                </p>
+            <div class="d-flex justify-content-between align-items-start mb-4">
+                <div>
+                    <span class="badge bg-success mb-2">NGHIỆP VỤ NHẬP KHO (STOCK-IN)</span>
+                    <h3 class="fw-bold mb-1">
+                        <i class="bi bi-box-arrow-in-down text-success me-2"></i>Lập Phiếu Nhập Kho
+                    </h3>
+                    <p class="text-muted mb-0">
+                        Ghi nhận lô hàng nhập mới, đối tác cung cấp và tự động cộng dồn vào tồn kho.
+                    </p>
+                </div>
+                <a href="{% url 'stock_history_list' %}" class="btn btn-sm btn-outline-primary">
+                    <i class="bi bi-journal-text me-1"></i> Sổ cái kho
+                </a>
             </div>
 
             <form method="post">
@@ -32,7 +37,6 @@
                     </select>
                 </div>
 
-                <!-- Hộp xem trước tồn kho sau khi nhập -->
                 <div class="p-3 rounded-4 bg-light border d-flex justify-content-between align-items-center mb-3">
                     <div>
                         <span class="small text-muted d-block">Tồn kho hiện tại</span>
@@ -45,14 +49,31 @@
                     </div>
                 </div>
 
+                <div class="row g-3 mb-3">
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold">Số lượng nhập thêm <span class="text-danger">*</span></label>
+                        <input type="number" name="quantity" id="import-qty-input" class="form-control" min="1" placeholder="VD: 20" required oninput="updateCurrentStockPreview()">
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold">Mã lô hàng (Batch ID)</label>
+                        <input type="text" name="batch_code" class="form-control" placeholder="VD: LOT-2026-11">
+                    </div>
+                </div>
+
                 <div class="mb-3">
-                    <label class="form-label fw-bold">Số lượng nhập thêm <span class="text-danger">*</span></label>
-                    <input type="number" name="quantity" id="import-qty-input" class="form-control" min="1" placeholder="Nhập số lượng hàng mới về (VD: 20)" required oninput="updateCurrentStockPreview()">
+                    <label class="form-label fw-bold">Nhà cung cấp / Đối tác giao hàng</label>
+                    <input type="text" name="supplier_name" class="form-control" list="supplier-suggestions" placeholder="Chọn hoặc nhập tên nhà cung cấp...">
+                    <datalist id="supplier-suggestions">
+                        <option value="Công ty Phân phối Công nghệ DigiWorld">
+                        <option value="Nhà phân phối Thiết bị Mạng Việt Tuấn">
+                        <option value="Công ty Văn phòng phẩm Hồng Hà">
+                        <option value="Tổng kho Linh kiện FPT Synnex">
+                    </datalist>
                 </div>
 
                 <div class="mb-4">
-                    <label class="form-label fw-bold">Ghi chú phiếu nhập / Nhà cung cấp</label>
-                    <input type="text" name="note" class="form-control" placeholder="VD: Nhập bổ sung lô hàng từ nhà phân phối">
+                    <label class="form-label fw-bold">Ghi chú kiểm nhận</label>
+                    <input type="text" name="note" class="form-control" placeholder="VD: Đã kiểm tra nguyên đai nguyên kiện, đủ hóa đơn VAT">
                 </div>
 
                 <div class="d-flex flex-wrap gap-2">
