@@ -1,4 +1,3 @@
-
 {% extends "base.html" %}
 
 {% block title %}Phiếu Xuất Kho #{{ order.id }} — CloudWMS{% endblock %}
@@ -33,7 +32,6 @@
 {% block content %}
 <div class="row justify-content-center">
     <div class="col-lg-9">
-        <!-- Thanh công cụ In ấn (ẩn khi in giấy/PDF) -->
         <div class="d-flex justify-content-between align-items-center mb-3 no-print">
             <a href="{% if user.is_staff %}{% url 'order_list' %}{% else %}{% url 'my_orders' %}{% endif %}" class="btn btn-outline-secondary">
                 <i class="bi bi-arrow-left me-1"></i> Quay lại danh sách đơn
@@ -43,7 +41,6 @@
             </button>
         </div>
 
-        <!-- Khổ giấy Phiếu Xuất Kho chuẩn A4 -->
         <div class="invoice-paper p-4 p-md-5">
             <div class="d-flex justify-content-between align-items-start border-bottom pb-4 mb-4">
                 <div>
@@ -60,14 +57,14 @@
             </div>
 
             <div class="row g-3 mb-4">
-                <div class="col-sm-6">
+                <div class="col-sm-7">
                     <div class="p-3 rounded-3 bg-light border h-100">
-                        <div class="small text-muted fw-bold mb-1">THÔNG TIN NGƯỜI NHẬN HÀNG</div>
-                        <div class="fw-bold">Khách hàng: {{ order.user.username }}</div>
-                        <div class="small text-muted">Email: {{ order.user.email|default:"Khách hàng hệ thống CloudWMS" }}</div>
+                        <div class="small text-muted fw-bold mb-1">THÔNG TIN NGƯỜI NHẬN & ĐỊA CHỈ GIAO HÀNG</div>
+                        <div class="fw-bold mb-1">Tài khoản đặt: {{ order.user.username }}</div>
+                        <div class="small text-dark">{{ order.note|default:"Giao nhận trực tiếp tại kho trung tâm CloudWMS" }}</div>
                     </div>
                 </div>
-                <div class="col-sm-6">
+                <div class="col-sm-5">
                     <div class="p-3 rounded-3 bg-light border h-100">
                         <div class="small text-muted fw-bold mb-1">TRẠNG THÁI CHỨNG TỪ</div>
                         <div>
