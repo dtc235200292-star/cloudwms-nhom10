@@ -1,4 +1,1106 @@
-<!DOCTYPE html>
+<!DOCTYPE html><!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}CloudWMS — Nền Tảng Quản Trị Kho Đám Mây{% endblock %}</title>
+
+    <!-- Google Fonts: Inter & Plus Jakarta Sans độ nét cao cho nền sáng -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Bootstrap 5.3 & Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+    <style>
+        :root {
+            --bg-cloud: #EEF3FA;
+            --bg-surface: rgba(255, 255, 255, 0.96);
+            --primary-blue: #1D4ED8;
+            --primary-indigo: #4338CA;
+            --accent-cyan: #0891B2;
+            --text-strong: #090D16;
+            --text-body: #1E293B;
+            --text-muted-dark: #334155;
+            --border-glow: rgba(29, 78, 216, 0.5);
+            --mouse-x: 50vw;
+            --mouse-y: 25vh;
+        }
+
+        /* Thanh tiến trình cuộn trang */
+        #scroll-progress {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 3.5px;
+            width: 0%;
+            background: linear-gradient(90deg, #1D4ED8, #0891B2, #4F46E5, #F59E0B);
+            z-index: 9999;
+            box-shadow: 0 2px 10px rgba(29, 78, 216, 0.4);
+            transition: width 0.08s ease-out;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background-color: var(--bg-cloud) !important;
+            color: var(--text-body) !important;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+            position: relative;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        h1, h2, h3, h4, h5, h6, .wms-brand {
+            font-family: 'Plus Jakarta Sans', 'Inter', sans-serif;
+        }
+
+        /* Nền cực quang tươi sáng */
+        .bright-aurora {
+            position: fixed;
+            inset: 0;
+            z-index: -3;
+            overflow: hidden;
+            pointer-events: none;
+            background: linear-gradient(135deg, #F8FAFC 0%, #E8EEF9 50%, #E6F7FA 100%);
+        }
+
+        .aurora-blob {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(85px);
+            opacity: 0.6;
+            animation: floatBlob 16s ease-in-out infinite alternate;
+        }
+
+        .blob-1 {
+            width: 520px;
+            height: 520px;
+            background: radial-gradient(circle, rgba(59, 130, 246, 0.22), transparent 70%);
+            top: -120px;
+            left: -80px;
+        }
+
+        .blob-2 {
+            width: 480px;
+            height: 480px;
+            background: radial-gradient(circle, rgba(6, 182, 212, 0.2), transparent 70%);
+            top: 15%;
+            right: -100px;
+            animation-delay: -5s;
+        }
+
+        .blob-3 {
+            width: 460px;
+            height: 460px;
+            background: radial-gradient(circle, rgba(99, 102, 241, 0.16), transparent 70%);
+            bottom: -100px;
+            left: 30%;
+            animation-delay: -9s;
+        }
+
+        @keyframes floatBlob {
+            0% { transform: translate(0, 0) scale(1); }
+            100% { transform: translate(45px, 35px) scale(1.1); }
+        }
+
+        #cloud-particle-canvas {
+            position: fixed;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -2;
+        }
+
+        body::after {
+            content: "";
+            position: fixed;
+            inset: 0;
+            background: radial-gradient(
+                550px circle at var(--mouse-x) var(--mouse-y),
+                rgba(29, 78, 216, 0.07),
+                rgba(6, 182, 212, 0.04) 45%,
+                transparent 75%
+            );
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        /* Thanh điều hướng kính mờ sáng */
+        .wms-navbar {
+            background: rgba(255, 255, 255, 0.92) !important;
+            backdrop-filter: blur(22px);
+            -webkit-backdrop-filter: blur(22px);
+            border-bottom: 1px solid #CBD5E1;
+            padding: 0.78rem 0;
+            box-shadow: 0 6px 24px rgba(15, 23, 42, 0.06);
+        }
+
+        .wms-brand {
+            font-weight: 800;
+            font-size: 1.35rem;
+            letter-spacing: -0.02em;
+            color: var(--text-strong) !important;
+            display: flex;
+            align-items: center;
+            gap: 0.7rem;
+        }
+
+        .wms-brand-icon {
+            width: 42px;
+            height: 42px;
+            border-radius: 12px;
+            background: linear-gradient(135deg, #1D4ED8 0%, #0891B2 100%);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            color: #FFFFFF;
+            font-size: 1.25rem;
+            box-shadow: 0 8px 20px rgba(29, 78, 216, 0.3);
+            transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .wms-brand:hover .wms-brand-icon {
+            transform: rotateY(180deg) scale(1.08);
+        }
+
+        .text-gradient-brand {
+            background: linear-gradient(90deg, #1D4ED8, #4338CA, #0891B2);
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: gradientFlow 4s linear infinite;
+        }
+
+        @keyframes gradientFlow {
+            to { background-position: 200% center; }
+        }
+
+        .wms-nav-link {
+            color: #1E293B !important;
+            font-weight: 600;
+            font-size: 0.92rem;
+            padding: 0.5rem 0.95rem !important;
+            border-radius: 11px;
+            transition: all 0.22s ease;
+            white-space: nowrap;
+        }
+
+        .wms-nav-link:hover, .wms-nav-link.active {
+            color: var(--primary-blue) !important;
+            background: rgba(29, 78, 216, 0.1);
+            box-shadow: inset 0 0 0 1px rgba(29, 78, 216, 0.2);
+        }
+
+        .cloud-status-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            background: #ECFDF5;
+            border: 1px solid #6EE7B7;
+            color: #047857;
+            font-size: 0.74rem;
+            font-weight: 700;
+            padding: 0.34rem 0.88rem;
+            border-radius: 999px;
+            white-space: nowrap;
+        }
+
+        .pulse-dot {
+            width: 7px;
+            height: 7px;
+            background-color: #10B981;
+            border-radius: 50%;
+            animation: pulseRing 1.8s infinite;
+        }
+
+        @keyframes pulseRing {
+            0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.8); }
+            70% { box-shadow: 0 0 0 8px rgba(16, 185, 129, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+        }
+
+        /* =========================================================
+           KHẮC PHỤC TRIỆT ĐỂ ĐỘ TƯƠNG PHẢN CHỮ TRÊN NỀN SÁNG
+           ========================================================= */
+        @keyframes fadeUpReveal {
+            from { opacity: 0; transform: translateY(24px) scale(0.97); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        .reveal-item {
+            animation: fadeUpReveal 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
+        }
+
+        main .bg-white,
+        main .bg-light,
+        main .bg-dark,
+        main .p-4.rounded,
+        main .p-5.rounded,
+        main .shadow-sm {
+            background: var(--bg-surface) !important;
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid #CBD5E1 !important;
+            border-radius: 22px !important;
+            color: var(--text-body) !important;
+            box-shadow: 0 14px 36px -10px rgba(15, 23, 42, 0.08) !important;
+        }
+
+        /* Ép toàn bộ tiêu đề & chữ mờ cũ sang màu đậm sắc nét */
+        main h1, main h2, main h3, main h4, main h5, main h6,
+        main .h1, main .h2, main .h3, main .h4, main .h5, main .h6,
+        main .text-white,
+        main .text-light,
+        main .text-dark {
+            color: var(--text-strong) !important;
+            font-weight: 700;
+        }
+
+        main p,
+        main .lead,
+        main .text-white-50,
+        main .text-muted,
+        main .text-secondary,
+        main label,
+        main .form-label {
+            color: var(--text-muted-dark) !important;
+            font-weight: 500;
+        }
+
+        /* Giữ màu chữ trắng cho nút có nền màu đậm */
+        main .btn-primary, main .btn-primary *,
+        main .btn-warning, main .btn-warning *,
+        main .btn-success, main .btn-success *,
+        main .btn-danger, main .btn-danger *,
+        main .badge.bg-success,
+        main .badge.bg-primary,
+        main .badge.bg-danger {
+            color: #FFFFFF !important;
+        }
+
+        main .badge.bg-warning,
+        main .badge.bg-info {
+            color: #0F172A !important;
+        }
+
+        /* Nút viền sáng cũ chuyển sang nút trắng viền đậm sắc nét */
+        main .btn-outline-light,
+        main .btn-outline-primary,
+        main .btn-outline-secondary,
+        main .btn-light {
+            background: #FFFFFF !important;
+            border: 1.5px solid #94A3B8 !important;
+            color: #090D16 !important;
+            box-shadow: 0 4px 12px rgba(15, 23, 42, 0.06) !important;
+        }
+
+        main .btn-outline-light:hover,
+        main .btn-outline-primary:hover,
+        main .btn-outline-secondary:hover,
+        main .btn-light:hover {
+            background: #EFF6FF !important;
+            border-color: var(--primary-blue) !important;
+            color: var(--primary-blue) !important;
+        }
+
+        /* Card 3D tương tác */
+        .card {
+            background: #FFFFFF !important;
+            border: 1px solid #CBD5E1 !important;
+            border-radius: 20px !important;
+            overflow: hidden !important;
+            position: relative;
+            transform-style: preserve-3d;
+            will-change: transform;
+            box-shadow: 0 12px 30px -8px rgba(15, 23, 42, 0.08) !important;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease !important;
+        }
+
+        .card:hover {
+            border-color: var(--border-glow) !important;
+            box-shadow: 0 24px 48px -12px rgba(29, 78, 216, 0.18),
+                        0 8px 20px -6px rgba(15, 23, 42, 0.08) !important;
+        }
+
+        .card-glare {
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(
+                circle at var(--glare-x, 50%) var(--glare-y, 50%),
+                rgba(255, 255, 255, 0.8) 0%,
+                rgba(59, 130, 246, 0.08) 35%,
+                transparent 70%
+            );
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.25s ease;
+            z-index: 3;
+        }
+
+        .card:hover .card-glare {
+            opacity: 1;
+        }
+
+        .card-header {
+            background-color: #F8FAFC !important;
+            border-bottom: 1px solid #E2E8F0 !important;
+            color: var(--text-strong) !important;
+            font-weight: 700;
+            padding: 1rem 1.25rem;
+        }
+
+        .card img,
+        .card-img-top,
+        .product-img {
+            width: 100% !important;
+            height: 205px !important;
+            max-width: 100% !important;
+            object-fit: contain !important;
+            background: radial-gradient(circle at center, #FFFFFF 60%, #F1F5F9 100%) !important;
+            padding: 16px;
+            display: block;
+            margin: 0 auto;
+            border-bottom: 1px solid #E2E8F0;
+            transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+
+        .card:hover img {
+            transform: scale(1.07);
+        }
+
+        .btn {
+            font-weight: 700;
+            border-radius: 12px !important;
+            padding: 0.6rem 1.25rem;
+            font-size: 0.9rem;
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.2s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.25s ease;
+        }
+
+        .btn-warning, .btn-primary {
+            background: linear-gradient(135deg, #1D4ED8 0%, #4338CA 100%) !important;
+            border: none !important;
+            color: #FFFFFF !important;
+            box-shadow: 0 6px 18px rgba(29, 78, 216, 0.28) !important;
+        }
+
+        .btn-warning::before, .btn-primary::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 60%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.45), transparent);
+            transform: skewX(-25deg);
+            transition: left 0.6s ease;
+        }
+
+        .btn-warning:hover::before, .btn-primary:hover::before {
+            left: 140%;
+        }
+
+        .btn-warning:hover, .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(29, 78, 216, 0.4) !important;
+        }
+
+        .btn-ripple {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.55);
+            transform: scale(0);
+            animation: rippleAnim 0.6s linear;
+            pointer-events: none;
+        }
+
+        @keyframes rippleAnim {
+            to { transform: scale(4); opacity: 0; }
+        }
+
+        .form-control, .form-select {
+            background-color: #FFFFFF !important;
+            border: 1.5px solid #CBD5E1 !important;
+            color: #090D16 !important;
+            font-weight: 500;
+            border-radius: 12px !important;
+            padding: 0.64rem 1rem;
+        }
+
+        .form-control::placeholder {
+            color: #64748B !important;
+        }
+
+        .form-control:focus, .form-select:focus {
+            border-color: var(--primary-blue) !important;
+            box-shadow: 0 0 0 3.5px rgba(29, 78, 216, 0.16) !important;
+        }
+
+        .table {
+            color: #090D16 !important;
+            vertical-align: middle;
+            margin-bottom: 0;
+        }
+
+        .table thead th {
+            background-color: #F1F5F9 !important;
+            color: #1E293B !important;
+            font-size: 0.78rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            border-bottom: 1px solid #CBD5E1 !important;
+            padding: 0.95rem 1rem;
+        }
+
+        .table tbody td {
+            background-color: transparent !important;
+            color: #090D16 !important;
+            border-bottom: 1px solid #E2E8F0 !important;
+            padding: 0.95rem 1rem;
+        }
+
+        .table tbody tr:hover td {
+            background-color: #F8FAFC !important;
+        }
+
+        .sku-code, code {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.82rem;
+            background: #EFF6FF !important;
+            color: #1D4ED8 !important;
+            border: 1px solid #93C5FD;
+            padding: 0.24rem 0.6rem;
+            border-radius: 7px;
+            font-weight: 600;
+        }
+
+        .badge {
+            font-weight: 700;
+            padding: 0.45em 0.85em;
+            border-radius: 999px;
+            letter-spacing: 0.02em;
+        }
+
+        .wms-footer {
+            margin-top: auto;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(16px);
+            border-top: 1px solid #CBD5E1;
+            padding: 1.35rem 0;
+            font-size: 0.86rem;
+            color: #1E293B;
+        }
+
+        /* =========================================================
+           TRỢ LÝ ẢO AI DÀNH RIÊNG CHO KHÁCH HÀNG
+           ========================================================= */
+        #ai-assistant-fab {
+            position: fixed;
+            bottom: 26px;
+            right: 26px;
+            z-index: 1050;
+            background: linear-gradient(135deg, #1D4ED8 0%, #4338CA 100%);
+            color: #FFFFFF;
+            border: none;
+            border-radius: 999px;
+            padding: 13px 22px;
+            font-weight: 700;
+            font-size: 0.93rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 12px 30px rgba(29, 78, 216, 0.4);
+            cursor: pointer;
+            transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.25s ease;
+        }
+
+        #ai-assistant-fab:hover {
+            transform: translateY(-4px) scale(1.03);
+            box-shadow: 0 16px 36px rgba(29, 78, 216, 0.52);
+        }
+
+        .ai-fab-pulse {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #34D399;
+            box-shadow: 0 0 0 3px rgba(52, 211, 153, 0.35);
+        }
+
+        #ai-chat-window {
+            position: fixed;
+            bottom: 88px;
+            right: 26px;
+            width: 400px;
+            max-width: calc(100vw - 32px);
+            height: 540px;
+            max-height: calc(100vh - 115px);
+            background: #FFFFFF;
+            border: 1px solid #CBD5E1;
+            border-radius: 24px;
+            box-shadow: 0 24px 60px rgba(15, 23, 42, 0.22);
+            z-index: 1050;
+            display: none;
+            flex-direction: column;
+            overflow: hidden;
+            animation: chatPopIn 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+
+        @keyframes chatPopIn {
+            from { opacity: 0; transform: translateY(20px) scale(0.95); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        .ai-chat-header {
+            background: linear-gradient(135deg, #1D4ED8 0%, #4338CA 100%);
+            color: #FFFFFF;
+            padding: 15px 18px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .ai-chat-body {
+            flex: 1;
+            padding: 16px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            background: #F1F5F9;
+        }
+
+        .ai-msg {
+            max-width: 90%;
+            padding: 12px 14px;
+            border-radius: 16px;
+            font-size: 0.87rem;
+            line-height: 1.5;
+            animation: fadeUpReveal 0.25s ease;
+        }
+
+        .ai-msg-bot {
+            background: #FFFFFF;
+            color: #090D16;
+            border: 1px solid #CBD5E1;
+            border-bottom-left-radius: 4px;
+            align-self: flex-start;
+            box-shadow: 0 4px 12px rgba(15, 23, 42, 0.05);
+        }
+
+        .ai-msg-user {
+            background: linear-gradient(135deg, #1D4ED8, #4338CA);
+            color: #FFFFFF;
+            border-bottom-right-radius: 4px;
+            align-self: flex-end;
+        }
+
+        .ai-faq-box {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            margin-top: 10px;
+        }
+
+        .ai-faq-item {
+            text-align: left;
+            background: #F8FAFC;
+            color: #1D4ED8;
+            border: 1px solid #BFDBFE;
+            border-radius: 11px;
+            padding: 8px 11px;
+            font-size: 0.81rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+        }
+
+        .ai-faq-item:hover {
+            background: #1D4ED8;
+            color: #FFFFFF;
+            border-color: #1D4ED8;
+            transform: translateX(3px);
+        }
+
+        .ai-quick-chips {
+            padding: 8px 12px;
+            background: #FFFFFF;
+            border-top: 1px solid #E2E8F0;
+            display: flex;
+            gap: 6px;
+            overflow-x: auto;
+            white-space: nowrap;
+        }
+
+        .ai-chip {
+            background: #EFF6FF;
+            color: #1D4ED8;
+            border: 1px solid #93C5FD;
+            border-radius: 999px;
+            padding: 4px 11px;
+            font-size: 0.76rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .ai-chip:hover {
+            background: #1D4ED8;
+            color: #FFFFFF;
+        }
+
+        .ai-chat-footer {
+            padding: 10px 12px;
+            background: #FFFFFF;
+            border-top: 1px solid #CBD5E1;
+            display: flex;
+            gap: 8px;
+        }
+    </style>
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    <div id="scroll-progress"></div>
+    <div class="bright-aurora">
+        <div class="aurora-blob blob-1"></div>
+        <div class="aurora-blob blob-2"></div>
+        <div class="aurora-blob blob-3"></div>
+    </div>
+    <canvas id="cloud-particle-canvas"></canvas>
+
+    <!-- Thanh điều hướng phân quyền RBAC -->
+    <nav class="navbar navbar-expand-xl navbar-light wms-navbar sticky-top">
+        <div class="container">
+            <a class="navbar-brand wms-brand" href="/">
+                <span class="wms-brand-icon"><i class="bi bi-box-seam-fill"></i></span>
+                <span>Cloud<span class="text-gradient-brand">WMS</span></span>
+            </a>
+
+            <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#wmsMainNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="wmsMainNav">
+                <ul class="navbar-nav me-auto ms-xl-3 gap-1">
+                    <li class="nav-item">
+                        <a class="nav-link wms-nav-link" href="/"><i class="bi bi-house-door-fill me-1"></i> Trang chủ</a>
+                    </li>
+                    {% if user.is_authenticated %}
+                        <li class="nav-item">
+                            <a class="nav-link wms-nav-link" href="/products/"><i class="bi bi-boxes me-1"></i> Kho sản phẩm</a>
+                        </li>
+                        {% if user.is_staff %}
+                            <!-- KHU VỰC DÀNH RIÊNG CHO ADMIN -->
+                            <li class="nav-item">
+                                <a class="nav-link wms-nav-link" href="/dashboard/"><i class="bi bi-bar-chart-line-fill me-1"></i> Thống kê</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link wms-nav-link" href="/orders/"><i class="bi bi-receipt-cutoff me-1"></i> Quản lý đơn</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link wms-nav-link" href="/admin/"><i class="bi bi-shield-lock-fill me-1"></i> Quản trị</a>
+                            </li>
+                        {% else %}
+                            <!-- KHU VỰC DÀNH RIÊNG CHO KHÁCH HÀNG -->
+                            <li class="nav-item">
+                                <a class="nav-link wms-nav-link" href="/orders/create/"><i class="bi bi-cart-plus-fill me-1"></i> Đặt hàng</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link wms-nav-link" href="/my-orders/"><i class="bi bi-bag-check-fill me-1"></i> Đơn của tôi</a>
+                            </li>
+                        {% endif %}
+                    {% endif %}
+                </ul>
+
+                <div class="d-flex flex-wrap align-items-center gap-2 mt-3 mt-xl-0">
+                    {% if user.is_authenticated and user.is_staff %}
+                    <a href="/export-csv/" class="btn btn-primary btn-sm d-inline-flex align-items-center gap-1">
+                        <i class="bi bi-file-earmark-spreadsheet-fill"></i>
+                        <span>Xuất CSV</span>
+                    </a>
+                    {% endif %}
+
+                    <span class="cloud-status-pill d-none d-xxl-inline-flex">
+                        <span class="pulse-dot"></span> Render Live
+                    </span>
+
+                    {% if user.is_authenticated %}
+                        <div class="dropdown">
+                            <button class="btn btn-outline-secondary btn-sm dropdown-toggle d-flex align-items-center gap-2 bg-white text-dark border-secondary-subtle" type="button" data-bs-toggle="dropdown">
+                                <i class="bi bi-person-circle text-primary"></i>
+                                <span class="fw-bold">{{ user.username }}</span>
+                                {% if user.is_staff %}
+                                    <span class="badge bg-primary text-white" style="font-size: 0.65rem;">Admin</span>
+                                {% else %}
+                                    <span class="badge bg-info text-dark" style="font-size: 0.65rem;">Khách hàng</span>
+                                {% endif %}
+                            </button>
+                            <ul class="dropdown-menu dropdown-menu-end shadow-lg border-0 rounded-4 mt-2 p-2">
+                                <li><span class="dropdown-item-text small text-muted">Vai trò: {% if user.is_staff %}Quản trị viên{% else %}Khách hàng{% endif %}</span></li>
+                                <li><hr class="dropdown-divider"></li>
+                                {% if user.is_staff %}
+                                    <li><a class="dropdown-item rounded-3" href="/dashboard/"><i class="bi bi-bar-chart-line me-2 text-primary"></i>Bảng thống kê</a></li>
+                                    <li><a class="dropdown-item rounded-3" href="/export-csv/"><i class="bi bi-download me-2 text-success"></i>Tải báo cáo CSV</a></li>
+                                {% else %}
+                                    <li><a class="dropdown-item rounded-3" href="/orders/create/"><i class="bi bi-cart-plus me-2 text-primary"></i>Tạo đơn đặt hàng</a></li>
+                                    <li><a class="dropdown-item rounded-3" href="/my-orders/"><i class="bi bi-bag-check me-2 text-info"></i>Đơn hàng của tôi</a></li>
+                                {% endif %}
+                                <li><hr class="dropdown-divider"></li>
+                                <li>
+                                    <form method="post" action="/accounts/logout/">
+                                        {% csrf_token %}
+                                        <button type="submit" class="dropdown-item rounded-3 text-danger fw-semibold">
+                                            <i class="bi bi-box-arrow-right me-2"></i>Đăng xuất
+                                        </button>
+                                    </form>
+                                </li>
+                            </ul>
+                        </div>
+                    {% else %}
+                        <a href="/accounts/login/" class="btn btn-primary btn-sm px-3">
+                            <i class="bi bi-box-arrow-in-right me-1"></i> Đăng nhập
+                        </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Nội dung chính -->
+    <main class="container my-4 my-md-5">
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags|default:'info' }} alert-dismissible fade show border-0 shadow-sm rounded-4 mb-4 reveal-item" role="alert">
+                    <i class="bi bi-info-circle-fill me-2"></i> {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            {% endfor %}
+        {% endif %}
+
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Trợ lý ảo AI chỉ hiển thị cho Khách hàng (ẩn với Admin) -->
+    {% if not user.is_staff %}
+    <button id="ai-assistant-fab" type="button" onclick="toggleAiChat()">
+        <span class="ai-fab-pulse"></span>
+        <i class="bi bi-robot fs-5"></i>
+        <span>Hỗ trợ khách hàng</span>
+    </button>
+
+    <div id="ai-chat-window">
+        <div class="ai-chat-header">
+            <div class="d-flex align-items-center gap-2">
+                <i class="bi bi-headset fs-5"></i>
+                <div>
+                    <div class="fw-bold" style="font-size: 0.95rem;">Trợ Lý Hỗ Trợ Khách Hàng</div>
+                    <div style="font-size: 0.72rem; opacity: 0.92;">Giải đáp đặt hàng & tra cứu kho 24/7</div>
+                </div>
+            </div>
+            <button type="button" class="btn btn-sm text-white p-1" onclick="toggleAiChat()">
+                <i class="bi bi-x-lg"></i>
+            </button>
+        </div>
+
+        <div class="ai-chat-body" id="ai-chat-messages">
+            <div class="ai-msg ai-msg-bot">
+                Xin chào <strong>{% if user.is_authenticated %}{{ user.username }}{% else %}quý khách{% endif %}</strong>! 👋 Tôi có thể giúp gì cho bạn hôm nay? Hãy chọn câu hỏi bên dưới hoặc nhập thắc mắc của bạn nhé:
+                <div class="ai-faq-box">
+                    <button type="button" class="ai-faq-item" onclick="sendQuickAsk('Làm sao để tạo đơn đặt hàng mới?')">
+                        <span>1. Làm sao để tạo đơn đặt hàng mới?</span>
+                        <i class="bi bi-chevron-right"></i>
+                    </button>
+                    <button type="button" class="ai-faq-item" onclick="sendQuickAsk('Xem trạng thái đơn hàng đã đặt ở đâu?')">
+                        <span>2. Xem trạng thái đơn hàng đã đặt ở đâu?</span>
+                        <i class="bi bi-chevron-right"></i>
+                    </button>
+                    <button type="button" class="ai-faq-item" onclick="sendQuickAsk('Khi nào đơn hàng của tôi được duyệt?')">
+                        <span>3. Khi nào đơn hàng của tôi được duyệt?</span>
+                        <i class="bi bi-chevron-right"></i>
+                    </button>
+                    <button type="button" class="ai-faq-item" onclick="sendQuickAsk('Cách tìm nhanh sản phẩm theo tên hoặc mã SKU?')">
+                        <span>4. Tìm nhanh sản phẩm theo mã SKU thế nào?</span>
+                        <i class="bi bi-chevron-right"></i>
+                    </button>
+                    <button type="button" class="ai-faq-item" onclick="sendQuickAsk('Sản phẩm báo Sắp hết hoặc Tạm hết thì phải làm sao?')">
+                        <span>5. Hàng báo Sắp hết / Tạm hết thì làm sao?</span>
+                        <i class="bi bi-chevron-right"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="ai-quick-chips">
+            <button type="button" class="ai-chip" onclick="sendQuickAsk('Làm sao để tạo đơn đặt hàng mới?')">🛒 Cách đặt hàng</button>
+            <button type="button" class="ai-chip" onclick="sendQuickAsk('Xem trạng thái đơn hàng đã đặt ở đâu?')">📋 Đơn của tôi</button>
+            <button type="button" class="ai-chip" onclick="sendQuickAsk('Khi nào đơn hàng của tôi được duyệt?')">⏳ Thời gian duyệt</button>
+            <button type="button" class="ai-chip" onclick="sendQuickAsk('Sản phẩm báo Sắp hết hoặc Tạm hết thì phải làm sao?')">📦 Tồn kho</button>
+        </div>
+
+        <form class="ai-chat-footer" onsubmit="handleAiSubmit(event)">
+            <input type="text" id="ai-user-input" class="form-control form-control-sm" placeholder="Nhập câu hỏi của bạn..." autocomplete="off">
+            <button type="submit" class="btn btn-primary btn-sm px-3">
+                <i class="bi bi-send-fill"></i>
+            </button>
+        </form>
+    </div>
+    {% endif %}
+
+    <!-- Chân trang -->
+    <footer class="wms-footer">
+        <div class="container d-flex flex-column flex-sm-row justify-content-between align-items-center gap-2">
+            <div>
+                <strong class="text-dark">Cloud<span class="text-gradient-brand">WMS</span></strong> — Hệ Thống Quản Lý Kho Đám Mây (Nhóm 10)
+            </div>
+            <div>
+                Vận hành trên <span class="fw-semibold text-dark">Python / Django</span> & <span class="fw-semibold text-primary">Render Cloud PaaS</span>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // 1. Mạng lưới hạt đám mây 3D tươi sáng
+        const canvas = document.getElementById('cloud-particle-canvas');
+        const ctx = canvas.getContext('2d');
+        let particles = [];
+        let mouse = { x: null, y: null, radius: 170 };
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        window.addEventListener('mousemove', (e) => {
+            mouse.x = e.clientX;
+            mouse.y = e.clientY;
+            document.documentElement.style.setProperty('--mouse-x', e.clientX + 'px');
+            document.documentElement.style.setProperty('--mouse-y', e.clientY + 'px');
+        });
+
+        class CloudNode {
+            constructor() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.vx = (Math.random() - 0.5) * 0.55;
+                this.vy = (Math.random() - 0.5) * 0.55;
+                this.size = Math.random() * 2.4 + 1;
+                this.colorType = Math.random();
+            }
+            update() {
+                this.x += this.vx;
+                this.y += this.vy;
+                if (this.x < 0 || this.x > canvas.width) this.vx *= -1;
+                if (this.y < 0 || this.y > canvas.height) this.vy *= -1;
+            }
+            draw() {
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                if (this.colorType > 0.5) {
+                    ctx.fillStyle = 'rgba(29, 78, 216, 0.35)';
+                } else {
+                    ctx.fillStyle = 'rgba(8, 145, 178, 0.35)';
+                }
+                ctx.fill();
+            }
+        }
+
+        function initParticles() {
+            particles = [];
+            const count = Math.min(Math.floor((canvas.width * canvas.height) / 18000), 80);
+            for (let i = 0; i < count; i++) particles.push(new CloudNode());
+        }
+
+        function animateParticles() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            for (let i = 0; i < particles.length; i++) {
+                particles[i].update();
+                particles[i].draw();
+
+                for (let j = i + 1; j < particles.length; j++) {
+                    const dx = particles[i].x - particles[j].x;
+                    const dy = particles[i].y - particles[j].y;
+                    const dist = Math.hypot(dx, dy);
+                    if (dist < 135) {
+                        ctx.beginPath();
+                        ctx.strokeStyle = `rgba(29, 78, 216, ${(1 - dist / 135) * 0.14})`;
+                        ctx.lineWidth = 0.85;
+                        ctx.moveTo(particles[i].x, particles[i].y);
+                        ctx.lineTo(particles[j].x, particles[j].y);
+                        ctx.stroke();
+                    }
+                }
+
+                if (mouse.x !== null) {
+                    const dxm = particles[i].x - mouse.x;
+                    const dym = particles[i].y - mouse.y;
+                    const distM = Math.hypot(dxm, dym);
+                    if (distM < mouse.radius) {
+                        ctx.beginPath();
+                        ctx.strokeStyle = `rgba(67, 56, 202, ${(1 - distM / mouse.radius) * 0.35})`;
+                        ctx.lineWidth = 1.1;
+                        ctx.moveTo(particles[i].x, particles[i].y);
+                        ctx.lineTo(mouse.x, mouse.y);
+                        ctx.stroke();
+                    }
+                }
+            }
+            requestAnimationFrame(animateParticles);
+        }
+        initParticles();
+        animateParticles();
+
+        document.addEventListener('DOMContentLoaded', () => {
+            // 2. Tự động ẩn khối chữ "Kiến trúc & Tính năng cốt lõi" nếu còn trên trang chủ
+            document.querySelectorAll('main h1, main h2, main h3, main h4, main h5, main div').forEach(el => {
+                if (el.children.length <= 2 && el.textContent.includes('Kiến trúc & Tính năng cốt lõi')) {
+                    const rightCol = el.closest('[class*="col-"]');
+                    if (rightCol && rightCol.parentElement) {
+                        const leftCol = rightCol.previousElementSibling;
+                        rightCol.remove();
+                        if (leftCol) leftCol.className = 'col-12';
+                    }
+                }
+            });
+
+            // 3. Hiệu ứng 3D Tilt + Phản chiếu kính trên Card
+            const cards = document.querySelectorAll('main .card');
+            cards.forEach((card, index) => {
+                card.classList.add('reveal-item');
+                card.style.animationDelay = Math.min(index * 0.05, 0.5) + 's';
+
+                const glare = document.createElement('div');
+                glare.className = 'card-glare';
+                card.appendChild(glare);
+
+                card.addEventListener('mousemove', (e) => {
+                    const rect = card.getBoundingClientRect();
+                    const x = e.clientX - rect.left;
+                    const y = e.clientY - rect.top;
+                    const centerX = rect.width / 2;
+                    const centerY = rect.height / 2;
+
+                    const rotateX = ((y - centerY) / centerY) * -6;
+                    const rotateY = ((x - centerX) / centerX) * 6;
+
+                    card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(-6px) scale(1.015)`;
+                    card.style.setProperty('--glare-x', `${(x / rect.width) * 100}%`);
+                    card.style.setProperty('--glare-y', `${(y / rect.height) * 100}%`);
+                });
+
+                card.addEventListener('mouseleave', () => {
+                    card.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg) translateY(0) scale(1)';
+                });
+            });
+
+            // 4. Hiệu ứng gợn sóng khi bấm nút
+            document.querySelectorAll('.btn').forEach(btn => {
+                btn.addEventListener('click', function(e) {
+                    const circle = document.createElement('span');
+                    const diameter = Math.max(this.clientWidth, this.clientHeight);
+                    const rect = this.getBoundingClientRect();
+                    circle.style.width = circle.style.height = `${diameter}px`;
+                    circle.style.left = `${e.clientX - rect.left - diameter / 2}px`;
+                    circle.style.top = `${e.clientY - rect.top - diameter / 2}px`;
+                    circle.classList.add('btn-ripple');
+                    const oldRipple = this.querySelector('.btn-ripple');
+                    if (oldRipple) oldRipple.remove();
+                    this.appendChild(circle);
+                });
+            });
+
+            // Đánh dấu link active trên Navbar
+            const currentPath = window.location.pathname;
+            document.querySelectorAll('.wms-nav-link').forEach(link => {
+                if (link.getAttribute('href') === currentPath) {
+                    link.classList.add('active');
+                }
+            });
+        });
+
+        window.addEventListener('scroll', () => {
+            const winScroll = document.documentElement.scrollTop || document.body.scrollTop;
+            const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+            const scrolled = height > 0 ? (winScroll / height) * 100 : 0;
+            document.getElementById('scroll-progress').style.width = scrolled + '%';
+        });
+
+        // 5. Logic Trợ lý ảo dành riêng cho Khách hàng
+        function toggleAiChat() {
+            const chatWin = document.getElementById('ai-chat-window');
+            if (!chatWin) return;
+            if (chatWin.style.display === 'flex') {
+                chatWin.style.display = 'none';
+            } else {
+                chatWin.style.display = 'flex';
+                document.getElementById('ai-user-input').focus();
+            }
+        }
+
+        function appendMessage(text, sender) {
+            const box = document.getElementById('ai-chat-messages');
+            const msg = document.createElement('div');
+            msg.className = sender === 'user' ? 'ai-msg ai-msg-user' : 'ai-msg ai-msg-bot';
+            msg.innerHTML = text;
+            box.appendChild(msg);
+            box.scrollTop = box.scrollHeight;
+        }
+
+        function getBotResponse(query) {
+            const q = query.toLowerCase();
+            if (q.includes('tạo đơn') || q.includes('đặt hàng') || q.includes('mua')) {
+                return '🛒 <strong>Hướng dẫn tạo đơn đặt hàng:</strong><br>1. Bạn vào mục <strong>Trang chủ</strong> hoặc <strong>Kho sản phẩm</strong>.<br>2. Tìm mặt hàng đang hiển thị trạng thái <em>Sẵn hàng</em> và bấm nút <strong>Đặt hàng</strong> (hoặc bấm mục <strong>Đặt hàng</strong> trên thanh menu).<br>3. Chọn tên sản phẩm, nhập số lượng cần đặt (không vượt quá tồn kho hiện tại) và bấm <strong>Lưu / Gửi đơn</strong>.';
+            }
+            if (q.includes('trạng thái') || q.includes('đơn của tôi') || q.includes('đã đặt ở đâu')) {
+                return '📋 <strong>Theo dõi đơn hàng của bạn:</strong><br>Bạn bấm vào mục <strong>Đơn của tôi</strong> trên thanh menu trên cùng. Tại đây hiển thị toàn bộ lịch sử đơn bạn đã tạo kèm trạng thái:<br>• <strong>Chờ duyệt:</strong> Đơn đang chờ bộ phận kho xác nhận.<br>• <strong>Đã duyệt:</strong> Đơn đã được chấp nhận và xuất kho.<br>• <strong>Từ chối:</strong> Đơn không được duyệt (do thiếu hàng hoặc thông tin chưa hợp lệ).';
+            }
+            if (q.includes('duyệt') || q.includes('thời gian') || q.includes('khi nào')) {
+                return '⏳ <strong>Quy trình duyệt đơn hàng:</strong><br>Sau khi bạn gửi đơn đặt hàng thành công, hệ thống sẽ chuyển đơn sang hàng chờ xử lý của bộ phận kho. Ngay khi đơn được duyệt, số lượng hàng trong kho sẽ tự động cập nhật và trạng thái trong mục <strong>Đơn của tôi</strong> sẽ chuyển sang <em>Đã duyệt</em>.';
+            }
+            if (q.includes('tìm') || q.includes('sku') || q.includes('danh mục')) {
+                return '🔍 <strong>Cách tìm nhanh sản phẩm:</strong><br>Ngay tại <strong>Trang chủ</strong> hoặc trang <strong>Kho sản phẩm</strong>, bạn có thể:<br>• Chọn nhóm hàng ở ô <strong>-- Tất cả danh mục --</strong>.<br>• Hoặc gõ trực tiếp tên sản phẩm / mã SKU (ví dụ: <code>SKU-VT01</code>) vào ô tìm kiếm rồi bấm <strong>Tìm</strong>.';
+            }
+            if (q.includes('sắp hết') || q.includes('tạm hết') || q.includes('tồn kho')) {
+                return '📦 <strong>Lưu ý về số lượng tồn kho:</strong><br>• Nhãn <strong>Sẵn hàng</strong>: Kho còn nhiều, bạn có thể đặt số lượng lớn.<br>• Nhãn <strong>Sắp hết</strong>: Kho chỉ còn từ 1 đến 5 sản phẩm, bạn chỉ đặt được tối đa bằng số lượng còn lại.<br>• Nhãn <strong>Tạm hết</strong>: Sản phẩm đã hết hàng, vui lòng quay lại sau khi kho nhập thêm.';
+            }
+            return '👋 Tôi có thể hỗ trợ bạn các vấn đề về <strong>tìm kiếm sản phẩm</strong>, <strong>cách tạo đơn đặt hàng</strong>, <strong>kiểm tra số lượng tồn kho</strong> và <strong>theo dõi trạng thái đơn trong mục Đơn của tôi</strong>. Bạn hãy chọn một câu hỏi gợi ý hoặc mô tả cụ thể hơn nhé!';
+        }
+
+        function sendQuickAsk(question) {
+            appendMessage(question, 'user');
+            setTimeout(() => {
+                appendMessage(getBotResponse(question), 'bot');
+            }, 300);
+        }
+
+        function handleAiSubmit(e) {
+            e.preventDefault();
+            const input = document.getElementById('ai-user-input');
+            const text = input.value.trim();
+            if (!text) return;
+            appendMessage(text, 'user');
+            input.value = '';
+            setTimeout(() => {
+                appendMessage(getBotResponse(text), 'bot');
+            }, 350);
+        }
+    </script>
+    {% block extra_js %}{% endblock %}
+</body>
+</html>
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
