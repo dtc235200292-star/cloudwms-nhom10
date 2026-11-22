@@ -52,12 +52,10 @@ def dashboard(request):
         val=Sum(F("quantity") * F("price"))
     )["val"] or 0
 
-    # Doanh thu từ các đơn hàng đã duyệt
     approved_revenue = Order.objects.filter(status="approved").aggregate(
         rev=Sum(F("quantity") * F("product__price"))
     )["rev"] or 0
 
-    # Thống kê tồn kho theo danh mục
     categories = Category.objects.all()
     cat_labels = []
     cat_quantities = []
@@ -66,7 +64,6 @@ def dashboard(request):
         qty = Product.objects.filter(category=cat).aggregate(s=Sum("quantity"))["s"] or 0
         cat_quantities.append(qty)
 
-    # Top 5 sản phẩm xuất kho nhiều nhất
     top_products = (
         Order.objects.filter(status="approved")
         .values("product__name", "product__sku")
@@ -186,12 +183,14 @@ def product_delete(request, pk):
 @login_required
 @user_passes_test(is_admin)
 def stock_import(request):
-    """Chức năng Lập Phiếu Nhập Kho chuyên biệt dành cho Admin"""
+    """Chức năng Lập Phiếu Nhập Kho chuyên biệt kèm thông tin Nhà cung cấp & Mã lô"""
     products = Product.objects.select_related("category").all().order_by("name")
     selected_product_id = request.GET.get("product", "").strip()
 
     if request.method == "POST":
         product_id = request.POST.get("product_id")
+        supplier_name = request.POST.get("supplier_name", "").strip()
+        batch_code = request.POST.get("batch_code", "").strip()
         note = request.POST.get("note", "").strip()
         try:
             qty = int(request.POST.get("quantity", 0))
@@ -207,23 +206,92 @@ def stock_import(request):
         product.quantity += qty
         product.save()
 
+        details = []
+        if batch_code:
+            details.append(f"Lô: {batch_code}")
+        if supplier_name:
+            details.append(f"NCC: {supplier_name}")
+        if note:
+            details.append(note)
+        full_note = " | ".join(details) if details else f"Phiếu nhập kho (+{qty}) bởi {request.user.username}"
+
         StockHistory.objects.create(
             product=product,
             action="import",
             quantity=qty,
-            note=note or f"Phiếu nhập kho (+{qty}) bởi {request.user.username}"
+            note=full_note
         )
 
         messages.success(
             request,
             f"Nhập kho thành công +{qty} '{product.name}' (Tồn cũ: {old_qty} → Tồn mới: {product.quantity})."
         )
-        return redirect("dashboard")
+        return redirect("stock_history_list")
 
     return render(request, "inventory/stock_import.html", {
         "products": products,
         "selected_product_id": selected_product_id,
     })
+
+
+@login_required
+@user_passes_test(is_admin)
+def stock_history_list(request):
+    """Trang Sổ Cái Lịch Sử Nhập/Xuất Kho có bộ lọc toàn hệ thống"""
+    action_filter = request.GET.get("action", "").strip()
+    product_filter = request.GET.get("product", "").strip()
+    q = request.GET.get("q", "").strip()
+
+    histories = StockHistory.objects.select_related("product").all().order_by("-created_at")
+    products = Product.objects.all().order_by("name")
+
+    if action_filter in ["import", "export"]:
+        histories = histories.filter(action=action_filter)
+    if product_filter:
+        histories = histories.filter(product_id=product_filter)
+    if q:
+        histories = histories.filter(
+            Q(product__name__icontains=q) | Q(product__sku__icontains=q) | Q(note__icontains=q)
+        )
+
+    total_in = histories.filter(action="import").aggregate(s=Sum("quantity"))["s"] or 0
+    total_out = histories.filter(action="export").aggregate(s=Sum("quantity"))["s"] or 0
+
+    return render(request, "inventory/stock_history_list.html", {
+        "histories": histories,
+        "products": products,
+        "action_filter": action_filter,
+        "product_filter": product_filter,
+        "q": q,
+        "total_in": total_in,
+        "total_out": total_out,
+    })
+
+
+@login_required
+@user_passes_test(is_admin)
+def export_history_csv(request):
+    """Xuất file CSV Sổ cái lịch sử nhập xuất kho"""
+    response = HttpResponse(content_type="text/csv; charset=utf-8-sig")
+    response["Content-Disposition"] = 'attachment; filename="so_cai_lich_su_kho_cloudwms.csv"'
+
+    writer = csv.writer(response)
+    writer.writerow(["Mã phiếu", "Thời gian", "Loại giao dịch", "Mã SKU", "Tên sản phẩm", "Số lượng", "Diễn giải / Ghi chú"])
+
+    histories = StockHistory.objects.select_related("product").all().order_by("-created_at")
+    for h in histories:
+        loai = "Nhập kho (+)" if h.action == "import" else "Xuất kho (-)"
+        writer.writerow([
+            f"GD-{h.id}",
+            h.created_at.strftime("%d/%m/%Y %H:%M"),
+            loai,
+            h.product.sku,
+            h.product.name,
+            h.quantity,
+            h.note,
+        ])
+
+    return response
 
 
 @login_required
@@ -316,6 +384,7 @@ def order_cancel(request, pk):
 
 @login_required
 def order_invoice(request, pk):
+    """Trang xem & In Phiếu Xuất Kho / Hóa Đơn chuẩn A4"""
     if request.user.is_staff:
         order = get_object_or_404(Order, pk=pk)
     else:
