@@ -14,10 +14,10 @@
             --brand-primary: #1D4ED8;
             --brand-secondary: #0284C7;
             --brand-accent: #4F46E5;
-            --surface-glass: rgba(255, 255, 255, 0.78);
-            --surface-glass-hover: rgba(255, 255, 255, 0.93);
-            --border-crystal: rgba(255, 255, 255, 0.96);
-            --border-slate: rgba(203, 213, 225, 0.75);
+            --surface-glass: rgba(255, 255, 255, 0.80);
+            --surface-glass-hover: rgba(255, 255, 255, 0.95);
+            --border-crystal: rgba(255, 255, 255, 0.98);
+            --border-slate: rgba(203, 213, 225, 0.78);
             --text-dark: #0F172A;
             --text-muted: #475569;
             --shadow-bento:
@@ -36,7 +36,7 @@
         body {
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
             color: var(--text-dark);
-            background-color: #E7EFFA !important;
+            background-color: #E8F0FA !important;
             min-height: 100vh;
             display: flex;
             flex-direction: column;
@@ -45,101 +45,36 @@
         }
 
         /* =========================================================
-           1. HỆ THỐNG NỀN KHÔNG GIAN DOANH NGHIỆP 3D ĐA TẦNG
+           1. NỀN KHÔNG GIAN MODERN SAAS + SÓNG ĐỊA HÌNH 3D WEBGL
            ========================================================= */
-        #enterprise-aurora-canvas {
+        #saas-mesh-backdrop {
             position: fixed;
             inset: 0;
-            z-index: -4;
-            overflow: hidden;
-            pointer-events: none;
-            background:
-                radial-gradient(ellipse 85% 60% at 10% 8%, rgba(59, 130, 246, 0.26) 0%, transparent 58%),
-                radial-gradient(ellipse 80% 60% at 92% 12%, rgba(6, 182, 212, 0.26) 0%, transparent 58%),
-                radial-gradient(ellipse 75% 60% at 85% 90%, rgba(99, 102, 241, 0.22) 0%, transparent 58%),
-                radial-gradient(ellipse 70% 55% at 12% 92%, rgba(16, 185, 129, 0.15) 0%, transparent 58%),
-                linear-gradient(180deg, #F8FAFC 0%, #E7EFFB 50%, #DDE8F8 100%);
-        }
-
-        .aurora-wave {
-            position: absolute;
-            width: 140%;
-            height: 460px;
-            top: -120px;
-            left: -20%;
-            background: linear-gradient(90deg,
-                rgba(59, 130, 246, 0.16),
-                rgba(6, 182, 212, 0.22),
-                rgba(99, 102, 241, 0.18),
-                rgba(16, 185, 129, 0.14));
-            filter: blur(65px);
-            transform: rotate(-6deg);
-            animation: waveFlow 16s ease-in-out infinite alternate;
-        }
-
-        @keyframes waveFlow {
-            0% { transform: rotate(-6deg) translate3d(-3%, 0, 0) scaleY(1); }
-            50% { transform: rotate(-3deg) translate3d(3%, 25px, 0) scaleY(1.15); }
-            100% { transform: rotate(-7deg) translate3d(-2%, -15px, 0) scaleY(0.95); }
-        }
-
-        /* Sàn lưới không gian kiến trúc 3D + Luồng dữ liệu ánh sáng */
-        .cyber-perspective-floor {
-            position: fixed;
-            bottom: -22%;
-            left: -35%;
-            width: 170%;
-            height: 72%;
             z-index: -3;
             pointer-events: none;
-            background-image:
-                linear-gradient(rgba(29, 78, 216, 0.15) 1.5px, transparent 1.5px),
-                linear-gradient(90deg, rgba(29, 78, 216, 0.15) 1.5px, transparent 1.5px);
-            background-size: 60px 60px;
-            transform: perspective(600px) rotateX(66deg);
-            transform-origin: center top;
-            mask-image: linear-gradient(to bottom, transparent 0%, rgba(0, 0, 0, 0.75) 38%, rgba(0, 0, 0, 1) 100%);
-            -webkit-mask-image: linear-gradient(to bottom, transparent 0%, rgba(0, 0, 0, 0.75) 38%, rgba(0, 0, 0, 1) 100%);
-            animation: floorGridAdvance 10s linear infinite;
+            background:
+                radial-gradient(ellipse 80% 55% at 12% 6%, rgba(59, 130, 246, 0.22) 0%, transparent 58%),
+                radial-gradient(ellipse 75% 55% at 88% 10%, rgba(14, 165, 233, 0.22) 0%, transparent 58%),
+                radial-gradient(ellipse 70% 55% at 85% 92%, rgba(99, 102, 241, 0.20) 0%, transparent 58%),
+                radial-gradient(ellipse 65% 50% at 10% 90%, rgba(16, 185, 129, 0.14) 0%, transparent 58%),
+                linear-gradient(180deg, #F8FAFC 0%, #EAF1FC 52%, #DFE9F9 100%);
         }
 
-        @keyframes floorGridAdvance {
-            0% { background-position: 0 0, 0 0; }
-            100% { background-position: 0 60px, 0 60px; }
-        }
-
-        /* Các tia dữ liệu ánh sáng chạy dọc màn hình */
-        .data-stream-container {
+        /* Ánh sáng Spotlight đỉnh màn hình kiểu Vercel / Linear */
+        .top-spotlight-beam {
             position: fixed;
-            inset: 0;
+            top: -160px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 900px;
+            height: 360px;
             z-index: -2;
             pointer-events: none;
-            overflow: hidden;
+            background: radial-gradient(ellipse at center, rgba(37, 99, 235, 0.22) 0%, rgba(6, 182, 212, 0.10) 45%, transparent 72%);
+            filter: blur(30px);
         }
 
-        .data-beam {
-            position: absolute;
-            top: -180px;
-            width: 2px;
-            height: 160px;
-            background: linear-gradient(180deg, transparent, rgba(37, 99, 235, 0.45), rgba(6, 182, 212, 0.8), transparent);
-            border-radius: 999px;
-            animation: beamDrop linear infinite;
-        }
-
-        .beam-1 { left: 8%; animation-duration: 7s; animation-delay: 0s; }
-        .beam-2 { left: 26%; animation-duration: 9.5s; animation-delay: 2.5s; }
-        .beam-3 { left: 74%; animation-duration: 8s; animation-delay: 1.2s; }
-        .beam-4 { left: 91%; animation-duration: 10.5s; animation-delay: 4s; }
-
-        @keyframes beamDrop {
-            0% { transform: translateY(-180px); opacity: 0; }
-            20% { opacity: 0.9; }
-            80% { opacity: 0.9; }
-            100% { transform: translateY(115vh); opacity: 0; }
-        }
-
-        /* Sân khấu WebGL 3D Three.js */
+        /* Sân khấu WebGL 3D Sóng Địa Hình (3D Wave Mesh) */
         #webgl-3d-stage {
             position: fixed;
             inset: 0;
@@ -150,10 +85,10 @@
         /* Hào quang đuổi theo con trỏ chuột */
         #cursor-aura-follower {
             position: fixed;
-            width: 500px;
-            height: 500px;
+            width: 460px;
+            height: 460px;
             border-radius: 50%;
-            background: radial-gradient(circle, rgba(59, 130, 246, 0.12) 0%, rgba(6, 182, 212, 0.05) 40%, transparent 70%);
+            background: radial-gradient(circle, rgba(59, 130, 246, 0.11) 0%, rgba(6, 182, 212, 0.04) 40%, transparent 70%);
             transform: translate(-50%, -50%);
             pointer-events: none;
             z-index: 0;
@@ -164,7 +99,7 @@
            ========================================================= */
         #toast-notification-stack {
             position: fixed;
-            top: 84px;
+            top: 82px;
             right: 24px;
             z-index: 1090;
             display: flex;
@@ -180,7 +115,7 @@
             position: relative;
             overflow: hidden;
             border-radius: 18px;
-            padding: 16px 18px 19px 18px;
+            padding: 15px 18px 18px 18px;
             color: #FFFFFF;
             box-shadow: 0 22px 46px -10px rgba(6, 78, 59, 0.45), 0 6px 16px rgba(15, 23, 42, 0.14);
             backdrop-filter: blur(18px);
@@ -188,7 +123,7 @@
             border: 1px solid rgba(255, 255, 255, 0.36);
             display: flex;
             align-items: flex-start;
-            gap: 14px;
+            gap: 13px;
             animation: toastSlideIn 0.44s cubic-bezier(0.22, 1, 0.36, 1) forwards;
         }
 
@@ -205,28 +140,28 @@
         }
 
         .pro-toast-icon {
-            width: 40px;
-            height: 40px;
-            border-radius: 12px;
+            width: 38px;
+            height: 38px;
+            border-radius: 11px;
             background: rgba(255, 255, 255, 0.22);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.3rem;
+            font-size: 1.25rem;
             flex-shrink: 0;
         }
 
         .pro-toast-body { flex-grow: 1; }
-        .pro-toast-title { font-weight: 800; font-size: 0.94rem; margin-bottom: 2px; }
-        .pro-toast-msg { font-size: 0.87rem; line-height: 1.44; opacity: 0.97; }
+        .pro-toast-title { font-weight: 800; font-size: 0.92rem; margin-bottom: 2px; }
+        .pro-toast-msg { font-size: 0.85rem; line-height: 1.44; opacity: 0.97; }
 
         .pro-toast-close {
             background: rgba(255, 255, 255, 0.18);
             border: none;
             color: #FFFFFF;
-            width: 28px;
-            height: 28px;
-            border-radius: 9px;
+            width: 26px;
+            height: 26px;
+            border-radius: 8px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -278,18 +213,18 @@
         }
 
         .navbar {
-            background: rgba(255, 255, 255, 0.78) !important;
+            background: rgba(255, 255, 255, 0.80) !important;
             backdrop-filter: blur(22px) saturate(190%);
             -webkit-backdrop-filter: blur(22px) saturate(190%);
-            border-bottom: 1px solid rgba(203, 213, 225, 0.75) !important;
+            border-bottom: 1px solid rgba(203, 213, 225, 0.78) !important;
             box-shadow: 0 4px 28px -6px rgba(15, 23, 42, 0.06);
             transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1);
-            padding-top: 0.75rem;
-            padding-bottom: 0.75rem;
+            padding-top: 0.72rem;
+            padding-bottom: 0.72rem;
         }
 
         .navbar.navbar-scrolled {
-            background: rgba(255, 255, 255, 0.94) !important;
+            background: rgba(255, 255, 255, 0.95) !important;
             padding-top: 0.45rem;
             padding-bottom: 0.45rem;
             box-shadow: 0 12px 32px -8px rgba(15, 23, 42, 0.12);
@@ -297,24 +232,24 @@
 
         .navbar-brand {
             font-weight: 900;
-            font-size: 1.32rem;
+            font-size: 1.3rem;
             letter-spacing: -0.03em;
             color: var(--text-dark) !important;
             display: flex;
             align-items: center;
-            gap: 11px;
+            gap: 10px;
         }
 
         .brand-logo-box {
-            width: 42px;
-            height: 42px;
-            border-radius: 13px;
+            width: 40px;
+            height: 40px;
+            border-radius: 12px;
             background: linear-gradient(135deg, #1D4ED8 0%, #0284C7 60%, #4F46E5 100%);
             color: #FFFFFF;
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.25rem;
+            font-size: 1.2rem;
             box-shadow: 0 10px 22px rgba(29, 78, 216, 0.32), inset 0 1px 1px rgba(255, 255, 255, 0.45);
             transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
         }
@@ -340,10 +275,10 @@
 
         .reveal-item, .card {
             opacity: 0;
-            transform: translateY(22px) scale(0.985);
+            transform: translateY(20px) scale(0.985);
             transition:
-                opacity 0.55s cubic-bezier(0.22, 1, 0.36, 1),
-                transform 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+                opacity 0.5s cubic-bezier(0.22, 1, 0.36, 1),
+                transform 0.32s cubic-bezier(0.22, 1, 0.36, 1),
                 box-shadow 0.3s ease,
                 outline-color 0.3s ease !important;
         }
@@ -393,7 +328,7 @@
         }
 
         .card-img-top {
-            height: 215px;
+            height: 210px;
             object-fit: contain;
             background: linear-gradient(180deg, rgba(255,255,255,0.96) 0%, rgba(248,250,252,0.9) 100%);
             padding: 18px;
@@ -444,7 +379,7 @@
             color: #1D4ED8 !important;
             border-radius: 13px !important;
             font-weight: 600 !important;
-            background: rgba(255, 255, 255, 0.85) !important;
+            background: rgba(255, 255, 255, 0.88) !important;
             transition: all 0.22s ease !important;
         }
 
@@ -464,7 +399,7 @@
             border: 1.5px solid #CBD5E1 !important;
             padding: 0.65rem 0.98rem !important;
             color: var(--text-dark) !important;
-            background-color: rgba(255, 255, 255, 0.95) !important;
+            background-color: rgba(255, 255, 255, 0.96) !important;
             font-weight: 500;
         }
 
@@ -486,14 +421,14 @@
             border: 1px solid #DBEAFE;
             padding: 2px 8px;
             border-radius: 7px;
-            font-size: 0.82rem;
+            font-size: 0.8rem;
             font-weight: 700;
         }
 
         .badge {
             font-weight: 700;
             letter-spacing: 0.02em;
-            padding: 0.46em 0.8em;
+            padding: 0.44em 0.78em;
             border-radius: 9px;
         }
 
@@ -519,10 +454,10 @@
             position: fixed;
             bottom: 24px;
             left: 24px;
-            width: 46px;
-            height: 46px;
-            border-radius: 15px;
-            background: rgba(255, 255, 255, 0.9);
+            width: 44px;
+            height: 44px;
+            border-radius: 14px;
+            background: rgba(255, 255, 255, 0.92);
             backdrop-filter: blur(12px);
             border: 1.5px solid #CBD5E1;
             color: #1D4ED8;
@@ -557,8 +492,8 @@
            ========================================================= */
         #cloudbot-widget {
             position: fixed;
-            bottom: 26px;
-            right: 26px;
+            bottom: 24px;
+            right: 24px;
             z-index: 1055;
             display: flex;
             flex-direction: column;
@@ -594,11 +529,10 @@
             transform: translateX(0);
         }
 
-        /* Quả cầu tròn 3D AI có nhịp thở */
         #cloudbot-orb-btn {
             position: relative;
-            width: 68px;
-            height: 68px;
+            width: 62px;
+            height: 62px;
             border-radius: 50%;
             border: none;
             cursor: pointer;
@@ -619,7 +553,6 @@
             transform: scale(1.1) translateY(-3px);
         }
 
-        /* Vòng sóng nhịp thở lan tỏa quanh quả cầu */
         #cloudbot-orb-btn::before,
         #cloudbot-orb-btn::after {
             content: "";
@@ -636,23 +569,21 @@
             border-color: rgba(99, 102, 241, 0.55);
         }
 
-        /* Vòng lõi năng lượng plasma xoay bên trong quả cầu */
         .ai-orb-plasma-ring {
             position: absolute;
-            inset: 7px;
+            inset: 6px;
             border-radius: 50%;
-            border: 2px dashed rgba(186, 230, 253, 0.75);
+            border: 2px dashed rgba(186, 230, 253, 0.78);
             animation: aiPlasmaSpin 9s linear infinite;
             pointer-events: none;
         }
 
-        /* Đốm sáng bóng thủy tinh 3D góc trên trái quả cầu */
         .ai-orb-specular {
             position: absolute;
-            top: 10px;
-            left: 14px;
-            width: 18px;
-            height: 10px;
+            top: 9px;
+            left: 13px;
+            width: 16px;
+            height: 9px;
             border-radius: 50%;
             background: rgba(255, 255, 255, 0.65);
             transform: rotate(-28deg);
@@ -664,7 +595,7 @@
             position: relative;
             z-index: 2;
             color: #FFFFFF;
-            font-size: 1.55rem;
+            font-size: 1.45rem;
             text-shadow: 0 0 12px rgba(255, 255, 255, 0.85);
             animation: aiIconFloat 3.4s ease-in-out infinite;
         }
@@ -679,7 +610,7 @@
                     inset 4px 5px 12px rgba(255, 255, 255, 0.65);
             }
             50% {
-                transform: scale(1.07);
+                transform: scale(1.06);
                 box-shadow:
                     0 18px 42px rgba(29, 78, 216, 0.65),
                     0 0 32px rgba(56, 189, 248, 0.7),
@@ -690,7 +621,7 @@
 
         @keyframes aiSonarPulse {
             0% { transform: scale(1); opacity: 0.85; }
-            100% { transform: scale(1.62); opacity: 0; }
+            100% { transform: scale(1.6); opacity: 0; }
         }
 
         @keyframes aiPlasmaSpin {
@@ -700,25 +631,25 @@
 
         @keyframes aiIconFloat {
             0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.1); }
+            50% { transform: scale(1.08); }
         }
 
         #cloudbot-box {
-            width: 370px;
-            max-width: calc(100vw - 32px);
-            border-radius: 26px;
-            background: rgba(255, 255, 255, 0.96);
+            width: 365px;
+            max-width: calc(100vw - 28px);
+            border-radius: 24px;
+            background: rgba(255, 255, 255, 0.97);
             backdrop-filter: blur(20px);
             border: 1px solid rgba(203, 213, 225, 0.9);
             box-shadow: 0 28px 60px rgba(15, 23, 42, 0.25);
             overflow: hidden;
-            margin-bottom: 16px;
+            margin-bottom: 14px;
             display: none;
             animation: toastSlideIn 0.3s cubic-bezier(0.22, 1, 0.36, 1);
         }
 
         .cloudbot-messages {
-            height: 280px;
+            height: 270px;
             overflow-y: auto;
             padding: 1rem;
             background: #F8FAFC;
@@ -749,21 +680,158 @@
             max-width: 86%;
             align-self: flex-end;
         }
+
+        /* =========================================================
+           5. TỐI ƯU GIAO DIỆN MOBILE CHUẨN WEB APP (DƯỚI 768PX)
+           ========================================================= */
+        @media (max-width: 767.98px) {
+            main.container {
+                padding-left: 12px !important;
+                padding-right: 12px !important;
+                padding-top: 12px !important;
+            }
+
+            .navbar {
+                padding-top: 0.5rem !important;
+                padding-bottom: 0.5rem !important;
+            }
+
+            .navbar-brand {
+                font-size: 1.15rem !important;
+            }
+
+            .brand-logo-box {
+                width: 34px !important;
+                height: 34px !important;
+                border-radius: 10px !important;
+                font-size: 1.02rem !important;
+            }
+
+            .navbar-collapse {
+                background: rgba(255, 255, 255, 0.98);
+                backdrop-filter: blur(20px);
+                border: 1px solid #E2E8F0;
+                border-radius: 20px;
+                padding: 14px;
+                margin-top: 10px;
+                box-shadow: 0 20px 40px rgba(15, 23, 42, 0.14);
+            }
+
+            .navbar-collapse .nav-link {
+                padding: 0.65rem 0.9rem !important;
+                border-radius: 12px;
+                margin-bottom: 2px;
+            }
+
+            .card, .hero-showcase, #catalog-section {
+                border-radius: 18px !important;
+                transform: none !important;
+            }
+
+            .hero-showcase {
+                padding: 1.25rem !important;
+            }
+
+            .hero-showcase h1.display-5 {
+                font-size: 1.68rem !important;
+                line-height: 1.22 !important;
+            }
+
+            .hero-showcase p.lead {
+                font-size: 0.88rem !important;
+                line-height: 1.55 !important;
+                margin-bottom: 1.1rem !important;
+            }
+
+            /* 2 nút Hero nằm ngang bằng nhau 50% - 50% trên mobile */
+            .hero-action-group {
+                display: grid !important;
+                grid-template-columns: 1fr 1fr;
+                gap: 8px !important;
+                width: 100%;
+            }
+
+            .hero-action-group .btn {
+                font-size: 0.8rem !important;
+                padding: 0.6rem 0.45rem !important;
+                white-space: nowrap;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+
+            /* Thu gọn thẻ sản phẩm để lưới 2 cột trên điện thoại đẹp như app TMĐT */
+            .card-img-top {
+                height: 132px !important;
+                padding: 10px !important;
+                border-radius: 18px 18px 0 0 !important;
+            }
+
+            .product-card-col .card-body {
+                padding: 0.85rem !important;
+            }
+
+            .product-card-col .card-title {
+                font-size: 0.92rem !important;
+                line-height: 1.35;
+                display: -webkit-box;
+                -webkit-line-clamp: 2;
+                -webkit-box-orient: vertical;
+                overflow: hidden;
+            }
+
+            .product-card-col .card-text {
+                display: none !important;
+            }
+
+            .product-card-col .badge {
+                font-size: 0.65rem !important;
+                padding: 0.35em 0.55em !important;
+                margin: 8px !important;
+            }
+
+            /* Thu nhỏ Quả cầu AI góc dưới phải để không che sản phẩm */
+            #cloudbot-widget {
+                bottom: 14px !important;
+                right: 14px !important;
+            }
+
+            #cloudbot-orb-btn {
+                width: 48px !important;
+                height: 48px !important;
+            }
+
+            .ai-orb-core-icon {
+                font-size: 1.15rem !important;
+            }
+
+            .ai-orb-tooltip {
+                display: none !important;
+            }
+
+            #back-to-top-3d {
+                bottom: 14px !important;
+                left: 14px !important;
+                width: 38px !important;
+                height: 38px !important;
+                border-radius: 11px !important;
+            }
+
+            #toast-notification-stack {
+                top: 66px !important;
+                right: 12px !important;
+                left: 12px !important;
+                width: auto !important;
+                max-width: none !important;
+            }
+        }
     </style>
     {% block extra_css %}{% endblock %}
 </head>
 <body>
-<!-- Sân khấu nền không gian doanh nghiệp 3D -->
-<div id="enterprise-aurora-canvas">
-    <div class="aurora-wave"></div>
-</div>
-<div class="cyber-perspective-floor"></div>
-<div class="data-stream-container">
-    <div class="data-beam beam-1"></div>
-    <div class="data-beam beam-2"></div>
-    <div class="data-beam beam-3"></div>
-    <div class="data-beam beam-4"></div>
-</div>
+<!-- Sân khấu nền Modern SaaS + Sóng địa hình 3D WebGL -->
+<div id="saas-mesh-backdrop"></div>
+<div class="top-spotlight-beam"></div>
 <div id="webgl-3d-stage"></div>
 <div id="cursor-aura-follower"></div>
 
@@ -845,7 +913,7 @@
                 {% endif %}
             </ul>
 
-            <div class="d-flex align-items-center gap-2">
+            <div class="d-flex align-items-center gap-2 mt-2 mt-lg-0">
                 {% if user.is_authenticated %}
                     {% if user.is_staff %}
                         <a href="{% url 'export_inventory_csv' %}" class="btn btn-primary btn-sm px-3">
@@ -853,10 +921,12 @@
                         </a>
                     {% endif %}
 
-                    <div class="dropdown">
-                        <button class="btn btn-light border rounded-pill px-3 py-1.5 dropdown-toggle d-flex align-items-center gap-2 fw-semibold" type="button" data-bs-toggle="dropdown">
-                            <i class="bi bi-person-circle text-primary"></i>
-                            <span>{{ user.username }}</span>
+                    <div class="dropdown w-100">
+                        <button class="btn btn-light border rounded-pill px-3 py-1.5 dropdown-toggle d-flex align-items-center justify-content-between gap-2 fw-semibold w-100" type="button" data-bs-toggle="dropdown">
+                            <span class="d-flex align-items-center gap-2">
+                                <i class="bi bi-person-circle text-primary"></i>
+                                <span>{{ user.username }}</span>
+                            </span>
                             {% if user.is_staff %}
                                 <span class="badge bg-primary">Admin</span>
                             {% else %}
@@ -881,7 +951,7 @@
                         </ul>
                     </div>
                 {% else %}
-                    <a href="/accounts/login/" class="btn btn-primary px-4">Đăng nhập</a>
+                    <a href="/accounts/login/" class="btn btn-primary px-4 w-100">Đăng nhập</a>
                 {% endif %}
             </div>
         </div>
@@ -893,7 +963,7 @@
 </main>
 
 <footer class="py-4 mt-5 border-top bg-white bg-opacity-75 position-relative" style="z-index: 1;">
-    <div class="container d-flex flex-column flex-md-row justify-content-between align-items-center gap-2 small text-muted">
+    <div class="container d-flex flex-column flex-md-row justify-content-between align-items-center gap-2 small text-muted text-center text-md-start">
         <div><strong>CloudWMS Enterprise</strong> — Hệ Thống Quản Lý Kho Đám Mây & Đặt Đơn Trực Tuyến (Nhóm 10)</div>
         <div>Nền tảng: Python • Django • WebGL 3D • Cloud PaaS</div>
     </div>
@@ -1012,38 +1082,40 @@
                 if (entry.isIntersecting) {
                     setTimeout(() => {
                         entry.target.classList.add("is-visible");
-                    }, i * 55);
+                    }, i * 50);
                     revealObserver.unobserve(entry.target);
                 }
             });
-        }, { threshold: 0.08 });
+        }, { threshold: 0.06 });
 
         document.querySelectorAll(".reveal-item, .card").forEach(el => revealObserver.observe(el));
 
-        // 3. 3D Magnetic Tilt + Specular Glare cho toàn bộ Card
-        document.querySelectorAll(".card, .hero-showcase").forEach(card => {
-            card.addEventListener("mousemove", (e) => {
-                const rect = card.getBoundingClientRect();
-                const x = e.clientX - rect.left;
-                const y = e.clientY - rect.top;
-                card.style.setProperty("--mouse-x", `${x}px`);
-                card.style.setProperty("--mouse-y", `${y}px`);
+        // 3. 3D Magnetic Tilt + Specular Glare cho Desktop
+        if (window.innerWidth >= 768) {
+            document.querySelectorAll(".card, .hero-showcase").forEach(card => {
+                card.addEventListener("mousemove", (e) => {
+                    const rect = card.getBoundingClientRect();
+                    const x = e.clientX - rect.left;
+                    const y = e.clientY - rect.top;
+                    card.style.setProperty("--mouse-x", `${x}px`);
+                    card.style.setProperty("--mouse-y", `${y}px`);
 
-                if (card.classList.contains("card") && card.classList.contains("is-visible")) {
-                    const centerX = rect.width / 2;
-                    const centerY = rect.height / 2;
-                    const rotateX = ((y - centerY) / centerY) * -3.2;
-                    const rotateY = ((x - centerX) / centerX) * 3.2;
-                    card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(-5px) scale(1.01)`;
-                }
-            });
+                    if (card.classList.contains("card") && card.classList.contains("is-visible")) {
+                        const centerX = rect.width / 2;
+                        const centerY = rect.height / 2;
+                        const rotateX = ((y - centerY) / centerY) * -2.8;
+                        const rotateY = ((x - centerX) / centerX) * 2.8;
+                        card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(-4px) scale(1.01)`;
+                    }
+                });
 
-            card.addEventListener("mouseleave", () => {
-                if (card.classList.contains("card") && card.classList.contains("is-visible")) {
-                    card.style.transform = "perspective(1000px) rotateX(0deg) rotateY(0deg) translateY(0px) scale(1)";
-                }
+                card.addEventListener("mouseleave", () => {
+                    if (card.classList.contains("card") && card.classList.contains("is-visible")) {
+                        card.style.transform = "perspective(1000px) rotateX(0deg) rotateY(0deg) translateY(0px) scale(1)";
+                    }
+                });
             });
-        });
+        }
 
         // 4. Hào quang đuổi theo con trỏ chuột
         const aura = document.getElementById("cursor-aura-follower");
@@ -1054,94 +1126,68 @@
             }
         });
 
-        // 5. ENGINE ĐỒ HỌA WEBGL 3D THREE.JS (MẠNG LƯỚI CLOUD TOÀN MÀN HÌNH + KHỐI KHO VẬN 3D)
+        // 5. ENGINE ĐỒ HỌA WEBGL 3D MỚI: SÓNG ĐỊA HÌNH MA TRẬN 3D (3D TERRAIN WAVE MESH) + DATA NODES
         const container = document.getElementById("webgl-3d-stage");
         if (container && typeof THREE !== "undefined") {
             const scene = new THREE.Scene();
-            const camera = new THREE.PerspectiveCamera(52, window.innerWidth / window.innerHeight, 0.1, 1000);
-            camera.position.z = 28;
+            const camera = new THREE.PerspectiveCamera(55, window.innerWidth / window.innerHeight, 0.1, 1000);
+            camera.position.set(0, 9, 24);
+            camera.lookAt(0, 0, 0);
 
             const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
             renderer.setSize(window.innerWidth, window.innerHeight);
             renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
             container.appendChild(renderer.domElement);
 
-            // Cụm kiến trúc 3D bên trái & bên phải để tỏa sáng hai bên lề màn hình
-            const createCloudCluster = (px, py, pz, scale) => {
-                const group = new THREE.Group();
-                group.position.set(px, py, pz);
-                group.scale.set(scale, scale, scale);
+            // Tạo mặt lưới sóng địa hình 3D gợn sóng liên tục
+            const planeGeo = new THREE.PlaneGeometry(76, 46, 48, 30);
+            planeGeo.rotateX(-Math.PI * 0.42);
 
-                const outerGeo = new THREE.IcosahedronGeometry(5.5, 2);
-                const outerMat = new THREE.MeshBasicMaterial({
-                    color: 0x1d4ed8,
-                    wireframe: true,
-                    transparent: true,
-                    opacity: 0.15
-                });
-                const outer = new THREE.Mesh(outerGeo, outerMat);
-                group.add(outer);
+            const planeMat = new THREE.MeshBasicMaterial({
+                color: 0x2563eb,
+                wireframe: true,
+                transparent: true,
+                opacity: 0.14
+            });
+            const waveMesh = new THREE.Mesh(planeGeo, planeMat);
+            waveMesh.position.y = -4.5;
+            scene.add(waveMesh);
 
-                const ringGeo = new THREE.TorusGeometry(7.8, 0.04, 10, 80);
-                const ringMat = new THREE.MeshBasicMaterial({
-                    color: 0x06b6d4,
-                    transparent: true,
-                    opacity: 0.25
-                });
-                const ring = new THREE.Mesh(ringGeo, ringMat);
-                ring.rotation.x = 1.15;
-                group.add(ring);
+            // Tạo lớp hạt phát sáng nằm trên đỉnh các nút sóng 3D
+            const pointsMat = new THREE.PointsMaterial({
+                color: 0x06b6d4,
+                size: 0.22,
+                transparent: true,
+                opacity: 0.55
+            });
+            const wavePoints = new THREE.Points(planeGeo, pointsMat);
+            wavePoints.position.y = -4.5;
+            scene.add(wavePoints);
 
-                scene.add(group);
-                return { group, outer, ring };
-            };
-
-            const leftCluster = createCloudCluster(-14.5, 5.5, -4, 1.05);
-            const rightCluster = createCloudCluster(14.5, -2.5, -3, 1.15);
-
-            // Các khối hộp kho vận 3D bay lơ lửng khắp không gian
-            const floatingBoxes = [];
-            const boxGeo = new THREE.BoxGeometry(1.35, 1.35, 1.35);
-            const edgesGeo = new THREE.EdgesGeometry(boxGeo);
-            for (let i = 0; i < 14; i++) {
-                const lineMat = new THREE.LineBasicMaterial({
-                    color: i % 2 === 0 ? 0x2563eb : 0x0891b2,
+            // Các khối hộp kho vận 3D tinh thể bay nhẹ ở tầng trên
+            const floatingCubes = [];
+            const cubeGeo = new THREE.OctahedronGeometry(0.95, 0);
+            const cubeEdges = new THREE.EdgesGeometry(cubeGeo);
+            for (let i = 0; i < 10; i++) {
+                const mat = new THREE.LineBasicMaterial({
+                    color: i % 2 === 0 ? 0x1d4ed8 : 0x0891b2,
                     transparent: true,
                     opacity: 0.28
                 });
-                const box = new THREE.LineSegments(edgesGeo, lineMat);
-                box.position.set(
-                    (Math.random() - 0.5) * 44,
-                    (Math.random() - 0.5) * 26,
-                    (Math.random() - 0.5) * 14 - 4
+                const crystal = new THREE.LineSegments(cubeEdges, mat);
+                crystal.position.set(
+                    (Math.random() - 0.5) * 42,
+                    Math.random() * 12 - 1,
+                    (Math.random() - 0.5) * 18 - 4
                 );
-                box.userData = {
+                crystal.userData = {
                     rx: (Math.random() - 0.5) * 0.015,
                     ry: (Math.random() - 0.5) * 0.015,
                     phase: Math.random() * Math.PI * 2
                 };
-                scene.add(box);
-                floatingBoxes.push(box);
+                scene.add(crystal);
+                floatingCubes.push(crystal);
             }
-
-            // Đám mây 500 hạt không gian 3D
-            const particleCount = 500;
-            const particleGeo = new THREE.BufferGeometry();
-            const positions = new Float32Array(particleCount * 3);
-            for (let i = 0; i < particleCount * 3; i += 3) {
-                positions[i] = (Math.random() - 0.5) * 70;
-                positions[i + 1] = (Math.random() - 0.5) * 45;
-                positions[i + 2] = (Math.random() - 0.5) * 35;
-            }
-            particleGeo.setAttribute("position", new THREE.BufferAttribute(positions, 3));
-            const particleMat = new THREE.PointsMaterial({
-                color: 0x1d4ed8,
-                size: 0.17,
-                transparent: true,
-                opacity: 0.45
-            });
-            const particleCloud = new THREE.Points(particleGeo, particleMat);
-            scene.add(particleCloud);
 
             let targetX = 0, targetY = 0;
             window.addEventListener("mousemove", (e) => {
@@ -1155,31 +1201,41 @@
                 renderer.setSize(window.innerWidth, window.innerHeight);
             });
 
-            function animateWebGL() {
-                requestAnimationFrame(animateWebGL);
+            const posAttr = planeGeo.attributes.position;
+            const initialY = new Float32Array(posAttr.count);
+            for (let i = 0; i < posAttr.count; i++) {
+                initialY[i] = posAttr.getY(i);
+            }
 
-                leftCluster.outer.rotation.y += 0.0025;
-                leftCluster.ring.rotation.z += 0.004;
+            let clockTime = 0;
+            function animateWave3D() {
+                requestAnimationFrame(animateWave3D);
+                clockTime += 0.022;
 
-                rightCluster.outer.rotation.y -= 0.0028;
-                rightCluster.ring.rotation.z -= 0.0045;
+                for (let i = 0; i < posAttr.count; i++) {
+                    const vx = posAttr.getX(i);
+                    const vz = posAttr.getZ(i);
+                    const waveHeight =
+                        Math.sin(vx * 0.16 + clockTime) * 1.35 +
+                        Math.cos(vz * 0.22 + clockTime * 0.85) * 1.15;
+                    posAttr.setY(i, initialY[i] + waveHeight);
+                }
+                posAttr.needsUpdate = true;
 
-                floatingBoxes.forEach(b => {
-                    b.rotation.x += b.userData.rx;
-                    b.rotation.y += b.userData.ry;
-                    b.userData.phase += 0.015;
-                    b.position.y += Math.sin(b.userData.phase) * 0.008;
+                floatingCubes.forEach(c => {
+                    c.rotation.x += c.userData.rx;
+                    c.rotation.y += c.userData.ry;
+                    c.userData.phase += 0.018;
+                    c.position.y += Math.sin(c.userData.phase) * 0.009;
                 });
 
-                particleCloud.rotation.y += 0.0008;
-
-                camera.position.x += (targetX * 3.0 - camera.position.x) * 0.04;
-                camera.position.y += (-targetY * 2.2 - camera.position.y) * 0.04;
-                camera.lookAt(0, 0, 0);
+                camera.position.x += (targetX * 3.5 - camera.position.x) * 0.04;
+                camera.position.y += (9 - targetY * 1.8 - camera.position.y) * 0.04;
+                camera.lookAt(0, -1, 0);
 
                 renderer.render(scene, camera);
             }
-            animateWebGL();
+            animateWave3D();
         }
     });
 
