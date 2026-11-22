@@ -1,9 +1,11 @@
 import csv
+from datetime import timedelta
 from django.http import HttpResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib import messages
 from django.db.models import Q, Sum, F
+from django.utils import timezone
 from .models import Category, Product, Order, StockHistory
 from .forms import ProductForm, OrderForm
 
@@ -303,20 +305,59 @@ def order_create(request):
 
     if request.method == "POST":
         form = OrderForm(request.POST)
+        receiver_name = request.POST.get("receiver_name", "").strip()
+        phone_number = request.POST.get("phone_number", "").strip()
+        shipping_address = request.POST.get("shipping_address", "").strip()
+        delivery_speed = request.POST.get("delivery_speed", "standard").strip()
+        extra_note = request.POST.get("extra_note", "").strip()
+
+        if not receiver_name or not phone_number or not shipping_address:
+            messages.error(request, "Vui lòng nhập đầy đủ Họ tên người nhận, Số điện thoại và Địa chỉ giao hàng!")
+            return render(request, "inventory/order_form.html", {
+                "form": form,
+                "receiver_name": receiver_name,
+                "phone_number": phone_number,
+                "shipping_address": shipping_address,
+                "delivery_speed": delivery_speed,
+                "extra_note": extra_note,
+            })
+
         if form.is_valid():
             order = form.save(commit=False)
             if order.quantity > order.product.quantity:
                 messages.error(request, f"Số lượng đặt ({order.quantity}) vượt quá tồn kho hiện tại ({order.product.quantity})!")
             else:
+                now_local = timezone.localtime(timezone.now())
+                if delivery_speed == "express":
+                    eta_time = now_local + timedelta(hours=4)
+                    speed_label = "Giao hỏa tốc (2 - 4 giờ)"
+                else:
+                    eta_time = now_local + timedelta(days=2)
+                    speed_label = "Giao tiêu chuẩn (1 - 2 ngày)"
+
+                eta_str = eta_time.strftime("%H:%M ngày %d/%m/%Y")
+                shipping_summary = (
+                    f"Người nhận: {receiver_name} | SĐT: {phone_number} | "
+                    f"Địa chỉ: {shipping_address} | Gói: {speed_label} | "
+                    f"Dự kiến giao: {eta_str}"
+                )
+                if extra_note:
+                    shipping_summary += f" | Ghi chú: {extra_note}"
+
                 order.user = request.user
                 order.status = "pending"
+                if hasattr(order, "note"):
+                    order.note = shipping_summary
                 order.save()
-                messages.success(request, "Đã gửi đơn đặt hàng! Vui lòng chờ Admin duyệt.")
+                messages.success(request, f"Đặt hàng thành công! Thời gian giao dự kiến: {eta_str}.")
                 return redirect("my_orders")
     else:
         form = OrderForm(initial=initial_data)
 
-    return render(request, "inventory/order_form.html", {"form": form})
+    return render(request, "inventory/order_form.html", {
+        "form": form,
+        "receiver_name": request.user.get_full_name() or request.user.username,
+    })
 
 
 @login_required
@@ -384,7 +425,6 @@ def order_cancel(request, pk):
 
 @login_required
 def order_invoice(request, pk):
-    """Trang xem & In Phiếu Xuất Kho / Hóa Đơn chuẩn A4"""
     if request.user.is_staff:
         order = get_object_or_404(Order, pk=pk)
     else:
