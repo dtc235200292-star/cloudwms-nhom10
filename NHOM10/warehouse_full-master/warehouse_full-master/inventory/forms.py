@@ -1,35 +1,62 @@
 from django import forms
-from .models import Product, Order, Category, Supplier
+from .models import Order, Product
 
 
 class ProductForm(forms.ModelForm):
     class Meta:
         model = Product
-        fields = ["category", "supplier", "name", "sku", "quantity", "price", "image", "status"]
+        fields = ["sku", "name", "category", "unit", "price", "stock", "description", "image"]
+        widgets = {
+            "sku": forms.TextInput(attrs={"class": "form-control", "placeholder": "VD: SP001"}),
+            "name": forms.TextInput(attrs={"class": "form-control", "placeholder": "Tên sản phẩm"}),
+            "category": forms.TextInput(attrs={"class": "form-control", "placeholder": "Danh mục"}),
+            "unit": forms.TextInput(attrs={"class": "form-control", "placeholder": "Cái, Hộp, Thùng..."}),
+            "price": forms.NumberInput(attrs={"class": "form-control", "min": "0"}),
+            "stock": forms.NumberInput(attrs={"class": "form-control", "min": "0"}),
+            "description": forms.Textarea(attrs={"class": "form-control", "rows": 3}),
+            "image": forms.ClearableFileInput(attrs={"class": "form-control"}),
+        }
 
-    def clean_image(self):
-        image = self.cleaned_data.get("image")
-        if image:
-            if image.size > 2 * 1024 * 1024:
-                raise forms.ValidationError("Ảnh không được vượt quá 2MB.")
-            if not image.name.lower().endswith((".jpg", ".jpeg", ".png")):
-                raise forms.ValidationError("Chỉ cho phép ảnh JPG, JPEG hoặc PNG.")
-        return image
+
+class StockImportForm(forms.Form):
+    product = forms.ModelChoiceField(
+        queryset=Product.objects.all(),
+        label="Sản phẩm nhập kho",
+        widget=forms.Select(attrs={"class": "form-select"}),
+    )
+    quantity = forms.IntegerField(
+        min_value=1,
+        label="Số lượng nhập",
+        widget=forms.NumberInput(attrs={"class": "form-control", "min": "1", "placeholder": "Nhập số lượng > 0"}),
+    )
+    batch_code = forms.CharField(
+        required=False,
+        max_length=50,
+        label="Mã lô hàng",
+        widget=forms.TextInput(attrs={"class": "form-control", "placeholder": "VD: LO-2026-01"}),
+    )
+    supplier = forms.CharField(
+        required=False,
+        max_length=120,
+        label="Nhà cung cấp",
+        widget=forms.TextInput(attrs={"class": "form-control", "placeholder": "Tên nhà cung cấp"}),
+    )
+    note = forms.CharField(
+        required=False,
+        max_length=255,
+        label="Ghi chú nhập kho",
+        widget=forms.TextInput(attrs={"class": "form-control", "placeholder": "Ghi chú thêm (nếu có)"}),
+    )
 
 
 class OrderForm(forms.ModelForm):
     class Meta:
         model = Order
-        fields = ["product", "quantity", "note"]
-
-
-class CategoryForm(forms.ModelForm):
-    class Meta:
-        model = Category
-        fields = ["name", "description"]
-
-
-class SupplierForm(forms.ModelForm):
-    class Meta:
-        model = Supplier
-        fields = ["name", "phone", "address"]
+        fields = ["customer_name", "phone", "address", "delivery_method", "note"]
+        widgets = {
+            "customer_name": forms.TextInput(attrs={"class": "form-control", "placeholder": "Họ tên người nhận"}),
+            "phone": forms.TextInput(attrs={"class": "form-control", "placeholder": "Số điện thoại liên hệ"}),
+            "address": forms.TextInput(attrs={"class": "form-control", "placeholder": "Địa chỉ giao hàng"}),
+            "delivery_method": forms.Select(attrs={"class": "form-select"}),
+            "note": forms.Textarea(attrs={"class": "form-control", "rows": 2, "placeholder": "Ghi chú đơn hàng"}),
+        }
