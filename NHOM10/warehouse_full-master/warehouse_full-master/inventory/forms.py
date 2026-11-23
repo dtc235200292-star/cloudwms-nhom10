@@ -5,16 +5,16 @@ from .models import Order, Product
 class ProductForm(forms.ModelForm):
     class Meta:
         model = Product
-        fields = ["sku", "name", "category", "unit", "price", "stock", "description", "image"]
+        fields = ["category", "supplier", "name", "sku", "quantity", "price", "image", "status"]
         widgets = {
-            "sku": forms.TextInput(attrs={"class": "form-control", "placeholder": "VD: SP001"}),
+            "category": forms.Select(attrs={"class": "form-select"}),
+            "supplier": forms.Select(attrs={"class": "form-select"}),
             "name": forms.TextInput(attrs={"class": "form-control", "placeholder": "Tên sản phẩm"}),
-            "category": forms.TextInput(attrs={"class": "form-control", "placeholder": "Danh mục"}),
-            "unit": forms.TextInput(attrs={"class": "form-control", "placeholder": "Cái, Hộp, Thùng..."}),
+            "sku": forms.TextInput(attrs={"class": "form-control", "placeholder": "VD: SP001"}),
+            "quantity": forms.NumberInput(attrs={"class": "form-control", "min": "0"}),
             "price": forms.NumberInput(attrs={"class": "form-control", "min": "0"}),
-            "stock": forms.NumberInput(attrs={"class": "form-control", "min": "0"}),
-            "description": forms.Textarea(attrs={"class": "form-control", "rows": 3}),
             "image": forms.ClearableFileInput(attrs={"class": "form-control"}),
+            "status": forms.Select(attrs={"class": "form-select"}),
         }
 
 
@@ -29,34 +29,20 @@ class StockImportForm(forms.Form):
         label="Số lượng nhập",
         widget=forms.NumberInput(attrs={"class": "form-control", "min": "1", "placeholder": "Nhập số lượng > 0"}),
     )
-    batch_code = forms.CharField(
-        required=False,
-        max_length=50,
-        label="Mã lô hàng",
-        widget=forms.TextInput(attrs={"class": "form-control", "placeholder": "VD: LO-2026-01"}),
-    )
-    supplier = forms.CharField(
-        required=False,
-        max_length=120,
-        label="Nhà cung cấp",
-        widget=forms.TextInput(attrs={"class": "form-control", "placeholder": "Tên nhà cung cấp"}),
-    )
     note = forms.CharField(
         required=False,
         max_length=255,
         label="Ghi chú nhập kho",
-        widget=forms.TextInput(attrs={"class": "form-control", "placeholder": "Ghi chú thêm (nếu có)"}),
+        widget=forms.TextInput(attrs={"class": "form-control", "placeholder": "Mã lô, nhà cung cấp hoặc ghi chú..."}),
     )
 
 
 class OrderForm(forms.ModelForm):
     class Meta:
         model = Order
-        fields = ["customer_name", "phone", "address", "delivery_method", "note"]
+        fields = ["product", "quantity", "note"]
         widgets = {
-            "customer_name": forms.TextInput(attrs={"class": "form-control", "placeholder": "Họ tên người nhận"}),
-            "phone": forms.TextInput(attrs={"class": "form-control", "placeholder": "Số điện thoại liên hệ"}),
-            "address": forms.TextInput(attrs={"class": "form-control", "placeholder": "Địa chỉ giao hàng"}),
-            "delivery_method": forms.Select(attrs={"class": "form-select"}),
-            "note": forms.Textarea(attrs={"class": "form-control", "rows": 2, "placeholder": "Ghi chú đơn hàng"}),
+            "product": forms.Select(attrs={"class": "form-select"}),
+            "quantity": forms.NumberInput(attrs={"class": "form-control", "min": "1", "value": "1"}),
+            "note": forms.Textarea(attrs={"class": "form-control", "rows": 3, "placeholder": "Địa chỉ nhận hàng, SĐT hoặc ghi chú..."}),
         }
