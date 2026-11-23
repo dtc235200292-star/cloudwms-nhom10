@@ -1,56 +1,62 @@
-{% extends "base.html" %}
-{% block content %}
+from django import forms
+from .models import Order, Product
 
-<section class="page-section">
-    <div class="container">
-        <div class="row justify-content-center">
-            <div class="col-lg-7">
 
-                <div class="card card-pro">
-                    <div class="card-body p-4 p-md-5">
-                        <div class="d-flex align-items-center gap-3 mb-4 pb-3 border-bottom">
-                            <div class="bg-primary bg-opacity-10 text-primary rounded-4 p-3">
-                                <i class="bi bi-pencil-square fs-4"></i>
-                            </div>
-                            <div>
-                                <h3 class="section-title mb-0">{{ title }}</h3>
-                                <p class="text-muted small mb-0">Vui lòng điền đầy đủ các thông tin bên dưới</p>
-                            </div>
-                        </div>
+class ProductForm(forms.ModelForm):
+    class Meta:
+        model = Product
+        fields = ["sku", "name", "category", "unit", "price", "stock", "description", "image"]
+        widgets = {
+            "sku": forms.TextInput(attrs={"class": "form-control", "placeholder": "VD: SP001"}),
+            "name": forms.TextInput(attrs={"class": "form-control", "placeholder": "Tên sản phẩm"}),
+            "category": forms.TextInput(attrs={"class": "form-control", "placeholder": "Danh mục"}),
+            "unit": forms.TextInput(attrs={"class": "form-control", "placeholder": "Cái, Hộp, Thùng..."}),
+            "price": forms.NumberInput(attrs={"class": "form-control", "min": "0"}),
+            "stock": forms.NumberInput(attrs={"class": "form-control", "min": "0"}),
+            "description": forms.Textarea(attrs={"class": "form-control", "rows": 3}),
+            "image": forms.ClearableFileInput(attrs={"class": "form-control"}),
+        }
 
-                        <form method="post" enctype="multipart/form-data">
-                            {% csrf_token %}
 
-                            {% for field in form %}
-                            <div class="mb-3">
-                                <label class="form-label fw-semibold text-dark" for="{{ field.id_for_label }}">
-                                    {{ field.label }}
-                                </label>
-                                {{ field }}
-                                {% if field.help_text %}
-                                <div class="form-text">{{ field.help_text }}</div>
-                                {% endif %}
-                                {% for error in field.errors %}
-                                <div class="text-danger small mt-1"><i class="bi bi-exclamation-circle me-1"></i>{{ error }}</div>
-                                {% endfor %}
-                            </div>
-                            {% endfor %}
+class StockImportForm(forms.Form):
+    product = forms.ModelChoiceField(
+        queryset=Product.objects.all(),
+        label="Sản phẩm nhập kho",
+        widget=forms.Select(attrs={"class": "form-select"}),
+    )
+    quantity = forms.IntegerField(
+        min_value=1,
+        label="Số lượng nhập",
+        widget=forms.NumberInput(attrs={"class": "form-control", "min": "1", "placeholder": "Nhập số lượng > 0"}),
+    )
+    batch_code = forms.CharField(
+        required=False,
+        max_length=50,
+        label="Mã lô hàng",
+        widget=forms.TextInput(attrs={"class": "form-control", "placeholder": "VD: LO-2026-01"}),
+    )
+    supplier = forms.CharField(
+        required=False,
+        max_length=120,
+        label="Nhà cung cấp",
+        widget=forms.TextInput(attrs={"class": "form-control", "placeholder": "Tên nhà cung cấp"}),
+    )
+    note = forms.CharField(
+        required=False,
+        max_length=255,
+        label="Ghi chú nhập kho",
+        widget=forms.TextInput(attrs={"class": "form-control", "placeholder": "Ghi chú thêm (nếu có)"}),
+    )
 
-                            <div class="d-flex gap-2 mt-4 pt-3 border-top">
-                                <button class="btn btn-main px-4 py-2" type="submit">
-                                    <i class="bi bi-check2-circle me-1"></i> Lưu thông tin
-                                </button>
-                                <a class="btn btn-outline-secondary rounded-3 px-4 py-2" href="javascript:history.back()">
-                                    Hủy bỏ
-                                </a>
-                            </div>
-                        </form>
-                    </div>
-                </div>
 
-            </div>
-        </div>
-    </div>
-</section>
-
-{% endblock %}
+class OrderForm(forms.ModelForm):
+    class Meta:
+        model = Order
+        fields = ["customer_name", "phone", "address", "delivery_method", "note"]
+        widgets = {
+            "customer_name": forms.TextInput(attrs={"class": "form-control", "placeholder": "Họ tên người nhận"}),
+            "phone": forms.TextInput(attrs={"class": "form-control", "placeholder": "Số điện thoại liên hệ"}),
+            "address": forms.TextInput(attrs={"class": "form-control", "placeholder": "Địa chỉ giao hàng"}),
+            "delivery_method": forms.Select(attrs={"class": "form-select"}),
+            "note": forms.Textarea(attrs={"class": "form-control", "rows": 2, "placeholder": "Ghi chú đơn hàng"}),
+        }
