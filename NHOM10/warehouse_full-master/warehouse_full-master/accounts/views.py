@@ -6,7 +6,7 @@ import urllib.parse
 import urllib.request
 
 from django.contrib import messages
-from django.contrib.auth import login
+from django.contrib.auth import login, logout
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from django.shortcuts import redirect, render
@@ -26,6 +26,12 @@ def register(request):
         form = UserCreationForm()
 
     return render(request, "accounts/register.html", {"form": form})
+
+
+def logout_view(request):
+    logout(request)
+    messages.info(request, "Bạn đã đăng xuất khỏi hệ thống.")
+    return redirect("home")
 
 
 def google_login(request):
