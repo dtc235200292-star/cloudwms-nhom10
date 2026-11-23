@@ -1,507 +1,405 @@
-import csv
 from datetime import timedelta
-from django.http import HttpResponse
-from django.shortcuts import render, redirect, get_object_or_404
-from django.contrib.auth.decorators import login_required, user_passes_test
-from django.contrib.auth.signals import user_logged_in
-from django.dispatch import receiver
+from decimal import Decimal
+import re
+
 from django.contrib import messages
-from django.db.models import Q, Sum, F
+from django.contrib.auth import login
+from django.contrib.auth.decorators import login_required, user_passes_test
+from django.contrib.auth.models import User
+from django.db import transaction
+from django.db.models import Sum
+from django.shortcuts import get_object_or_404, redirect, render
 from django.utils import timezone
-from .models import Category, Product, Order, StockHistory
-from .forms import ProductForm, OrderForm
+
+from .forms import OrderForm, ProductForm, StockImportForm
+from .models import Order, OrderItem, Product, StockHistory
 
 
-def is_admin(user):
+def is_admin_user(user):
     return user.is_authenticated and user.is_staff
 
 
 def home(request):
-    q = request.GET.get("q", "").strip()
-    selected_category = request.GET.get("category", "").strip()
-
-    products = Product.objects.select_related("category").all().order_by("-id")
-    categories = Category.objects.all().order_by("name")
-
-    if selected_category:
-        products = products.filter(category_id=selected_category)
-
-    if q:
-        products = products.filter(Q(name__icontains=q) | Q(sku__icontains=q))
-
-    return render(request, "inventory/home.html", {
-        "products": products,
-        "categories": categories,
-        "q": q,
-        "selected_category": selected_category,
-    })
-
-
-@login_required
-@user_passes_test(is_admin)
-def dashboard(request):
-    total_products = Product.objects.count()
-    total_stock = Product.objects.aggregate(total=Sum("quantity"))["total"] or 0
-    out_of_stock_count = Product.objects.filter(quantity=0).count()
-    low_stock_products = Product.objects.filter(quantity__lte=5).order_by("quantity")
-
-    pending_orders = Order.objects.filter(status="pending").count()
-    approved_orders = Order.objects.filter(status="approved").count()
-    rejected_orders = Order.objects.filter(status="rejected").count()
-
-    total_imported = StockHistory.objects.filter(action="import").aggregate(s=Sum("quantity"))["s"] or 0
-    total_exported = StockHistory.objects.filter(action="export").aggregate(s=Sum("quantity"))["s"] or 0
-
-    total_value = Product.objects.aggregate(
-        val=Sum(F("quantity") * F("price"))
-    )["val"] or 0
-
-    approved_revenue = Order.objects.filter(status="approved").aggregate(
-        rev=Sum(F("quantity") * F("product__price"))
-    )["rev"] or 0
-
-    categories = Category.objects.all()
-    cat_labels = []
-    cat_quantities = []
-    for cat in categories:
-        cat_labels.append(cat.name)
-        qty = Product.objects.filter(category=cat).aggregate(s=Sum("quantity"))["s"] or 0
-        cat_quantities.append(qty)
-
-    top_products = (
-        Order.objects.filter(status="approved")
-        .values("product__name", "product__sku")
-        .annotate(total_sold=Sum("quantity"))
-        .order_by("-total_sold")[:5]
-    )
-
-    recent_orders = Order.objects.select_related("product", "user").order_by("-created_at")[:6]
-    recent_histories = StockHistory.objects.select_related("product").order_by("-created_at")[:8]
-
-    return render(request, "inventory/dashboard.html", {
-        "total_products": total_products,
-        "total_stock": total_stock,
-        "out_of_stock_count": out_of_stock_count,
-        "low_stock_products": low_stock_products,
-        "pending_orders": pending_orders,
-        "approved_orders": approved_orders,
-        "rejected_orders": rejected_orders,
-        "total_imported": total_imported,
-        "total_exported": total_exported,
-        "total_value": total_value,
-        "approved_revenue": approved_revenue,
-        "cat_labels": cat_labels,
-        "cat_quantities": cat_quantities,
-        "top_products": top_products,
-        "recent_orders": recent_orders,
-        "recent_histories": recent_histories,
-    })
-
-
-@login_required
-@user_passes_test(is_admin)
-def export_inventory_csv(request):
-    response = HttpResponse(content_type="text/csv; charset=utf-8-sig")
-    response["Content-Disposition"] = 'attachment; filename="bao_cao_ton_kho_cloudwms.csv"'
-
-    writer = csv.writer(response)
-    writer.writerow(["Mã SKU", "Tên sản phẩm", "Danh mục", "Số lượng tồn", "Đơn giá (VNĐ)", "Tổng giá trị (VNĐ)", "Trạng thái"])
-
-    products = Product.objects.select_related("category").all().order_by("sku")
-    for p in products:
-        status = "Sẵn hàng" if p.quantity > 10 else ("Sắp hết" if p.quantity > 0 else "Tạm hết")
-        writer.writerow([
-            p.sku,
-            p.name,
-            p.category.name if p.category else "Chưa phân loại",
-            p.quantity,
-            int(p.price),
-            int(p.quantity * p.price),
-            status,
-        ])
-
-    return response
-
-
-@login_required
-def product_list(request):
-    q = request.GET.get("q", "").strip()
-    products = Product.objects.select_related("category").all().order_by("-id")
-    if q:
-        products = products.filter(Q(name__icontains=q) | Q(sku__icontains=q))
-    return render(request, "inventory/product_list.html", {"products": products, "q": q})
-
-
-@login_required
-@user_passes_test(is_admin)
-def product_create(request):
-    if request.method == "POST":
-        form = ProductForm(request.POST, request.FILES)
-        if form.is_valid():
-            product = form.save()
-            if product.quantity > 0:
-                StockHistory.objects.create(
-                    product=product,
-                    action="import",
-                    quantity=product.quantity,
-                    note="Nhập tồn kho ban đầu khi tạo sản phẩm mới"
-                )
-            messages.success(request, "Thêm sản phẩm mới thành công!")
-            return redirect("product_list")
-    else:
-        form = ProductForm()
-    return render(request, "inventory/product_form.html", {"form": form, "title": "Thêm sản phẩm mới"})
-
-
-@login_required
-@user_passes_test(is_admin)
-def product_update(request, pk):
-    product = get_object_or_404(Product, pk=pk)
-    if request.method == "POST":
-        form = ProductForm(request.POST, request.FILES, instance=product)
-        if "quantity" in form.fields:
-            form.fields["quantity"].disabled = True
-        if form.is_valid():
-            form.save()
-            messages.success(request, "Đã cập nhật thông tin sản phẩm. Để thay đổi tồn kho, vui lòng lập Phiếu Nhập Kho.")
-            return redirect("product_list")
-    else:
-        form = ProductForm(instance=product)
-        if "quantity" in form.fields:
-            form.fields["quantity"].disabled = True
-            form.fields["quantity"].help_text = "Khóa chỉnh sửa trực tiếp — Vui lòng dùng chức năng Lập Phiếu Nhập Kho để cộng tồn kho."
-    return render(request, "inventory/product_form.html", {"form": form, "title": "Cập nhật thông tin sản phẩm"})
-
-
-@login_required
-@user_passes_test(is_admin)
-def product_delete(request, pk):
-    product = get_object_or_404(Product, pk=pk)
-    if request.method == "POST":
-        product.delete()
-        messages.success(request, "Đã xóa sản phẩm khỏi kho.")
-        return redirect("product_list")
-    return render(request, "inventory/product_confirm_delete.html", {"product": product})
-
-
-@login_required
-@user_passes_test(is_admin)
-def stock_import(request):
-    """Chức năng Lập Phiếu Nhập Kho chuyên biệt kèm thông tin Nhà cung cấp & Mã lô"""
-    products = Product.objects.select_related("category").all().order_by("name")
-    selected_product_id = request.GET.get("product", "").strip()
-
-    if request.method == "POST":
-        product_id = request.POST.get("product_id")
-        supplier_name = request.POST.get("supplier_name", "").strip()
-        batch_code = request.POST.get("batch_code", "").strip()
-        note = request.POST.get("note", "").strip()
-        try:
-            qty = int(request.POST.get("quantity", 0))
-        except ValueError:
-            qty = 0
-
-        if not product_id or qty <= 0:
-            messages.error(request, "Vui lòng chọn sản phẩm và nhập số lượng nhập kho lớn hơn 0.")
-            return redirect("stock_import")
-
-        product = get_object_or_404(Product, pk=product_id)
-        old_qty = product.quantity
-        product.quantity += qty
-        product.save()
-
-        details = []
-        if batch_code:
-            details.append(f"Lô: {batch_code}")
-        if supplier_name:
-            details.append(f"NCC: {supplier_name}")
-        if note:
-            details.append(note)
-        full_note = " | ".join(details) if details else f"Phiếu nhập kho (+{qty}) bởi {request.user.username}"
-
-        StockHistory.objects.create(
-            product=product,
-            action="import",
-            quantity=qty,
-            note=full_note
-        )
-
-        messages.success(
-            request,
-            f"Nhập kho thành công +{qty} '{product.name}' (Tồn cũ: {old_qty} → Tồn mới: {product.quantity})."
-        )
-        return redirect("stock_history_list")
-
-    return render(request, "inventory/stock_import.html", {
-        "products": products,
-        "selected_product_id": selected_product_id,
-    })
-
-
-@login_required
-@user_passes_test(is_admin)
-def stock_history_list(request):
-    """Trang Sổ Cái Lịch Sử Nhập/Xuất Kho có bộ lọc toàn hệ thống"""
-    action_filter = request.GET.get("action", "").strip()
-    product_filter = request.GET.get("product", "").strip()
-    q = request.GET.get("q", "").strip()
-
-    histories = StockHistory.objects.select_related("product").all().order_by("-created_at")
-    products = Product.objects.all().order_by("name")
-
-    if action_filter in ["import", "export"]:
-        histories = histories.filter(action=action_filter)
-    if product_filter:
-        histories = histories.filter(product_id=product_filter)
-    if q:
-        histories = histories.filter(
-            Q(product__name__icontains=q) | Q(product__sku__icontains=q) | Q(note__icontains=q)
-        )
-
-    total_in = histories.filter(action="import").aggregate(s=Sum("quantity"))["s"] or 0
-    total_out = histories.filter(action="export").aggregate(s=Sum("quantity"))["s"] or 0
-
-    return render(request, "inventory/stock_history_list.html", {
-        "histories": histories,
-        "products": products,
-        "action_filter": action_filter,
-        "product_filter": product_filter,
-        "q": q,
-        "total_in": total_in,
-        "total_out": total_out,
-    })
-
-
-@login_required
-@user_passes_test(is_admin)
-def export_history_csv(request):
-    """Xuất file CSV Sổ cái lịch sử nhập xuất kho"""
-    response = HttpResponse(content_type="text/csv; charset=utf-8-sig")
-    response["Content-Disposition"] = 'attachment; filename="so_cai_lich_su_kho_cloudwms.csv"'
-
-    writer = csv.writer(response)
-    writer.writerow(["Mã phiếu", "Thời gian", "Loại giao dịch", "Mã SKU", "Tên sản phẩm", "Số lượng", "Diễn giải / Ghi chú"])
-
-    histories = StockHistory.objects.select_related("product").all().order_by("-created_at")
-    for h in histories:
-        loai = "Nhập kho (+)" if h.action == "import" else "Xuất kho (-)"
-        writer.writerow([
-            f"GD-{h.id}",
-            h.created_at.strftime("%d/%m/%Y %H:%M"),
-            loai,
-            h.product.sku,
-            h.product.name,
-            h.quantity,
-            h.note,
-        ])
-
-    return response
-
-
-@login_required
-def order_create(request):
-    initial_data = {}
-    product_param = request.GET.get("product")
-    if product_param:
-        initial_data["product"] = product_param
-
-    if request.method == "POST":
-        form = OrderForm(request.POST)
-        receiver_name = request.POST.get("receiver_name", "").strip()
-        phone_number = request.POST.get("phone_number", "").strip()
-        shipping_address = request.POST.get("shipping_address", "").strip()
-        delivery_speed = request.POST.get("delivery_speed", "standard").strip()
-        extra_note = request.POST.get("extra_note", "").strip()
-
-        if not receiver_name or not phone_number or not shipping_address:
-            messages.error(request, "Vui lòng nhập đầy đủ Họ tên người nhận, Số điện thoại và Địa chỉ giao hàng!")
-            return render(request, "inventory/order_form.html", {
-                "form": form,
-                "receiver_name": receiver_name,
-                "phone_number": phone_number,
-                "shipping_address": shipping_address,
-                "delivery_speed": delivery_speed,
-                "extra_note": extra_note,
-            })
-
-        if form.is_valid():
-            order = form.save(commit=False)
-            if order.quantity > order.product.quantity:
-                messages.error(request, f"Số lượng đặt ({order.quantity}) vượt quá tồn kho hiện tại ({order.product.quantity})!")
-            else:
-                now_local = timezone.localtime(timezone.now())
-                if delivery_speed == "express":
-                    eta_time = now_local + timedelta(hours=4)
-                    speed_label = "Giao hỏa tốc (2 - 4 giờ)"
-                else:
-                    eta_time = now_local + timedelta(days=2)
-                    speed_label = "Giao tiêu chuẩn (1 - 2 ngày)"
-
-                eta_str = eta_time.strftime("%H:%M ngày %d/%m/%Y")
-                shipping_summary = (
-                    f"Người nhận: {receiver_name} | SĐT: {phone_number} | "
-                    f"Địa chỉ: {shipping_address} | Gói: {speed_label} | "
-                    f"Dự kiến giao: {eta_str}"
-                )
-                if extra_note:
-                    shipping_summary += f" | Ghi chú: {extra_note}"
-
-                order.user = request.user
-                order.status = "pending"
-                if hasattr(order, "note"):
-                    order.note = shipping_summary
-                order.save()
-                messages.success(request, f"Tạo đơn hàng thành công! Thời gian giao dự kiến: {eta_str}.")
-                return redirect("my_orders")
-    else:
-        form = OrderForm(initial=initial_data)
-
-    return render(request, "inventory/order_form.html", {
-        "form": form,
-        "receiver_name": request.user.get_full_name() or request.user.username,
-    })
-
-
-@login_required
-def my_orders(request):
-    orders = Order.objects.select_related("product").filter(user=request.user).order_by("-created_at")
-    return render(request, "inventory/my_orders.html", {"orders": orders})
-
-
-@login_required
-@user_passes_test(is_admin)
-def order_list(request):
-    orders = Order.objects.select_related("product", "user").all().order_by("-created_at")
-    return render(request, "inventory/order_list.html", {"orders": orders})
-
-
-@login_required
-@user_passes_test(is_admin)
-def order_approve(request, pk):
-    order = get_object_or_404(Order, pk=pk)
-    if request.method == "POST" and order.status == "pending":
-        if order.product.quantity >= order.quantity:
-            order.product.quantity -= order.quantity
-            order.product.save()
-
-            order.status = "approved"
-            order.save()
-
-            StockHistory.objects.create(
-                product=order.product,
-                action="export",
-                quantity=order.quantity,
-                note=f"Xuất kho theo đơn #{order.id} của {order.user.username}"
-            )
-            messages.success(request, f"Đã duyệt đơn #{order.id} và trừ kho thành công.")
-        else:
-            messages.error(request, f"Không đủ hàng trong kho để duyệt đơn #{order.id}!")
-    return redirect("order_list")
-
-
-@login_required
-@user_passes_test(is_admin)
-def order_reject(request, pk):
-    order = get_object_or_404(Order, pk=pk)
-    if request.method == "POST" and order.status == "pending":
-        order.status = "rejected"
-        order.save()
-        messages.warning(request, f"Đã từ chối đơn #{order.id}.")
-    return redirect("order_list")
-
-
-@login_required
-def order_cancel(request, pk):
-    order = get_object_or_404(Order, pk=pk, user=request.user)
-    if order.status != "pending":
-        messages.warning(request, "Chỉ có thể hủy đơn hàng đang ở trạng thái Chờ duyệt.")
-        return redirect("my_orders")
-
-    if request.method == "POST":
-        order.status = "rejected"
-        order.save()
-        messages.info(request, f"Bạn đã hủy đơn hàng #{order.id} thành công.")
-
-    return redirect("my_orders")
-
-
-@login_required
-def order_invoice(request, pk):
-    if request.user.is_staff:
-        order = get_object_or_404(Order, pk=pk)
-    else:
-        order = get_object_or_404(Order, pk=pk, user=request.user)
-
-    total_amount = order.quantity * order.product.price
-    return render(request, "inventory/order_invoice.html", {
-        "order": order,
-        "total_amount": total_amount,
-    })
-from django.contrib.auth import login
-from django.contrib.auth.models import User
+    products = Product.objects.all()
+    low_stock_count = products.filter(stock__lt=10).count()
+    context = {
+        "products": products[:8],
+        "total_products": products.count(),
+        "total_stock": products.aggregate(total=Sum("stock"))["total"] or 0,
+        "low_stock_count": low_stock_count,
+    }
+    return render(request, "inventory/home.html", context)
 
 
 def register_view(request):
     if request.user.is_authenticated:
         return redirect("home")
+
     if request.method == "POST":
         username = request.POST.get("username", "").strip()
         email = request.POST.get("email", "").strip()
         password = request.POST.get("password", "")
-        confirm = request.POST.get("confirm_password", "")
+        confirm_password = request.POST.get("confirm_password", "")
 
         if not username or not password:
             messages.error(request, "Vui lòng nhập đầy đủ tên đăng nhập và mật khẩu.")
-        elif password != confirm:
+        elif password != confirm_password:
             messages.error(request, "Mật khẩu xác nhận không khớp.")
         elif User.objects.filter(username=username).exists():
-            messages.error(request, f"Tên đăng nhập '{username}' đã tồn tại.")
+            messages.error(request, "Tên đăng nhập đã tồn tại. Vui lòng chọn tên khác.")
         else:
             user = User.objects.create_user(username=username, email=email, password=password)
-            login(request, user)
-            messages.success(request, f"Chào mừng {username}! Tài khoản khách hàng đã được tạo thành công.")
+            user.is_staff = False
+            user.save()
+            login(request, user, backend="django.contrib.auth.backends.ModelBackend")
+            messages.success(request, "Đăng ký tài khoản khách hàng thành công!")
             return redirect("home")
-    return render(request, "registration/register.html")
+
+    return render(request, "accounts/register.html")
 
 
 def phone_otp_login(request):
-    if request.method == "POST":
-        phone = request.POST.get("phone", "").strip()
-        otp = request.POST.get("otp", "").strip()
+    if request.user.is_authenticated:
+        return redirect("home")
 
-        if not phone or len(phone) < 9:
-            messages.error(request, "Vui lòng nhập số điện thoại hợp lệ (từ 9-11 chữ số).")
+    if request.method == "POST":
+        raw_phone = request.POST.get("phone", "").strip()
+        otp_code = request.POST.get("otp", "").strip()
+        digits = re.sub(r"\D", "", raw_phone)
+
+        if len(digits) < 9 or len(digits) > 12:
+            messages.error(request, "Số điện thoại không hợp lệ (cần từ 9 đến 11 chữ số).")
             return redirect("/accounts/login/")
 
-        if len(otp) == 6 and otp.isdigit():
-            clean_phone = "".join(filter(str.isdigit, phone))
-            clean_username = f"khach_{clean_phone}"
-            user, _ = User.objects.get_or_create(
-                username=clean_username,
-                defaults={"first_name": f"Khách {clean_phone[-4:]}"}
-            )
-            login(request, user)
-            messages.success(request, f"Xác thực SĐT {phone} thành công! Chào mừng bạn đến với CloudWMS.")
-            return redirect("home")
-        else:
-            messages.error(request, "Mã OTP phải gồm đúng 6 chữ số.")
+        if len(otp_code) != 6 or not otp_code.isdigit():
+            messages.error(request, "Mã xác thực OTP phải gồm đúng 6 chữ số.")
+            return redirect("/accounts/login/")
+
+        username = f"khach_{digits}"
+        user, created = User.objects.get_or_create(
+            username=username,
+            defaults={
+                "first_name": f"Khách hàng ({digits[-4:]})",
+                "is_staff": False,
+            },
+        )
+        if created:
+            user.set_unusable_password()
+            user.save()
+
+        login(request, user, backend="django.contrib.auth.backends.ModelBackend")
+        messages.success(request, f"Xác thực OTP thành công! Chào mừng {user.username}.")
+        return redirect("home")
+
     return redirect("/accounts/login/")
 
 
 def google_login_entry(request):
-    user, _ = User.objects.get_or_create(
-        username="google_customer",
-        defaults={"email": "customer.google@cloudwms.vn", "first_name": "Google User"}
-    )
-    login(request, user)
-    messages.success(request, "Đăng nhập bằng tài khoản Google thành công!")
-    return redirect("home")
+    if request.user.is_authenticated:
+        return redirect("home")
 
-@receiver(user_logged_in)
-def notify_user_logged_in(sender, request, user, **kwargs):
-    role = "Quản trị viên (Admin)" if user.is_staff else "Khách hàng"
-    messages.success(request, f"Đăng nhập thành công! Chào mừng {user.username} ({role}) quay trở lại CloudWMS.")
-    def password_reset_view(request):
+    try:
+        from allauth.socialaccount.models import SocialApp
+
+        google_app_exists = SocialApp.objects.filter(provider="google").exists()
+    except Exception:
+        google_app_exists = False
+
+    if google_app_exists:
+        return redirect("/accounts/google/login/")
+
+    messages.info(
+        request,
+        "Tính năng Google OAuth đang ở chế độ chờ cấu hình Client ID trên Render. Bạn có thể đăng nhập bằng Tài khoản hoặc Số điện thoại (OTP).",
+    )
+    return redirect("/accounts/login/")
+
+
+def product_list(request):
+    products = Product.objects.all()
+    q = request.GET.get("q", "").strip()
+    if q:
+        products = products.filter(name__icontains=q) | products.filter(sku__icontains=q)
+    return render(request, "inventory/product_list.html", {"products": products, "q": q})
+
+
+@login_required
+@user_passes_test(is_admin_user)
+def product_create(request):
+    if request.method == "POST":
+        form = ProductForm(request.POST, request.FILES)
+        if form.is_valid():
+            product = form.save()
+            if product.stock > 0:
+                StockHistory.objects.create(
+                    product=product,
+                    action="IN",
+                    quantity=product.stock,
+                    note="Tồn kho khởi tạo khi thêm sản phẩm mới",
+                    created_by=request.user,
+                )
+            messages.success(request, f"Đã thêm sản phẩm '{product.name}' thành công.")
+            return redirect("product_list")
+    else:
+        form = ProductForm()
+    return render(request, "inventory/form.html", {"form": form, "title": "Thêm sản phẩm mới"})
+
+
+@login_required
+@user_passes_test(is_admin_user)
+def product_edit(request, pk):
+    product = get_object_or_404(Product, pk=pk)
+    if request.method == "POST":
+        form = ProductForm(request.POST, request.FILES, instance=product)
+        if form.is_valid():
+            form.save()
+            messages.success(request, f"Đã cập nhật sản phẩm '{product.name}'.")
+            return redirect("product_list")
+    else:
+        form = ProductForm(instance=product)
+    return render(request, "inventory/form.html", {"form": form, "title": f"Chỉnh sửa: {product.name}"})
+
+
+@login_required
+@user_passes_test(is_admin_user)
+def product_delete(request, pk):
+    product = get_object_or_404(Product, pk=pk)
+    if request.method == "POST":
+        name = product.name
+        product.delete()
+        messages.success(request, f"Đã xóa sản phẩm '{name}'.")
+        return redirect("product_list")
+    return render(request, "inventory/confirm_delete.html", {"product": product})
+
+
+@login_required
+@user_passes_test(is_admin_user)
+def stock_import(request):
+    if request.method == "POST":
+        form = StockImportForm(request.POST)
+        if form.is_valid():
+            product = form.cleaned_data["product"]
+            quantity = form.cleaned_data["quantity"]
+            batch_code = form.cleaned_data.get("batch_code", "").strip()
+            supplier = form.cleaned_data.get("supplier", "").strip()
+            note = form.cleaned_data.get("note", "").strip()
+
+            detail_parts = []
+            if batch_code:
+                detail_parts.append(f"Lô: {batch_code}")
+            if supplier:
+                detail_parts.append(f"NCC: {supplier}")
+            if note:
+                detail_parts.append(note)
+            full_note = " | ".join(detail_parts) if detail_parts else "Nhập bổ sung tồn kho"
+
+            with transaction.atomic():
+                product.stock += quantity
+                product.save()
+                StockHistory.objects.create(
+                    product=product,
+                    action="IN",
+                    quantity=quantity,
+                    note=full_note,
+                    created_by=request.user,
+                )
+            messages.success(request, f"Đã nhập thêm {quantity} {product.unit} cho '{product.name}'.")
+            return redirect("stock_history_list")
+    else:
+        form = StockImportForm()
+    return render(request, "inventory/form.html", {"form": form, "title": "Nhập hàng vào kho"})
+
+
+@login_required
+@user_passes_test(is_admin_user)
+def stock_history_list(request):
+    histories = StockHistory.objects.select_related("product", "created_by").all()
+    return render(request, "inventory/stock_history_list.html", {"histories": histories})
+
+
+@login_required
+@user_passes_test(is_admin_user)
+def dashboard(request):
+    products = Product.objects.all()
+    low_stock_products = products.filter(stock__lt=10)
+
+    total_stock_value = sum((p.price * p.stock for p in products), Decimal("0"))
+    approved_orders = Order.objects.filter(status="APPROVED")
+    total_revenue = sum((o.total_amount for o in approved_orders), Decimal("0"))
+
+    pending_orders_count = Order.objects.filter(status="PENDING").count()
+    approved_orders_count = approved_orders.count()
+    cancelled_orders_count = Order.objects.filter(status="CANCELLED").count()
+
+    today = timezone.now().date()
+    chart_labels = []
+    chart_in = []
+    chart_out = []
+
+    for i in range(6, -1, -1):
+        day = today - timedelta(days=i)
+        chart_labels.append(day.strftime("%d/%m"))
+        in_qty = (
+            StockHistory.objects.filter(action="IN", created_at__date=day).aggregate(total=Sum("quantity"))["total"]
+            or 0
+        )
+        out_qty = (
+            StockHistory.objects.filter(action="OUT", created_at__date=day).aggregate(total=Sum("quantity"))["total"]
+            or 0
+        )
+        chart_in.append(in_qty)
+        chart_out.append(out_qty)
+
+    context = {
+        "total_products": products.count(),
+        "total_stock": products.aggregate(total=Sum("stock"))["total"] or 0,
+        "total_stock_value": total_stock_value,
+        "total_revenue": total_revenue,
+        "low_stock_products": low_stock_products,
+        "low_stock_count": low_stock_products.count(),
+        "pending_orders_count": pending_orders_count,
+        "approved_orders_count": approved_orders_count,
+        "cancelled_orders_count": cancelled_orders_count,
+        "chart_labels": chart_labels,
+        "chart_in": chart_in,
+        "chart_out": chart_out,
+        "recent_histories": StockHistory.objects.select_related("product")[:6],
+    }
+    return render(request, "inventory/dashboard.html", context)
+
+
+@login_required
+def order_create(request):
+    if request.user.is_staff:
+        messages.info(request, "Tài khoản Quản trị viên chỉ duyệt đơn, không đặt hàng như khách hàng.")
+        return redirect("order_list")
+
+    products = Product.objects.filter(stock__gt=0)
+
+    if request.method == "POST":
+        form = OrderForm(request.POST)
+        selected_items = []
+        for p in products:
+            qty_str = request.POST.get(f"qty_{p.id}", "0").strip()
+            try:
+                qty = int(qty_str)
+            except ValueError:
+                qty = 0
+            if qty > 0:
+                if qty > p.stock:
+                    messages.error(request, f"Sản phẩm '{p.name}' chỉ còn tối đa {p.stock} {p.unit} trong kho.")
+                    return render(request, "inventory/order_form.html", {"form": form, "products": products})
+                selected_items.append((p, qty))
+
+        if not selected_items:
+            messages.error(request, "Vui lòng chọn số lượng lớn hơn 0 cho ít nhất một sản phẩm.")
+            return render(request, "inventory/order_form.html", {"form": form, "products": products})
+
+        if form.is_valid():
+            with transaction.atomic():
+                order = form.save(commit=False)
+                order.customer = request.user
+                order.status = "PENDING"
+                order.save()
+
+                for p, qty in selected_items:
+                    OrderItem.objects.create(
+                        order=order,
+                        product=p,
+                        quantity=qty,
+                        unit_price=p.price,
+                    )
+
+            messages.success(request, f"Đã gửi đơn đặt hàng #{order.id} thành công! Chờ quản trị viên duyệt.")
+            return redirect("my_orders")
+    else:
+        form = OrderForm(initial={"customer_name": request.user.get_full_name() or request.user.username})
+
+    return render(request, "inventory/order_form.html", {"form": form, "products": products})
+
+
+@login_required
+def my_orders(request):
+    orders = Order.objects.filter(customer=request.user).prefetch_related("items__product")
+    return render(request, "inventory/my_orders.html", {"orders": orders})
+
+
+@login_required
+@user_passes_test(is_admin_user)
+def order_list(request):
+    orders = Order.objects.select_related("customer").prefetch_related("items__product").all()
+    return render(request, "inventory/order_list.html", {"orders": orders})
+
+
+@login_required
+@user_passes_test(is_admin_user)
+def order_approve(request, pk):
+    order = get_object_or_404(Order, pk=pk)
+    if request.method == "POST":
+        if order.status != "PENDING":
+            messages.warning(request, f"Đơn hàng #{order.id} đã được xử lý trước đó.")
+            return redirect("order_list")
+
+        items = list(order.items.select_related("product"))
+        for item in items:
+            if item.product.stock < item.quantity:
+                messages.error(
+                    request,
+                    f"Không đủ tồn kho cho '{item.product.name}' (Còn: {item.product.stock}, Cần: {item.quantity}).",
+                )
+                return redirect("order_list")
+
+        with transaction.atomic():
+            for item in items:
+                product = item.product
+                product.stock -= item.quantity
+                product.save()
+
+                StockHistory.objects.create(
+                    product=product,
+                    action="OUT",
+                    quantity=item.quantity,
+                    note=f"Xuất kho theo đơn đặt hàng #{order.id} ({order.customer_name})",
+                    created_by=request.user,
+                )
+
+            order.status = "APPROVED"
+            order.save()
+
+        messages.success(request, f"Đã duyệt đơn #{order.id} và tự động trừ tồn kho thành công!")
+    return redirect("order_list")
+
+
+@login_required
+def order_cancel(request, pk):
+    order = get_object_or_404(Order, pk=pk)
+    if not (request.user.is_staff or order.customer == request.user):
+        messages.error(request, "Bạn không có quyền hủy đơn hàng này.")
+        return redirect("home")
+
+    if request.method == "POST":
+        if order.status == "PENDING":
+            order.status = "CANCELLED"
+            order.save()
+            messages.success(request, f"Đã hủy đơn hàng #{order.id}.")
+        else:
+            messages.warning(request, "Chỉ có thể hủy đơn hàng đang ở trạng thái Chờ duyệt.")
+
+    if request.user.is_staff:
+        return redirect("order_list")
+    return redirect("my_orders")
+
+
+@login_required
+def order_invoice(request, pk):
+    order = get_object_or_404(Order.objects.prefetch_related("items__product"), pk=pk)
+    if not (request.user.is_staff or order.customer == request.user):
+        messages.error(request, "Bạn không có quyền xem phiếu xuất kho của đơn này.")
+        return redirect("home")
+    return render(request, "inventory/order_invoice.html", {"order": order})
+
+
+def password_reset_view(request):
     if request.user.is_authenticated:
         return redirect("home")
 
