@@ -12,7 +12,7 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.utils import timezone
 
 from .forms import OrderForm, ProductForm, StockImportForm
-from .models import Order, Product, StockHistory
+from .models import Category, Order, Product, StockHistory
 
 
 def is_admin_user(user):
@@ -20,10 +20,13 @@ def is_admin_user(user):
 
 
 def home(request):
-    products_qs = Product.objects.filter(status="active").order_by("-created_at")
+    products_qs = Product.objects.select_related("category").filter(status="active").order_by("-created_at")
     low_stock_count = products_qs.filter(quantity__lt=10).count()
+    products_list = list(products_qs[:8])
     context = {
-        "products": list(products_qs[:8]),
+        "products": products_list,
+        "featured": products_list[0] if products_list else None,
+        "categories": Category.objects.all(),
         "total_products": products_qs.count(),
         "total_stock": products_qs.aggregate(total=Sum("quantity"))["total"] or 0,
         "low_stock_count": low_stock_count,
