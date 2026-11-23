@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% block title %}Trang chủ — CloudWMS Quản Trị Kho Đám Mây{% endblock %}
+{% block title %}Trang chủ — Hệ Thống Kho Đám Mây CloudWMS{% endblock %}
 
 {% block extra_css %}
 <style>
@@ -64,7 +64,7 @@
     <div class="row align-items-center g-4">
         <div class="col-lg-7">
             <span class="badge rounded-pill px-3 py-2 mb-3 fw-semibold" style="background: #FEF3C7; color: #92400E; border: 1px solid #FDE68A;">
-                <i class="bi bi-cloud-check-fill me-1"></i>Cloud Warehouse System • Nhóm 10
+                <i class="bi bi-cloud-check-fill me-1"></i>Hệ Thống Kho Hàng Đám Mây • Nhóm 10
             </span>
             <h1 class="display-5 fw-bold text-dark mb-3" style="letter-spacing: -0.03em; line-height: 1.15;">
                 Quản Lý Kho Hàng &<br>
@@ -88,7 +88,7 @@
                             <i class="bi bi-cart-plus-fill me-2"></i>Đặt hàng ngay
                         </a>
                         <a href="#catalog-section" class="btn btn-outline-primary btn-lg px-4 bg-white">
-                            <i class="bi bi-grid-fill me-2"></i>Danh mục kho
+                            <i class="bi bi-grid-fill me-2"></i>Danh mục sản phẩm
                         </a>
                     {% endif %}
                 {% else %}
@@ -102,7 +102,7 @@
             </div>
         </div>
 
-        <!-- Cột phải: Thẻ sản phẩm tiêu điểm nổi bật có hiệu ứng nghiêng 3D -->
+        <!-- Cột phải: Thẻ sản phẩm tiêu điểm -->
         <div class="col-lg-5">
             {% if featured %}
                 <div class="card tilt-3d p-3 p-md-4" style="border-radius: 22px;">
@@ -132,9 +132,15 @@
                             <h5 class="fw-bold text-dark mb-1">{{ featured.name }}</h5>
                             <div class="fs-5 fw-bold text-primary">{{ featured.price|floatformat:0 }} đ</div>
                         </div>
-                        <span class="badge {% if featured.quantity < 10 %}bg-warning text-dark{% else %}bg-success{% endif %} px-3 py-2 rounded-pill">
-                            Còn {{ featured.quantity }}
-                        </span>
+                        {% if user.is_staff %}
+                            <span class="badge {% if featured.quantity < 10 %}bg-warning text-dark{% else %}bg-success{% endif %} px-3 py-2 rounded-pill">
+                                Tồn: {{ featured.quantity }}
+                            </span>
+                        {% else %}
+                            <span class="badge {% if featured.quantity > 0 %}bg-success{% else %}bg-secondary{% endif %} px-3 py-2 rounded-pill">
+                                {% if featured.quantity > 0 %}Sẵn hàng{% else %}Tạm hết{% endif %}
+                            </span>
+                        {% endif %}
                     </div>
                 </div>
             {% endif %}
@@ -142,7 +148,8 @@
     </div>
 </div>
 
-<!-- 4 Thẻ chỉ số vận hành -->
+<!-- Dải thẻ thông tin phân tách rõ vai trò Quản trị vs Khách hàng -->
+{% if user.is_authenticated and user.is_staff %}
 <div class="row g-3 mb-5">
     <div class="col-md-3 col-6">
         <div class="kpi-tile tilt-3d d-flex align-items-center gap-3">
@@ -189,15 +196,63 @@
         </div>
     </div>
 </div>
+{% else %}
+<div class="row g-3 mb-5">
+    <div class="col-md-3 col-6">
+        <div class="kpi-tile tilt-3d d-flex align-items-center gap-3">
+            <div class="rounded-3 d-flex align-items-center justify-content-center" style="width: 44px; height: 44px; background: #EFF6FF; color: #1D4ED8; font-size: 1.25rem;">
+                <i class="bi bi-patch-check"></i>
+            </div>
+            <div>
+                <div class="text-muted small">Nguồn gốc vật tư</div>
+                <div class="fw-bold fs-6 text-dark">Chính hãng 100%</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 col-6">
+        <div class="kpi-tile tilt-3d d-flex align-items-center gap-3">
+            <div class="rounded-3 d-flex align-items-center justify-content-center" style="width: 44px; height: 44px; background: #ECFDF5; color: #059669; font-size: 1.25rem;">
+                <i class="bi bi-truck"></i>
+            </div>
+            <div>
+                <div class="text-muted small">Xuất kho hỏa tốc</div>
+                <div class="fw-bold fs-6 text-dark">Xử lý trong 2–4h</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 col-6">
+        <div class="kpi-tile tilt-3d d-flex align-items-center gap-3">
+            <div class="rounded-3 d-flex align-items-center justify-content-center" style="width: 44px; height: 44px; background: #EEF2FF; color: #4F46E5; font-size: 1.25rem;">
+                <i class="bi bi-receipt-cutoff"></i>
+            </div>
+            <div>
+                <div class="text-muted small">Chứng từ điện tử</div>
+                <div class="fw-bold fs-6 text-dark">Xuất phiếu tự động</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 col-6">
+        <div class="kpi-tile tilt-3d d-flex align-items-center gap-3">
+            <div class="rounded-3 d-flex align-items-center justify-content-center" style="width: 44px; height: 44px; background: #FEF3C7; color: #D97706; font-size: 1.25rem;">
+                <i class="bi bi-headset"></i>
+            </div>
+            <div>
+                <div class="text-muted small">Đặt đơn trực tuyến</div>
+                <div class="fw-bold fs-6 text-dark">Hỗ trợ 24/7</div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
 
-<!-- Danh mục hàng hóa -->
+<!-- Danh mục toàn bộ sản phẩm -->
 <div id="catalog-section" class="mb-4">
     <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-3">
         <h2 class="h4 fw-bold text-dark mb-0">
-            <i class="bi bi-grid-fill text-primary me-2"></i>Danh mục hàng hóa trong kho
+            <i class="bi bi-grid-fill text-primary me-2"></i>Danh mục hàng hóa trong kho ({{ products|length }} sản phẩm)
         </h2>
         <a href="{% url 'product_list' %}" class="btn btn-outline-primary btn-sm px-3 bg-white">
-            Xem tất cả sản phẩm <i class="bi bi-arrow-right ms-1"></i>
+            Tìm kiếm & Lọc chi tiết <i class="bi bi-arrow-right ms-1"></i>
         </a>
     </div>
 
@@ -207,10 +262,18 @@
                 <div class="product-card-item tilt-3d">
                     <div class="product-thumb-wrap">
                         <span class="badge bg-dark position-absolute top-0 start-0 m-2 font-monospace">{{ p.sku }}</span>
-                        {% if p.quantity < 10 %}
-                            <span class="badge bg-warning text-dark position-absolute top-0 end-0 m-2">Sắp hết ({{ p.quantity }})</span>
+                        {% if user.is_staff %}
+                            {% if p.quantity < 10 %}
+                                <span class="badge bg-warning text-dark position-absolute top-0 end-0 m-2">Sắp hết ({{ p.quantity }})</span>
+                            {% else %}
+                                <span class="badge bg-success position-absolute top-0 end-0 m-2">Còn {{ p.quantity }}</span>
+                            {% endif %}
                         {% else %}
-                            <span class="badge bg-success position-absolute top-0 end-0 m-2">Còn {{ p.quantity }}</span>
+                            {% if p.quantity > 0 %}
+                                <span class="badge bg-success position-absolute top-0 end-0 m-2">Sẵn hàng</span>
+                            {% else %}
+                                <span class="badge bg-secondary position-absolute top-0 end-0 m-2">Tạm hết</span>
+                            {% endif %}
                         {% endif %}
 
                         {% if p.image %}
@@ -228,7 +291,11 @@
                         <div class="mt-auto pt-2 border-top d-flex justify-content-between align-items-center">
                             <span class="fw-bold text-primary">{{ p.price|floatformat:0 }} đ</span>
                             {% if user.is_authenticated and not user.is_staff %}
-                                <a href="{% url 'order_create' %}" class="btn btn-primary btn-sm py-1 px-3">Đặt mua</a>
+                                {% if p.quantity > 0 %}
+                                    <a href="{% url 'order_create' %}" class="btn btn-primary btn-sm py-1 px-3">Đặt mua</a>
+                                {% else %}
+                                    <button class="btn btn-light btn-sm py-1 px-3 border" disabled>Tạm hết</button>
+                                {% endif %}
                             {% else %}
                                 <a href="{% url 'product_list' %}" class="btn btn-light btn-sm py-1 px-2 border">Chi tiết</a>
                             {% endif %}
