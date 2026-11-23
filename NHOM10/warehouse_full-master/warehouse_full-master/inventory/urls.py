@@ -22,4 +22,7 @@ urlpatterns = [
     path("orders/<int:pk>/reject/", views.order_reject, name="order_reject"),
     path("orders/<int:pk>/cancel/", views.order_cancel, name="order_cancel"),
     path("orders/<int:pk>/invoice/", views.order_invoice, name="order_invoice"),
+    path("accounts/register/", views.register_view, name="register"),
+    path("accounts/phone-login/", views.phone_otp_login, name="phone_otp_login"),
+    path("accounts/google-login/", views.google_login_entry, name="google_login_entry"),
 ]
