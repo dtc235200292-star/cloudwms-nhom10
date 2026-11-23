@@ -1,48 +1,78 @@
-from django import forms
-from .models import Order, Product
+from django.db import models
+from django.contrib.auth.models import User
 
 
-class ProductForm(forms.ModelForm):
-    class Meta:
-        model = Product
-        fields = ["category", "supplier", "name", "sku", "quantity", "price", "image", "status"]
-        widgets = {
-            "category": forms.Select(attrs={"class": "form-select"}),
-            "supplier": forms.Select(attrs={"class": "form-select"}),
-            "name": forms.TextInput(attrs={"class": "form-control", "placeholder": "Tên sản phẩm"}),
-            "sku": forms.TextInput(attrs={"class": "form-control", "placeholder": "VD: SP001"}),
-            "quantity": forms.NumberInput(attrs={"class": "form-control", "min": "0"}),
-            "price": forms.NumberInput(attrs={"class": "form-control", "min": "0"}),
-            "image": forms.ClearableFileInput(attrs={"class": "form-control"}),
-            "status": forms.Select(attrs={"class": "form-select"}),
-        }
+class Category(models.Model):
+    name = models.CharField(max_length=100, unique=True)
+    description = models.TextField(blank=True, null=True)
+
+    def __str__(self):
+        return self.name
 
 
-class StockImportForm(forms.Form):
-    product = forms.ModelChoiceField(
-        queryset=Product.objects.all(),
-        label="Sản phẩm nhập kho",
-        widget=forms.Select(attrs={"class": "form-select"}),
-    )
-    quantity = forms.IntegerField(
-        min_value=1,
-        label="Số lượng nhập",
-        widget=forms.NumberInput(attrs={"class": "form-control", "min": "1", "placeholder": "Nhập số lượng > 0"}),
-    )
-    note = forms.CharField(
-        required=False,
-        max_length=255,
-        label="Ghi chú nhập kho",
-        widget=forms.TextInput(attrs={"class": "form-control", "placeholder": "Mã lô, nhà cung cấp hoặc ghi chú..."}),
+class Supplier(models.Model):
+    name = models.CharField(max_length=150)
+    phone = models.CharField(max_length=20, blank=True, null=True)
+    address = models.CharField(max_length=255, blank=True, null=True)
+
+    def __str__(self):
+        return self.name
+
+
+class Product(models.Model):
+    STATUS_CHOICES = (
+        ("active", "Đang bán"),
+        ("inactive", "Ngừng bán"),
     )
 
+    category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True, related_name="products")
+    supplier = models.ForeignKey(Supplier, on_delete=models.SET_NULL, null=True, blank=True, related_name="products")
+    name = models.CharField(max_length=150)
+    sku = models.CharField(max_length=50, unique=True)
+    quantity = models.PositiveIntegerField(default=0)
+    price = models.DecimalField(max_digits=12, decimal_places=0)
+    image = models.ImageField(upload_to="products/", blank=True, null=True)
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default="active")
+    created_at = models.DateTimeField(auto_now_add=True)
 
-class OrderForm(forms.ModelForm):
-    class Meta:
-        model = Order
-        fields = ["product", "quantity", "note"]
-        widgets = {
-            "product": forms.Select(attrs={"class": "form-select"}),
-            "quantity": forms.NumberInput(attrs={"class": "form-control", "min": "1", "value": "1"}),
-            "note": forms.Textarea(attrs={"class": "form-control", "rows": 3, "placeholder": "Địa chỉ nhận hàng, SĐT hoặc ghi chú..."}),
-        }
+    def __str__(self):
+        return self.name
+
+
+class Order(models.Model):
+    STATUS_CHOICES = (
+        ("pending", "Chờ duyệt"),
+        ("approved", "Đã duyệt"),
+        ("rejected", "Từ chối"),
+    )
+
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="orders")
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name="orders")
+    quantity = models.PositiveIntegerField(default=1)
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default="pending")
+    note = models.TextField(blank=True, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    @property
+    def total_price(self):
+        return self.quantity * self.product.price
+
+    def __str__(self):
+        return f"{self.user.username} - {self.product.name}"
+
+
+class StockHistory(models.Model):
+    ACTION_CHOICES = (
+        ("import", "Nhập kho"),
+        ("export", "Xuất kho"),
+        ("order", "Đặt hàng"),
+    )
+
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name="stock_histories")
+    action = models.CharField(max_length=20, choices=ACTION_CHOICES)
+    quantity = models.PositiveIntegerField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    note = models.CharField(max_length=255, blank=True, null=True)
+
+    def __str__(self):
+        return f"{self.product.name} - {self.action} - {self.quantity}"
