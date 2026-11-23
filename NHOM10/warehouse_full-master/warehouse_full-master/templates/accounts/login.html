@@ -1,314 +1,232 @@
 {% extends "base.html" %}
-{% block title %}Trang chủ — Hệ Thống Quản Lý Kho Vật Tư & Thiết Bị Văn Phòng{% endblock %}
+{% block title %}Đăng nhập — Kho Vật Tư & Thiết Bị Văn Phòng{% endblock %}
 
 {% block extra_css %}
 <style>
-    .hero-showcase {
-        background: linear-gradient(135deg, rgba(255, 255, 255, 0.88) 0%, rgba(239, 246, 255, 0.76) 100%);
-        backdrop-filter: blur(18px);
-        -webkit-backdrop-filter: blur(18px);
-        border: 1px solid rgba(255, 255, 255, 0.8);
-        border-radius: 24px;
-        padding: 2.5rem;
-        box-shadow: 0 18px 42px -12px rgba(15, 23, 42, 0.1);
-    }
-    .kpi-tile {
-        background: rgba(255, 255, 255, 0.86);
-        backdrop-filter: blur(14px);
-        border: 1px solid rgba(255, 255, 255, 0.75);
-        border-radius: 16px;
-        padding: 1.15rem 1.25rem;
-        box-shadow: 0 6px 20px rgba(15, 23, 42, 0.05);
-        transition: transform 0.22s ease, box-shadow 0.22s ease;
-    }
-    .product-card-item {
-        background: rgba(255, 255, 255, 0.88);
-        backdrop-filter: blur(14px);
-        border: 1px solid rgba(255, 255, 255, 0.8);
-        border-radius: 18px;
-        overflow: hidden;
-        transition: transform 0.25s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.25s ease, border-color 0.25s ease;
-        height: 100%;
-        display: flex;
-        flex-direction: column;
-        box-shadow: 0 8px 24px -6px rgba(15, 23, 42, 0.07);
-    }
-    .product-card-item:hover {
-        border-color: #93C5FD;
-    }
-    .product-thumb-wrap {
-        height: 195px;
-        background: rgba(248, 250, 252, 0.85);
-        position: relative;
+    .auth-wrapper {
+        min-height: calc(100vh - 220px);
         display: flex;
         align-items: center;
         justify-content: center;
-        padding: 1rem;
-        border-bottom: 1px solid rgba(226, 232, 240, 0.7);
+        padding: 1.5rem 0 2.5rem 0;
     }
-    .product-thumb-wrap img {
-        max-height: 100%;
-        max-width: 100%;
-        object-fit: contain;
-        transition: transform 0.3s ease;
+    .auth-card-clean {
+        width: 100%;
+        max-width: 450px;
+        background: #FFFFFF;
+        border: 1px solid #E2E8F0;
+        border-radius: 20px;
+        padding: 2.25rem 2rem;
+        box-shadow: 0 12px 32px -8px rgba(15, 23, 42, 0.08), 0 2px 6px rgba(15, 23, 42, 0.03);
     }
-    .product-card-item:hover .product-thumb-wrap img {
-        transform: scale(1.06);
+    .auth-logo-mark {
+        width: 44px;
+        height: 44px;
+        border-radius: 12px;
+        background: linear-gradient(135deg, #1D4ED8 0%, #2563EB 100%);
+        color: #FFFFFF;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.25rem;
+        margin-bottom: 1rem;
+        box-shadow: 0 6px 16px rgba(29, 78, 216, 0.24);
+    }
+    .btn-oauth-google {
+        height: 44px;
+        background: #FFFFFF;
+        border: 1px solid #CBD5E1;
+        border-radius: 11px;
+        color: #0F172A;
+        font-weight: 600;
+        font-size: 0.9rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        text-decoration: none;
+        transition: all 0.15s ease;
+    }
+    .btn-oauth-google:hover {
+        background: #F8FAFC;
+        border-color: #94A3B8;
+        color: #0F172A;
+    }
+    .auth-tabs {
+        background: #F1F5F9;
+        padding: 3px;
+        border-radius: 10px;
+        border: 1px solid #E2E8F0;
+    }
+    .auth-tabs .nav-link {
+        color: #475569 !important;
+        font-weight: 600;
+        font-size: 0.83rem;
+        border-radius: 8px;
+        padding: 0.45rem 0.6rem !important;
+    }
+    .auth-tabs .nav-link.active {
+        background: #FFFFFF !important;
+        color: #1D4ED8 !important;
+        box-shadow: 0 1px 4px rgba(15, 23, 42, 0.08);
+    }
+    .clean-input {
+        height: 42px;
+        border-radius: 10px !important;
+        border: 1px solid #CBD5E1 !important;
+        font-size: 0.9rem !important;
+        padding: 0.5rem 0.85rem !important;
+    }
+    .clean-input:focus {
+        border-color: #2563EB !important;
+        box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12) !important;
+    }
+    .clean-btn-primary {
+        height: 44px;
+        border-radius: 11px !important;
+        font-weight: 600 !important;
+        font-size: 0.92rem !important;
     }
 </style>
 {% endblock %}
 
 {% block content %}
-<!-- Hero Banner 2 cột cân đối -->
-<div class="hero-showcase mb-4">
-    <div class="row align-items-center g-4">
-        <div class="col-lg-7">
-            <span class="badge rounded-pill px-3 py-2 mb-3 fw-semibold" style="background: #FEF3C7; color: #92400E; border: 1px solid #FDE68A;">
-                <i class="bi bi-cloud-check-fill me-1"></i>CloudWMS • Nền Tảng Đám Mây (Nhóm 10)
-            </span>
-            <h1 class="display-6 fw-bold text-dark mb-3" style="letter-spacing: -0.025em; line-height: 1.22;">
-                Quản Lý Kho Vật Tư – Thiết Bị Văn Phòng & <span class="text-primary">Đặt Hàng Trực Tuyến</span>
+<div class="auth-wrapper">
+    <div class="auth-card-clean">
+        <div class="text-center mb-4">
+            <div class="auth-logo-mark">
+                <i class="bi bi-box-seam-fill"></i>
+            </div>
+            <h1 class="h5 fw-bold text-dark mb-1" style="letter-spacing: -0.02em; line-height: 1.35;">
+                Hệ thống Quản lý Kho Vật tư – Thiết bị Văn phòng
             </h1>
-            <p class="text-secondary mb-4" style="font-size: 1rem; max-width: 550px; line-height: 1.65;">
-                Hệ thống quản trị kho vận thời gian thực trên nền tảng điện toán đám mây. Kiểm soát tồn kho theo mã SKU, cảnh báo ngưỡng định mức và tự động hóa quy trình đặt – xuất hàng.
-            </p>
-
-            <div class="d-flex flex-wrap gap-2">
-                {% if user.is_authenticated %}
-                    {% if user.is_staff %}
-                        <a href="{% url 'dashboard' %}" class="btn btn-primary btn-lg px-4">
-                            <i class="bi bi-bar-chart-fill me-2"></i>Bảng thống kê
-                        </a>
-                        <a href="{% url 'stock_import' %}" class="btn btn-outline-primary btn-lg px-4 bg-white">
-                            <i class="bi bi-box-arrow-in-down me-2"></i>Nhập kho nhanh
-                        </a>
-                    {% else %}
-                        <a href="{% url 'order_create' %}" class="btn btn-primary btn-lg px-4">
-                            <i class="bi bi-cart-plus-fill me-2"></i>Đặt hàng ngay
-                        </a>
-                        <a href="#catalog-section" class="btn btn-outline-primary btn-lg px-4 bg-white">
-                            <i class="bi bi-grid-fill me-2"></i>Danh mục vật tư
-                        </a>
-                    {% endif %}
-                {% else %}
-                    <a href="/accounts/login/" class="btn btn-primary btn-lg px-4">
-                        <i class="bi bi-box-arrow-in-right me-2"></i>Đăng nhập hệ thống
-                    </a>
-                    <a href="{% url 'register' %}" class="btn btn-outline-primary btn-lg px-4 bg-white">
-                        <i class="bi bi-person-plus me-2"></i>Đăng ký tài khoản
-                    </a>
-                {% endif %}
-            </div>
+            <p class="text-muted small mb-0">Cổng Quản trị Kho & Đặt hàng Trực tuyến trên Đám mây</p>
         </div>
 
-        <!-- Cột phải: Thẻ sản phẩm tiêu điểm -->
-        <div class="col-lg-5">
-            {% if featured %}
-                <div class="card tilt-3d p-3 p-md-4" style="border-radius: 22px;">
-                    <div class="d-flex justify-content-between align-items-center mb-3">
-                        <span class="badge bg-primary px-3 py-2 rounded-pill">
-                            <i class="bi bi-lightning-charge-fill me-1"></i>Sản phẩm tiêu điểm
-                        </span>
-                        <code class="px-2 py-1 rounded bg-light text-dark fw-semibold">{{ featured.sku }}</code>
-                    </div>
-
-                    <div class="text-center bg-white rounded-4 p-3 mb-3 border" style="height: 190px; display: flex; align-items: center; justify-content: center;">
-                        {% if featured.image %}
-                            <img src="{{ featured.image.url }}" alt="{{ featured.name }}" style="max-height: 165px; max-width: 100%; object-fit: contain;">
-                        {% else %}
-                            <div class="text-muted">
-                                <i class="bi bi-box-seam display-4 d-block mb-1 text-primary opacity-50"></i>
-                                <span class="small">Chưa có ảnh minh họa</span>
-                            </div>
-                        {% endif %}
-                    </div>
-
-                    <div class="d-flex justify-content-between align-items-start gap-2">
-                        <div>
-                            <div class="small text-primary fw-semibold mb-1">
-                                <i class="bi bi-tag-fill me-1"></i>{{ featured.category.name|default:"Vật tư văn phòng" }}
-                            </div>
-                            <h5 class="fw-bold text-dark mb-1">{{ featured.name }}</h5>
-                            <div class="fs-5 fw-bold text-primary">{{ featured.price|floatformat:0 }} đ</div>
-                        </div>
-                        {% if user.is_staff %}
-                            <span class="badge {% if featured.quantity < 10 %}bg-warning text-dark{% else %}bg-success{% endif %} px-3 py-2 rounded-pill">
-                                Tồn: {{ featured.quantity }}
-                            </span>
-                        {% else %}
-                            <span class="badge {% if featured.quantity > 0 %}bg-success{% else %}bg-secondary{% endif %} px-3 py-2 rounded-pill">
-                                {% if featured.quantity > 0 %}Sẵn hàng{% else %}Tạm hết{% endif %}
-                            </span>
-                        {% endif %}
-                    </div>
-                </div>
-            {% endif %}
-        </div>
-    </div>
-</div>
-
-<!-- Dải thẻ thông tin phân tách rõ vai trò Quản trị vs Khách hàng -->
-{% if user.is_authenticated and user.is_staff %}
-<div class="row g-3 mb-5">
-    <div class="col-md-3 col-6">
-        <div class="kpi-tile tilt-3d d-flex align-items-center gap-3">
-            <div class="rounded-3 d-flex align-items-center justify-content-center" style="width: 44px; height: 44px; background: #EFF6FF; color: #1D4ED8; font-size: 1.25rem;">
-                <i class="bi bi-boxes"></i>
-            </div>
-            <div>
-                <div class="text-muted small">Danh mục SKU</div>
-                <div class="fw-bold fs-5 text-dark">{{ total_products }} mặt hàng</div>
-            </div>
-        </div>
-    </div>
-    <div class="col-md-3 col-6">
-        <div class="kpi-tile tilt-3d d-flex align-items-center gap-3">
-            <div class="rounded-3 d-flex align-items-center justify-content-center" style="width: 44px; height: 44px; background: #ECFDF5; color: #059669; font-size: 1.25rem;">
-                <i class="bi bi-shield-check"></i>
-            </div>
-            <div>
-                <div class="text-muted small">Tổng tồn kho</div>
-                <div class="fw-bold fs-5 text-dark">{{ total_stock }} sản phẩm</div>
-            </div>
-        </div>
-    </div>
-    <div class="col-md-3 col-6">
-        <div class="kpi-tile tilt-3d d-flex align-items-center gap-3">
-            <div class="rounded-3 d-flex align-items-center justify-content-center" style="width: 44px; height: 44px; background: #FEF3C7; color: #D97706; font-size: 1.25rem;">
-                <i class="bi bi-exclamation-triangle"></i>
-            </div>
-            <div>
-                <div class="text-muted small">Cảnh báo sắp hết</div>
-                <div class="fw-bold fs-5 text-dark">{{ low_stock_count }} mặt hàng</div>
-            </div>
-        </div>
-    </div>
-    <div class="col-md-3 col-6">
-        <div class="kpi-tile tilt-3d d-flex align-items-center gap-3">
-            <div class="rounded-3 d-flex align-items-center justify-content-center" style="width: 44px; height: 44px; background: #EEF2FF; color: #4F46E5; font-size: 1.25rem;">
-                <i class="bi bi-cloud-check"></i>
-            </div>
-            <div>
-                <div class="text-muted small">Hạ tầng vận hành</div>
-                <div class="fw-bold fs-5 text-dark">Cloud PaaS 24/7</div>
-            </div>
-        </div>
-    </div>
-</div>
-{% else %}
-<div class="row g-3 mb-5">
-    <div class="col-md-3 col-6">
-        <div class="kpi-tile tilt-3d d-flex align-items-center gap-3">
-            <div class="rounded-3 d-flex align-items-center justify-content-center" style="width: 44px; height: 44px; background: #EFF6FF; color: #1D4ED8; font-size: 1.25rem;">
-                <i class="bi bi-patch-check"></i>
-            </div>
-            <div>
-                <div class="text-muted small">Vật tư & Thiết bị</div>
-                <div class="fw-bold fs-6 text-dark">Chính hãng 100%</div>
-            </div>
-        </div>
-    </div>
-    <div class="col-md-3 col-6">
-        <div class="kpi-tile tilt-3d d-flex align-items-center gap-3">
-            <div class="rounded-3 d-flex align-items-center justify-content-center" style="width: 44px; height: 44px; background: #ECFDF5; color: #059669; font-size: 1.25rem;">
-                <i class="bi bi-truck"></i>
-            </div>
-            <div>
-                <div class="text-muted small">Xuất kho hỏa tốc</div>
-                <div class="fw-bold fs-6 text-dark">Xử lý trong 2–4h</div>
-            </div>
-        </div>
-    </div>
-    <div class="col-md-3 col-6">
-        <div class="kpi-tile tilt-3d d-flex align-items-center gap-3">
-            <div class="rounded-3 d-flex align-items-center justify-content-center" style="width: 44px; height: 44px; background: #EEF2FF; color: #4F46E5; font-size: 1.25rem;">
-                <i class="bi bi-receipt-cutoff"></i>
-            </div>
-            <div>
-                <div class="text-muted small">Chứng từ điện tử</div>
-                <div class="fw-bold fs-6 text-dark">Xuất phiếu tự động</div>
-            </div>
-        </div>
-    </div>
-    <div class="col-md-3 col-6">
-        <div class="kpi-tile tilt-3d d-flex align-items-center gap-3">
-            <div class="rounded-3 d-flex align-items-center justify-content-center" style="width: 44px; height: 44px; background: #FEF3C7; color: #D97706; font-size: 1.25rem;">
-                <i class="bi bi-headset"></i>
-            </div>
-            <div>
-                <div class="text-muted small">Đặt đơn trực tuyến</div>
-                <div class="fw-bold fs-6 text-dark">Hỗ trợ 24/7</div>
-            </div>
-        </div>
-    </div>
-</div>
-{% endif %}
-
-<!-- Danh mục toàn bộ sản phẩm -->
-<div id="catalog-section" class="mb-4">
-    <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-3">
-        <h2 class="h4 fw-bold text-dark mb-0">
-            <i class="bi bi-grid-fill text-primary me-2"></i>Danh mục vật tư & thiết bị văn phòng ({{ products|length }} sản phẩm)
-        </h2>
-        <a href="{% url 'product_list' %}" class="btn btn-outline-primary btn-sm px-3 bg-white">
-            Tìm kiếm & Lọc chi tiết <i class="bi bi-arrow-right ms-1"></i>
+        <a href="{% url 'google_login_entry' %}" class="btn-oauth-google w-100 mb-3">
+            <svg width="18" height="18" viewBox="0 0 48 48">
+                <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/>
+                <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/>
+                <path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/>
+                <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/>
+            </svg>
+            <span>Tiếp tục với Google</span>
         </a>
-    </div>
 
-    <div class="row g-4">
-        {% for p in products %}
-            <div class="col-lg-3 col-md-4 col-sm-6">
-                <div class="product-card-item tilt-3d">
-                    <div class="product-thumb-wrap">
-                        <span class="badge bg-dark position-absolute top-0 start-0 m-2 font-monospace">{{ p.sku }}</span>
-                        {% if user.is_staff %}
-                            {% if p.quantity < 10 %}
-                                <span class="badge bg-warning text-dark position-absolute top-0 end-0 m-2">Sắp hết ({{ p.quantity }})</span>
-                            {% else %}
-                                <span class="badge bg-success position-absolute top-0 end-0 m-2">Còn {{ p.quantity }}</span>
-                            {% endif %}
-                        {% else %}
-                            {% if p.quantity > 0 %}
-                                <span class="badge bg-success position-absolute top-0 end-0 m-2">Sẵn hàng</span>
-                            {% else %}
-                                <span class="badge bg-secondary position-absolute top-0 end-0 m-2">Tạm hết</span>
-                            {% endif %}
-                        {% endif %}
+        <div class="d-flex align-items-center my-3">
+            <hr class="flex-grow-1 m-0" style="border-color: #E2E8F0;">
+            <span class="px-2.5 text-muted" style="font-size: 0.76rem;">hoặc</span>
+            <hr class="flex-grow-1 m-0" style="border-color: #E2E8F0;">
+        </div>
 
-                        {% if p.image %}
-                            <img src="{{ p.image.url }}" alt="{{ p.name }}">
-                        {% else %}
-                            <i class="bi bi-box-seam display-4 text-secondary opacity-25"></i>
-                        {% endif %}
+        <ul class="nav nav-pills nav-fill auth-tabs mb-3" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" data-bs-toggle="pill" data-bs-target="#tab-user-pass" type="button">
+                    Tài khoản
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" data-bs-toggle="pill" data-bs-target="#tab-phone-otp" type="button">
+                    Số điện thoại (OTP)
+                </button>
+            </li>
+        </ul>
+
+        <div class="tab-content">
+            <div class="tab-pane fade show active" id="tab-user-pass">
+                {% if form.errors %}
+                    <div class="alert alert-danger py-2 px-3 small rounded-3 mb-3">
+                        Tên đăng nhập hoặc mật khẩu không chính xác.
+                    </div>
+                {% endif %}
+
+                <form method="post" action="/accounts/login/">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label class="form-label small fw-semibold text-dark mb-1">Tên đăng nhập</label>
+                        <input type="text" name="username" class="form-control clean-input" placeholder="Nhập tên đăng nhập" required autofocus>
                     </div>
 
-                    <div class="p-3 d-flex flex-column flex-grow-1">
-                        <div class="small text-primary fw-semibold mb-1">
-                            <i class="bi bi-tag me-1"></i>{{ p.category.name|default:"Chưa phân loại" }}
+                    <div class="mb-3">
+                        <div class="d-flex justify-content-between align-items-center mb-1">
+                            <label class="form-label small fw-semibold text-dark mb-0">Mật khẩu</label>
+                            <a href="{% url 'password_reset' %}" class="small text-primary text-decoration-none fw-medium" style="font-size: 0.8rem;">
+                                Quên mật khẩu?
+                            </a>
                         </div>
-                        <h6 class="fw-bold text-dark mb-2">{{ p.name }}</h6>
-                        <div class="mt-auto pt-2 border-top d-flex justify-content-between align-items-center">
-                            <span class="fw-bold text-primary">{{ p.price|floatformat:0 }} đ</span>
-                            {% if user.is_authenticated and not user.is_staff %}
-                                {% if p.quantity > 0 %}
-                                    <a href="{% url 'order_create' %}" class="btn btn-primary btn-sm py-1 px-3">Đặt mua</a>
-                                {% else %}
-                                    <button class="btn btn-light btn-sm py-1 px-3 border" disabled>Tạm hết</button>
-                                {% endif %}
-                            {% else %}
-                                <a href="{% url 'product_list' %}" class="btn btn-light btn-sm py-1 px-2 border">Chi tiết</a>
-                            {% endif %}
+                        <div class="position-relative">
+                            <input type="password" name="password" id="login-pass-field" class="form-control clean-input pe-5" placeholder="Nhập mật khẩu" required>
+                            <button type="button" class="btn btn-link position-absolute top-50 end-0 translate-middle-y text-muted text-decoration-none pe-3" onclick="toggleCleanPass()">
+                                <i class="bi bi-eye" id="login-pass-eye"></i>
+                            </button>
                         </div>
                     </div>
-                </div>
+
+                    <button type="submit" class="btn btn-primary w-100 clean-btn-primary mt-2">
+                        Đăng nhập
+                    </button>
+                </form>
             </div>
-        {% empty %}
-            <div class="col-12">
-                <div class="card p-5 text-center text-muted">
-                    Chưa có sản phẩm nào trong kho.
-                </div>
+
+            <div class="tab-pane fade" id="tab-phone-otp">
+                <form method="post" action="{% url 'phone_otp_login' %}">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label class="form-label small fw-semibold text-dark mb-1">Số điện thoại</label>
+                        <div class="d-flex gap-2">
+                            <input type="tel" name="phone" id="clean-otp-phone" class="form-control clean-input" placeholder="0912 345 678" required>
+                            <button type="button" class="btn btn-outline-primary px-3 text-nowrap" style="border-radius: 10px; height: 42px; font-size: 0.82rem;" onclick="triggerCleanOtp()">
+                                Gửi mã OTP
+                            </button>
+                        </div>
+                    </div>
+
+                    <div id="clean-otp-alert" class="alert alert-success py-2 px-3 small rounded-3 d-none mb-3">
+                        Mã xác thực OTP: <strong id="clean-otp-code"></strong>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label small fw-semibold text-dark mb-1">Mã OTP (6 chữ số)</label>
+                        <input type="text" name="otp" id="clean-otp-input" maxlength="6" class="form-control clean-input text-center fw-bold" style="letter-spacing: 0.35em;" placeholder="••••••" required>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary w-100 clean-btn-primary mt-2">
+                        Xác nhận & Đăng nhập
+                    </button>
+                </form>
             </div>
-        {% endfor %}
+        </div>
+
+        <div class="text-center mt-4 pt-3 border-top small text-muted">
+            Chưa có tài khoản?
+            <a href="{% url 'register' %}" class="fw-semibold text-primary text-decoration-none">Đăng ký ngay</a>
+        </div>
     </div>
 </div>
+
+<script>
+    function toggleCleanPass() {
+        const inp = document.getElementById("login-pass-field");
+        const icon = document.getElementById("login-pass-eye");
+        if (inp.type === "password") {
+            inp.type = "text";
+            icon.className = "bi bi-eye-slash";
+        } else {
+            inp.type = "password";
+            icon.className = "bi bi-eye";
+        }
+    }
+
+    function triggerCleanOtp() {
+        const phone = document.getElementById("clean-otp-phone").value.trim();
+        if (!phone || phone.length < 9) {
+            alert("Vui lòng nhập số điện thoại hợp lệ (9–11 chữ số).");
+            return;
+        }
+        const code = Math.floor(100000 + Math.random() * 900000);
+        document.getElementById("clean-otp-code").innerText = code;
+        document.getElementById("clean-otp-alert").classList.remove("d-none");
+        document.getElementById("clean-otp-input").value = code;
+    }
+</script>
 {% endblock %}
