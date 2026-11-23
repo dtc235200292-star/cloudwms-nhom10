@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% block title %}Trang chủ — Hệ Thống Kho Đám Mây CloudWMS{% endblock %}
+{% block title %}Trang chủ — Hệ Thống Quản Lý Kho Vật Tư & Thiết Bị Văn Phòng{% endblock %}
 
 {% block extra_css %}
 <style>
@@ -64,14 +64,13 @@
     <div class="row align-items-center g-4">
         <div class="col-lg-7">
             <span class="badge rounded-pill px-3 py-2 mb-3 fw-semibold" style="background: #FEF3C7; color: #92400E; border: 1px solid #FDE68A;">
-                <i class="bi bi-cloud-check-fill me-1"></i>Hệ Thống Kho Hàng Đám Mây • Nhóm 10
+                <i class="bi bi-cloud-check-fill me-1"></i>CloudWMS • Nền Tảng Đám Mây (Nhóm 10)
             </span>
-            <h1 class="display-5 fw-bold text-dark mb-3" style="letter-spacing: -0.03em; line-height: 1.15;">
-                Quản Lý Kho Hàng &<br>
-                <span class="text-primary">Đặt Đơn Trực Tuyến</span>
+            <h1 class="display-6 fw-bold text-dark mb-3" style="letter-spacing: -0.025em; line-height: 1.22;">
+                Quản Lý Kho Vật Tư – Thiết Bị Văn Phòng & <span class="text-primary">Đặt Hàng Trực Tuyến</span>
             </h1>
-            <p class="text-secondary mb-4" style="font-size: 1.02rem; max-width: 540px; line-height: 1.65;">
-                Nền tảng quản trị kho vận thời gian thực trên điện toán đám mây. Theo dõi biến động tồn kho chính xác, cảnh báo ngưỡng an toàn và duyệt đơn xuất kho tự động.
+            <p class="text-secondary mb-4" style="font-size: 1rem; max-width: 550px; line-height: 1.65;">
+                Hệ thống quản trị kho vận thời gian thực trên nền tảng điện toán đám mây. Kiểm soát tồn kho theo mã SKU, cảnh báo ngưỡng định mức và tự động hóa quy trình đặt – xuất hàng.
             </p>
 
             <div class="d-flex flex-wrap gap-2">
@@ -88,7 +87,7 @@
                             <i class="bi bi-cart-plus-fill me-2"></i>Đặt hàng ngay
                         </a>
                         <a href="#catalog-section" class="btn btn-outline-primary btn-lg px-4 bg-white">
-                            <i class="bi bi-grid-fill me-2"></i>Danh mục sản phẩm
+                            <i class="bi bi-grid-fill me-2"></i>Danh mục vật tư
                         </a>
                     {% endif %}
                 {% else %}
@@ -127,7 +126,7 @@
                     <div class="d-flex justify-content-between align-items-start gap-2">
                         <div>
                             <div class="small text-primary fw-semibold mb-1">
-                                <i class="bi bi-tag-fill me-1"></i>{{ featured.category.name|default:"Vật tư kho" }}
+                                <i class="bi bi-tag-fill me-1"></i>{{ featured.category.name|default:"Vật tư văn phòng" }}
                             </div>
                             <h5 class="fw-bold text-dark mb-1">{{ featured.name }}</h5>
                             <div class="fs-5 fw-bold text-primary">{{ featured.price|floatformat:0 }} đ</div>
@@ -204,7 +203,7 @@
                 <i class="bi bi-patch-check"></i>
             </div>
             <div>
-                <div class="text-muted small">Nguồn gốc vật tư</div>
+                <div class="text-muted small">Vật tư & Thiết bị</div>
                 <div class="fw-bold fs-6 text-dark">Chính hãng 100%</div>
             </div>
         </div>
@@ -249,7 +248,7 @@
 <div id="catalog-section" class="mb-4">
     <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-3">
         <h2 class="h4 fw-bold text-dark mb-0">
-            <i class="bi bi-grid-fill text-primary me-2"></i>Danh mục hàng hóa trong kho ({{ products|length }} sản phẩm)
+            <i class="bi bi-grid-fill text-primary me-2"></i>Danh mục vật tư & thiết bị văn phòng ({{ products|length }} sản phẩm)
         </h2>
         <a href="{% url 'product_list' %}" class="btn btn-outline-primary btn-sm px-3 bg-white">
             Tìm kiếm & Lọc chi tiết <i class="bi bi-arrow-right ms-1"></i>
