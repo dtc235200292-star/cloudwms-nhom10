@@ -12,7 +12,7 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.utils import timezone
 
 from .forms import OrderForm, ProductForm, StockImportForm
-from .models import Order, OrderItem, Product, StockHistory
+from .models import Order, Product, StockHistory
 
 
 def is_admin_user(user):
@@ -20,12 +20,12 @@ def is_admin_user(user):
 
 
 def home(request):
-    products = Product.objects.all()
-    low_stock_count = products.filter(stock__lt=10).count()
+    products = Product.objects.filter(status="active")
+    low_stock_count = products.filter(quantity__lt=10).count()
     context = {
         "products": products[:8],
         "total_products": products.count(),
-        "total_stock": products.aggregate(total=Sum("stock"))["total"] or 0,
+        "total_stock": products.aggregate(total=Sum("quantity"))["total"] or 0,
         "low_stock_count": low_stock_count,
     }
     return render(request, "inventory/home.html", context)
@@ -116,7 +116,7 @@ def google_login_entry(request):
 
 
 def product_list(request):
-    products = Product.objects.all()
+    products = Product.objects.select_related("category", "supplier").all()
     q = request.GET.get("q", "").strip()
     if q:
         products = products.filter(name__icontains=q) | products.filter(sku__icontains=q)
@@ -130,13 +130,12 @@ def product_create(request):
         form = ProductForm(request.POST, request.FILES)
         if form.is_valid():
             product = form.save()
-            if product.stock > 0:
+            if product.quantity > 0:
                 StockHistory.objects.create(
                     product=product,
-                    action="IN",
-                    quantity=product.stock,
+                    action="import",
+                    quantity=product.quantity,
                     note="Tồn kho khởi tạo khi thêm sản phẩm mới",
-                    created_by=request.user,
                 )
             messages.success(request, f"Đã thêm sản phẩm '{product.name}' thành công.")
             return redirect("product_list")
@@ -180,30 +179,18 @@ def stock_import(request):
         if form.is_valid():
             product = form.cleaned_data["product"]
             quantity = form.cleaned_data["quantity"]
-            batch_code = form.cleaned_data.get("batch_code", "").strip()
-            supplier = form.cleaned_data.get("supplier", "").strip()
-            note = form.cleaned_data.get("note", "").strip()
-
-            detail_parts = []
-            if batch_code:
-                detail_parts.append(f"Lô: {batch_code}")
-            if supplier:
-                detail_parts.append(f"NCC: {supplier}")
-            if note:
-                detail_parts.append(note)
-            full_note = " | ".join(detail_parts) if detail_parts else "Nhập bổ sung tồn kho"
+            note = form.cleaned_data.get("note", "").strip() or "Nhập bổ sung tồn kho"
 
             with transaction.atomic():
-                product.stock += quantity
+                product.quantity += quantity
                 product.save()
                 StockHistory.objects.create(
                     product=product,
-                    action="IN",
+                    action="import",
                     quantity=quantity,
-                    note=full_note,
-                    created_by=request.user,
+                    note=note,
                 )
-            messages.success(request, f"Đã nhập thêm {quantity} {product.unit} cho '{product.name}'.")
+            messages.success(request, f"Đã nhập thêm {quantity} sản phẩm cho '{product.name}'.")
             return redirect("stock_history_list")
     else:
         form = StockImportForm()
@@ -213,7 +200,7 @@ def stock_import(request):
 @login_required
 @user_passes_test(is_admin_user)
 def stock_history_list(request):
-    histories = StockHistory.objects.select_related("product", "created_by").all()
+    histories = StockHistory.objects.select_related("product").order_by("-created_at")
     return render(request, "inventory/stock_history_list.html", {"histories": histories})
 
 
@@ -221,15 +208,15 @@ def stock_history_list(request):
 @user_passes_test(is_admin_user)
 def dashboard(request):
     products = Product.objects.all()
-    low_stock_products = products.filter(stock__lt=10)
+    low_stock_products = products.filter(quantity__lt=10)
 
-    total_stock_value = sum((p.price * p.stock for p in products), Decimal("0"))
-    approved_orders = Order.objects.filter(status="APPROVED")
-    total_revenue = sum((o.total_amount for o in approved_orders), Decimal("0"))
+    total_stock_value = sum((p.price * p.quantity for p in products), Decimal("0"))
+    approved_orders = Order.objects.filter(status="approved").select_related("product")
+    total_revenue = sum((o.total_price for o in approved_orders), Decimal("0"))
 
-    pending_orders_count = Order.objects.filter(status="PENDING").count()
+    pending_orders_count = Order.objects.filter(status="pending").count()
     approved_orders_count = approved_orders.count()
-    cancelled_orders_count = Order.objects.filter(status="CANCELLED").count()
+    cancelled_orders_count = Order.objects.filter(status="rejected").count()
 
     today = timezone.now().date()
     chart_labels = []
@@ -240,11 +227,11 @@ def dashboard(request):
         day = today - timedelta(days=i)
         chart_labels.append(day.strftime("%d/%m"))
         in_qty = (
-            StockHistory.objects.filter(action="IN", created_at__date=day).aggregate(total=Sum("quantity"))["total"]
+            StockHistory.objects.filter(action="import", created_at__date=day).aggregate(total=Sum("quantity"))["total"]
             or 0
         )
         out_qty = (
-            StockHistory.objects.filter(action="OUT", created_at__date=day).aggregate(total=Sum("quantity"))["total"]
+            StockHistory.objects.filter(action="export", created_at__date=day).aggregate(total=Sum("quantity"))["total"]
             or 0
         )
         chart_in.append(in_qty)
@@ -252,7 +239,7 @@ def dashboard(request):
 
     context = {
         "total_products": products.count(),
-        "total_stock": products.aggregate(total=Sum("stock"))["total"] or 0,
+        "total_stock": products.aggregate(total=Sum("quantity"))["total"] or 0,
         "total_stock_value": total_stock_value,
         "total_revenue": total_revenue,
         "low_stock_products": low_stock_products,
@@ -263,7 +250,7 @@ def dashboard(request):
         "chart_labels": chart_labels,
         "chart_in": chart_in,
         "chart_out": chart_out,
-        "recent_histories": StockHistory.objects.select_related("product")[:6],
+        "recent_histories": StockHistory.objects.select_related("product").order_by("-created_at")[:6],
     }
     return render(request, "inventory/dashboard.html", context)
 
@@ -274,60 +261,40 @@ def order_create(request):
         messages.info(request, "Tài khoản Quản trị viên chỉ duyệt đơn, không đặt hàng như khách hàng.")
         return redirect("order_list")
 
-    products = Product.objects.filter(stock__gt=0)
+    products = Product.objects.filter(status="active", quantity__gt=0)
 
     if request.method == "POST":
         form = OrderForm(request.POST)
-        selected_items = []
-        for p in products:
-            qty_str = request.POST.get(f"qty_{p.id}", "0").strip()
-            try:
-                qty = int(qty_str)
-            except ValueError:
-                qty = 0
-            if qty > 0:
-                if qty > p.stock:
-                    messages.error(request, f"Sản phẩm '{p.name}' chỉ còn tối đa {p.stock} {p.unit} trong kho.")
-                    return render(request, "inventory/order_form.html", {"form": form, "products": products})
-                selected_items.append((p, qty))
-
-        if not selected_items:
-            messages.error(request, "Vui lòng chọn số lượng lớn hơn 0 cho ít nhất một sản phẩm.")
-            return render(request, "inventory/order_form.html", {"form": form, "products": products})
-
         if form.is_valid():
-            with transaction.atomic():
-                order = form.save(commit=False)
-                order.customer = request.user
-                order.status = "PENDING"
+            order = form.save(commit=False)
+            if order.quantity > order.product.quantity:
+                messages.error(
+                    request,
+                    f"Sản phẩm '{order.product.name}' chỉ còn tối đa {order.product.quantity} sản phẩm trong kho.",
+                )
+            else:
+                order.user = request.user
+                order.status = "pending"
                 order.save()
-
-                for p, qty in selected_items:
-                    OrderItem.objects.create(
-                        order=order,
-                        product=p,
-                        quantity=qty,
-                        unit_price=p.price,
-                    )
-
-            messages.success(request, f"Đã gửi đơn đặt hàng #{order.id} thành công! Chờ quản trị viên duyệt.")
-            return redirect("my_orders")
+                messages.success(request, f"Đã gửi đơn đặt hàng #{order.id} thành công! Chờ quản trị viên duyệt.")
+                return redirect("my_orders")
     else:
-        form = OrderForm(initial={"customer_name": request.user.get_full_name() or request.user.username})
+        form = OrderForm()
+        form.fields["product"].queryset = products
 
     return render(request, "inventory/order_form.html", {"form": form, "products": products})
 
 
 @login_required
 def my_orders(request):
-    orders = Order.objects.filter(customer=request.user).prefetch_related("items__product")
+    orders = Order.objects.filter(user=request.user).select_related("product").order_by("-created_at")
     return render(request, "inventory/my_orders.html", {"orders": orders})
 
 
 @login_required
 @user_passes_test(is_admin_user)
 def order_list(request):
-    orders = Order.objects.select_related("customer").prefetch_related("items__product").all()
+    orders = Order.objects.select_related("user", "product").order_by("-created_at")
     return render(request, "inventory/order_list.html", {"orders": orders})
 
 
@@ -336,34 +303,30 @@ def order_list(request):
 def order_approve(request, pk):
     order = get_object_or_404(Order, pk=pk)
     if request.method == "POST":
-        if order.status != "PENDING":
+        if order.status != "pending":
             messages.warning(request, f"Đơn hàng #{order.id} đã được xử lý trước đó.")
             return redirect("order_list")
 
-        items = list(order.items.select_related("product"))
-        for item in items:
-            if item.product.stock < item.quantity:
-                messages.error(
-                    request,
-                    f"Không đủ tồn kho cho '{item.product.name}' (Còn: {item.product.stock}, Cần: {item.quantity}).",
-                )
-                return redirect("order_list")
+        if order.product.quantity < order.quantity:
+            messages.error(
+                request,
+                f"Không đủ tồn kho cho '{order.product.name}' (Còn: {order.product.quantity}, Cần: {order.quantity}).",
+            )
+            return redirect("order_list")
 
         with transaction.atomic():
-            for item in items:
-                product = item.product
-                product.stock -= item.quantity
-                product.save()
+            product = order.product
+            product.quantity -= order.quantity
+            product.save()
 
-                StockHistory.objects.create(
-                    product=product,
-                    action="OUT",
-                    quantity=item.quantity,
-                    note=f"Xuất kho theo đơn đặt hàng #{order.id} ({order.customer_name})",
-                    created_by=request.user,
-                )
+            StockHistory.objects.create(
+                product=product,
+                action="export",
+                quantity=order.quantity,
+                note=f"Xuất kho theo đơn đặt hàng #{order.id} ({order.user.username})",
+            )
 
-            order.status = "APPROVED"
+            order.status = "approved"
             order.save()
 
         messages.success(request, f"Đã duyệt đơn #{order.id} và tự động trừ tồn kho thành công!")
@@ -373,15 +336,15 @@ def order_approve(request, pk):
 @login_required
 def order_cancel(request, pk):
     order = get_object_or_404(Order, pk=pk)
-    if not (request.user.is_staff or order.customer == request.user):
+    if not (request.user.is_staff or order.user == request.user):
         messages.error(request, "Bạn không có quyền hủy đơn hàng này.")
         return redirect("home")
 
     if request.method == "POST":
-        if order.status == "PENDING":
-            order.status = "CANCELLED"
+        if order.status == "pending":
+            order.status = "rejected"
             order.save()
-            messages.success(request, f"Đã hủy đơn hàng #{order.id}.")
+            messages.success(request, f"Đã hủy/từ chối đơn hàng #{order.id}.")
         else:
             messages.warning(request, "Chỉ có thể hủy đơn hàng đang ở trạng thái Chờ duyệt.")
 
@@ -392,8 +355,8 @@ def order_cancel(request, pk):
 
 @login_required
 def order_invoice(request, pk):
-    order = get_object_or_404(Order.objects.prefetch_related("items__product"), pk=pk)
-    if not (request.user.is_staff or order.customer == request.user):
+    order = get_object_or_404(Order.objects.select_related("user", "product"), pk=pk)
+    if not (request.user.is_staff or order.user == request.user):
         messages.error(request, "Bạn không có quyền xem phiếu xuất kho của đơn này.")
         return redirect("home")
     return render(request, "inventory/order_invoice.html", {"order": order})
