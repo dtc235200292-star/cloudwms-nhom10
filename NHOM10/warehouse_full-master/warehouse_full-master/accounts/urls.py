@@ -5,11 +5,12 @@ from .views import (
     google_login,
     google_callback,
     phone_otp_login,
+    logout_view,
 )
 
 urlpatterns = [
     path("login/", auth_views.LoginView.as_view(template_name="accounts/login.html"), name="login"),
-    path("logout/", auth_views.LogoutView.as_view(), name="logout"),
+    path("logout/", logout_view, name="logout"),
     path("register/", register, name="register"),
     path("google/login/", google_login, name="google_login_entry"),
     path("google/login/callback/", google_callback, name="google_callback"),
