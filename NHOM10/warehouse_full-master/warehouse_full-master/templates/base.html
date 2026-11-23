@@ -12,6 +12,7 @@
             --primary-blue: #1D4ED8;
             --primary-hover: #1E40AF;
             --surface-bg: #F8FAFC;
+            --footer-bg: #0F172A;
         }
         body {
             background-color: var(--surface-bg);
@@ -28,7 +29,7 @@
             pointer-events: none;
         }
         .navbar-cloud {
-            background: rgba(255, 255, 255, 0.92);
+            background: rgba(255, 255, 255, 0.94);
             backdrop-filter: blur(12px);
             border-bottom: 1px solid #E2E8F0;
             box-shadow: 0 2px 10px rgba(15, 23, 42, 0.04);
@@ -43,13 +44,14 @@
             align-items: center;
             justify-content: center;
             font-size: 1rem;
+            flex-shrink: 0;
         }
         .main-content {
             flex: 1;
             padding-top: 1.5rem;
-            padding-bottom: 2.5rem;
+            padding-bottom: 3rem;
         }
-        /* Toast / Alert thông báo tự tắt */
+        /* Alert thông báo tích xanh tự động tắt */
         .toast-alert-container {
             position: fixed;
             top: 74px;
@@ -63,16 +65,54 @@
             border-left: 4px solid #16A34A;
             background: #FFFFFF;
             color: #0F172A;
-            box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.14);
+            box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.16);
             border-radius: 12px;
         }
-        /* Footer đầy đủ */
+        /* Footer Dark Modern */
         .site-footer {
-            background: rgba(255, 255, 255, 0.95);
-            border-top: 1px solid #E2E8F0;
+            background: linear-gradient(180deg, #0F172A 0%, #0B1120 100%);
+            color: #94A3B8;
             margin-top: auto;
+            border-top: 1px solid #1E293B;
         }
-        /* Chatbot Widget */
+        .site-footer h6 {
+            color: #F8FAFC;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        .footer-link {
+            color: #94A3B8;
+            text-decoration: none;
+            transition: color 0.15s ease, padding-left 0.15s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .footer-link:hover {
+            color: #60A5FA;
+            padding-left: 3px;
+        }
+        .status-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            background: rgba(16, 185, 129, 0.12);
+            border: 1px solid rgba(16, 185, 129, 0.28);
+            color: #34D399;
+            padding: 4px 12px;
+            border-radius: 999px;
+            font-size: 0.78rem;
+            font-weight: 600;
+        }
+        .status-dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: #10B981;
+            box-shadow: 0 0 8px #10B981;
+        }
+        /* Chatbot Widget nâng cấp */
         .chatbot-fab {
             position: fixed;
             bottom: 24px;
@@ -83,7 +123,7 @@
             background: linear-gradient(135deg, #1D4ED8, #2563EB);
             color: #fff;
             border: none;
-            box-shadow: 0 8px 24px rgba(29, 78, 216, 0.35);
+            box-shadow: 0 8px 24px rgba(29, 78, 216, 0.38);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -92,18 +132,18 @@
             transition: transform 0.2s ease;
         }
         .chatbot-fab:hover {
-            transform: scale(1.06);
+            transform: scale(1.07);
         }
         .chatbot-box {
             position: fixed;
             bottom: 90px;
             right: 24px;
-            width: 340px;
+            width: 365px;
             max-width: calc(100vw - 32px);
             background: #fff;
-            border: 1px solid #E2E8F0;
-            border-radius: 16px;
-            box-shadow: 0 16px 40px rgba(15, 23, 42, 0.16);
+            border: 1px solid #CBD5E1;
+            border-radius: 18px;
+            box-shadow: 0 20px 45px rgba(15, 23, 42, 0.2);
             z-index: 1070;
             overflow: hidden;
             display: none;
@@ -112,29 +152,61 @@
             display: flex;
             flex-direction: column;
         }
+        .chatbot-header {
+            background: linear-gradient(135deg, #1E3A8A 0%, #2563EB 100%);
+            color: #FFFFFF;
+            padding: 12px 14px;
+        }
         .chatbot-messages {
-            height: 260px;
+            height: 255px;
             overflow-y: auto;
             padding: 12px;
             background: #F8FAFC;
-            font-size: 0.86rem;
+            font-size: 0.85rem;
+            line-height: 1.45;
         }
         .chat-msg-bot {
             background: #FFFFFF;
             border: 1px solid #E2E8F0;
-            border-radius: 12px 12px 12px 2px;
-            padding: 8px 12px;
-            margin-bottom: 8px;
+            border-radius: 14px 14px 14px 3px;
+            padding: 9px 12px;
+            margin-bottom: 9px;
             color: #1E293B;
+            box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
         }
         .chat-msg-user {
             background: #1D4ED8;
             color: #FFFFFF;
-            border-radius: 12px 12px 2px 12px;
+            border-radius: 14px 14px 3px 14px;
             padding: 8px 12px;
-            margin-bottom: 8px;
+            margin-bottom: 9px;
             margin-left: auto;
             max-width: 82%;
+            width: fit-content;
+        }
+        .chatbot-quick-replies {
+            padding: 8px 10px;
+            background: #FFFFFF;
+            border-top: 1px solid #F1F5F9;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+        .quick-chip {
+            background: #EFF6FF;
+            color: #1D4ED8;
+            border: 1px solid #BFDBFE;
+            border-radius: 999px;
+            padding: 4px 10px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.15s ease;
+        }
+        .quick-chip:hover {
+            background: #1D4ED8;
+            color: #FFFFFF;
+            border-color: #1D4ED8;
         }
     </style>
     {% block extra_css %}{% endblock %}
@@ -226,65 +298,98 @@
         {% block content %}{% endblock %}
     </main>
 
-    <!-- Chân trang (Footer) đầy đủ -->
-    <footer class="site-footer pt-4 pb-3 text-muted small">
+    <!-- Chân trang (Footer) hiện đại -->
+    <footer class="site-footer pt-5 pb-4 small">
         <div class="container">
-            <div class="row g-4 pb-3 border-bottom">
-                <div class="col-md-5">
-                    <div class="d-flex align-items-center gap-2 fw-bold text-dark mb-2">
+            <div class="row g-4 pb-4 border-bottom border-secondary border-opacity-25">
+                <div class="col-lg-4 col-md-6">
+                    <div class="d-flex align-items-center gap-2 fw-bold text-white fs-6 mb-2">
                         <span class="brand-badge"><i class="bi bi-box-seam-fill"></i></span>
                         <span>CloudWMS — Nhóm 10</span>
                     </div>
-                    <p class="mb-1">Hệ thống Quản lý Kho Vật tư – Thiết bị Văn phòng và Đặt hàng Trực tuyến trên Nền tảng Đám mây.</p>
-                    <p class="mb-0 text-secondary">Triển khai trên Cloud PaaS (Render) • Django 5 & WebGL 3D Engine.</p>
+                    <p class="mb-3" style="line-height: 1.6;">
+                        Hệ thống Quản lý Kho Vật tư – Thiết bị Văn phòng và Đặt hàng Trực tuyến trên Nền tảng Đám mây.
+                    </p>
+                    <div class="status-pill">
+                        <span class="status-dot"></span>
+                        <span>Cloud PaaS Active • Sẵn sàng phục vụ</span>
+                    </div>
                 </div>
-                <div class="col-md-3">
-                    <h6 class="fw-bold text-dark mb-2">Điều hướng nhanh</h6>
-                    <ul class="list-unstyled mb-0 d-flex flex-column gap-1">
-                        <li><a href="{% url 'home' %}" class="text-decoration-none text-muted">Trang chủ</a></li>
-                        <li><a href="{% url 'product_list' %}" class="text-decoration-none text-muted">Danh mục vật tư & thiết bị</a></li>
+
+                <div class="col-lg-2 col-md-6">
+                    <h6 class="fw-bold mb-3">Danh mục</h6>
+                    <ul class="list-unstyled d-flex flex-column gap-2 mb-0">
+                        <li><a href="{% url 'home' %}" class="footer-link"><i class="bi bi-chevron-right small"></i>Trang chủ</a></li>
+                        <li><a href="{% url 'product_list' %}" class="footer-link"><i class="bi bi-chevron-right small"></i>Kho vật tư & thiết bị</a></li>
                         {% if user.is_authenticated %}
-                            <li><a href="{% url 'my_orders' %}" class="text-decoration-none text-muted">Tra cứu đơn hàng</a></li>
+                            <li><a href="{% url 'my_orders' %}" class="footer-link"><i class="bi bi-chevron-right small"></i>Đơn hàng của tôi</a></li>
                         {% else %}
-                            <li><a href="{% url 'login' %}" class="text-decoration-none text-muted">Đăng nhập hệ thống</a></li>
+                            <li><a href="{% url 'login' %}" class="footer-link"><i class="bi bi-chevron-right small"></i>Đăng nhập</a></li>
+                            <li><a href="{% url 'register' %}" class="footer-link"><i class="bi bi-chevron-right small"></i>Đăng ký tài khoản</a></li>
                         {% endif %}
                     </ul>
                 </div>
-                <div class="col-md-4">
-                    <h6 class="fw-bold text-dark mb-2">Hỗ trợ & Vận hành</h6>
-                    <ul class="list-unstyled mb-0 d-flex flex-column gap-1">
-                        <li><i class="bi bi-geo-alt text-primary me-1"></i>Kho Vật tư & Thiết bị Văn phòng Trung tâm</li>
-                        <li><i class="bi bi-clock text-primary me-1"></i>Giờ làm việc: 08:00 – 17:30 (Thứ 2 – Thứ 7)</li>
-                        <li><i class="bi bi-shield-check text-success me-1"></i>Xác thực Google OAuth 2.0 & OTP bảo mật</li>
+
+                <div class="col-lg-3 col-md-6">
+                    <h6 class="fw-bold mb-3">Tính năng cốt lõi</h6>
+                    <ul class="list-unstyled d-flex flex-column gap-2 mb-0">
+                        <li><i class="bi bi-check2-circle text-primary me-2"></i>Quản lý nhập – xuất – tồn kho</li>
+                        <li><i class="bi bi-check2-circle text-primary me-2"></i>Đặt hàng & duyệt đơn trực tuyến</li>
+                        <li><i class="bi bi-check2-circle text-primary me-2"></i>Đăng nhập Google OAuth & OTP</li>
+                        <li><i class="bi bi-check2-circle text-primary me-2"></i>Xuất báo cáo dữ liệu CSV</li>
+                    </ul>
+                </div>
+
+                <div class="col-lg-3 col-md-6">
+                    <h6 class="fw-bold mb-3">Thông tin triển khai</h6>
+                    <ul class="list-unstyled d-flex flex-column gap-2 mb-0">
+                        <li><i class="bi bi-geo-alt-fill text-info me-2"></i>Kho Vật tư & Thiết bị Văn phòng</li>
+                        <li><i class="bi bi-clock-fill text-info me-2"></i>08:00 – 17:30 (Thứ 2 – Thứ 7)</li>
+                        <li><i class="bi bi-cpu-fill text-info me-2"></i>Python 3.12 • Django 5 • Three.js</li>
                     </ul>
                 </div>
             </div>
-            <div class="d-flex flex-wrap justify-content-between align-items-center pt-3 gap-2">
-                <span>© 2026 <strong>CloudWMS</strong> — Đồ án Nhóm 10. All rights reserved.</span>
-                <span>Nền tảng Đám mây Cloud PaaS • Django 5 & WebGL 3D Engine</span>
+
+            <div class="d-flex flex-wrap justify-content-between align-items-center pt-3 gap-2 text-secondary">
+                <span>© 2026 <strong class="text-light">CloudWMS</strong> — Đồ án Nhóm 10. Bảo lưu mọi quyền.</span>
+                <span>Vận hành trên Render Cloud PaaS</span>
             </div>
         </div>
     </footer>
 
-    <!-- Chatbot Trợ lý Ảo -->
+    <!-- Chatbot Trợ lý Ảo có sẵn câu hỏi gợi ý -->
     <button type="button" class="chatbot-fab" id="chatbotToggle" title="Trợ lý ảo CloudWMS">
         <i class="bi bi-chat-dots-fill"></i>
     </button>
     <div class="chatbot-box" id="chatbotBox">
-        <div class="bg-primary text-white px-3 py-2.5 d-flex justify-content-between align-items-center">
-            <div class="d-flex align-items-center gap-2">
-                <i class="bi bi-robot"></i>
-                <span class="fw-semibold small">Trợ lý Kho & Đặt hàng CloudWMS</span>
+        <div class="chatbot-header d-flex justify-content-between align-items-center">
+            <div class="d-flex align-items-center gap-2 text-nowrap">
+                <i class="bi bi-robot fs-5"></i>
+                <div>
+                    <div class="fw-semibold" style="font-size: 0.86rem;">Trợ lý Kho & Đặt hàng</div>
+                    <div style="font-size: 0.7rem; opacity: 0.85;">CloudWMS • Hỗ trợ 24/7</div>
+                </div>
             </div>
             <button type="button" class="btn-close btn-close-white btn-sm" id="chatbotClose"></button>
         </div>
+
         <div class="chatbot-messages" id="chatbotMessages">
             <div class="chat-msg-bot">
-                Xin chào! Tôi có thể hỗ trợ bạn tra cứu <strong>vật tư văn phòng</strong>, <strong>hướng dẫn đặt hàng</strong> hoặc <strong>kiểm tra tồn kho</strong>. Bạn cần hỗ trợ gì ạ?
+                Xin chào! Tôi là trợ lý ảo của <strong>CloudWMS</strong>. Bạn có thể chọn nhanh một câu hỏi gợi ý bên dưới hoặc nhập thắc mắc về vật tư, tồn kho và đơn hàng:
             </div>
         </div>
+
+        <!-- Danh sách câu hỏi có sẵn bấm chọn nhanh -->
+        <div class="chatbot-quick-replies" id="chatbotQuickReplies">
+            <button type="button" class="quick-chip" data-question="Cách đặt hàng vật tư văn phòng?">🛒 Cách đặt hàng?</button>
+            <button type="button" class="quick-chip" data-question="Làm sao biết sản phẩm còn hàng trong kho?">📦 Kiểm tra tồn kho?</button>
+            <button type="button" class="quick-chip" data-question="Hệ thống hỗ trợ những cách đăng nhập nào?">🔐 Cách đăng nhập?</button>
+            <button type="button" class="quick-chip" data-question="Quy trình duyệt đơn và trừ kho tự động?">✅ Duyệt đơn & trừ kho?</button>
+            <button type="button" class="quick-chip" data-question="Cách xuất file báo cáo CSV?">📊 Xuất báo cáo CSV?</button>
+        </div>
+
         <form id="chatbotForm" class="p-2 border-top bg-white d-flex gap-1">
-            <input type="text" id="chatbotInput" class="form-control form-control-sm" placeholder="Nhập câu hỏi..." autocomplete="off">
+            <input type="text" id="chatbotInput" class="form-control form-control-sm" placeholder="Nhập câu hỏi hoặc chọn gợi ý..." autocomplete="off">
             <button type="submit" class="btn btn-primary btn-sm px-3"><i class="bi bi-send-fill"></i></button>
         </form>
     </div>
@@ -302,7 +407,7 @@
             });
         });
 
-        // 2. Xử lý Chatbot
+        // 2. Xử lý Chatbot & Câu hỏi gợi ý có sẵn
         const chatToggle = document.getElementById("chatbotToggle");
         const chatBox = document.getElementById("chatbotBox");
         const chatClose = document.getElementById("chatbotClose");
@@ -313,34 +418,63 @@
         chatToggle.addEventListener("click", () => chatBox.classList.toggle("open"));
         chatClose.addEventListener("click", () => chatBox.classList.remove("open"));
 
-        chatForm.addEventListener("submit", function (e) {
-            e.preventDefault();
-            const text = chatInput.value.trim();
+        function getBotReply(rawText) {
+            const q = rawText.toLowerCase().trim();
+
+            if (["ok", "oke", "okay", "dạ", "vâng", "cảm ơn", "thanks", "thank you"].includes(q)) {
+                return "Rất vui được hỗ trợ bạn! Bạn có thể bấm chọn thêm các câu hỏi gợi ý bên dưới nếu cần tra cứu thêm thông tin kho và đặt hàng nhé.";
+            }
+            if (["hi", "hello", "xin chào", "chào"].includes(q)) {
+                return "Xin chào bạn! Bạn đang quan tâm đến vật tư – thiết bị văn phòng nào, hay cần hướng dẫn đặt hàng / quản lý kho ạ?";
+            }
+            if (q.includes("đặt hàng") || q.includes("đặt mua") || q.includes("mua")) {
+                return "<strong>Quy trình đặt hàng trực tuyến:</strong><br>1. Đăng nhập tài khoản khách hàng (hoặc Google Gmail).<br>2. Vào <strong>Sản phẩm</strong> hoặc bấm <strong>Đặt mua</strong> trên thiết bị cần lấy.<br>3. Nhập số lượng và gửi đơn. Theo dõi trạng thái tại mục <strong>Đơn của tôi</strong>.";
+            }
+            if (q.includes("tồn kho") || q.includes("còn hàng") || q.includes("sẵn hàng") || q.includes("hết")) {
+                return "<strong>Trạng thái tồn kho:</strong><br>• Nhãn xanh <span class='badge bg-success'>Sẵn hàng</span>: Thiết bị còn trong kho, có thể đặt ngay.<br>• Nhãn xám <span class='badge bg-secondary'>Tạm hết</span>: Đang chờ nhập bổ sung, nút đặt tạm khóa để tránh vượt tồn.";
+            }
+            if (q.includes("đăng nhập") || q.includes("google") || q.includes("otp") || q.includes("tài khoản")) {
+                return "<strong>3 phương thức đăng nhập trên CloudWMS:</strong><br>1. <strong>Tiếp tục với Google:</strong> Dùng trực tiếp tài khoản Gmail bất kỳ.<br>2. <strong>Tài khoản & Mật khẩu:</strong> Dành cho quản trị viên kho và người dùng đăng ký nội bộ.<br>3. <strong>Số điện thoại (OTP):</strong> Xác thực nhanh bằng mã 6 chữ số.";
+            }
+            if (q.includes("duyệt đơn") || q.includes("trừ kho") || q.includes("quy trình")) {
+                return "<strong>Cơ chế duyệt đơn & trừ kho tự động:</strong><br>Khi khách tạo đơn, đơn ở trạng thái <em>Chờ duyệt</em>. Khi Quản trị viên kho (Admin) bấm <strong>Duyệt đơn</strong> trong mục <em>Quản lý đơn</em>, hệ thống tự động trừ số lượng tồn kho tương ứng và ghi nhận lịch sử xuất kho.";
+            }
+            if (q.includes("csv") || q.includes("báo cáo") || q.includes("xuất file")) {
+                return "<strong>Xuất dữ liệu báo cáo CSV:</strong><br>Tài khoản Quản trị viên (Admin) vào mục <strong>Tổng quan kho</strong> hoặc <strong>Quản lý đơn / Sản phẩm</strong> và bấm nút <strong>Xuất CSV</strong> để tải toàn bộ danh sách tồn kho và đơn hàng về máy.";
+            }
+            return "Tôi chưa rõ ý của bạn lắm. Bạn hãy thử bấm một trong các <strong>nút câu hỏi gợi ý bên dưới</strong> (như <em>Cách đặt hàng</em>, <em>Kiểm tra tồn kho</em>, <em>Cách đăng nhập</em>) để xem hướng dẫn chi tiết nhé!";
+        }
+
+        function sendChatMessage(text) {
             if (!text) return;
 
             const userDiv = document.createElement("div");
             userDiv.className = "chat-msg-user";
             userDiv.textContent = text;
             chatMessages.appendChild(userDiv);
-            chatInput.value = "";
-
-            const q = text.toLowerCase();
-            let reply = "Bạn có thể vào mục <strong>Sản phẩm</strong> để xem toàn bộ danh mục vật tư – thiết bị văn phòng hoặc chọn <strong>Đặt hàng</strong> để tạo đơn trực tuyến.";
-            if (q.includes("đặt hàng") || q.includes("mua")) {
-                reply = "Để đặt hàng: bạn chọn nút <strong>Đặt mua</strong> ngay trên thẻ sản phẩm hoặc vào menu <strong>Đặt hàng</strong>, chọn số lượng và xác nhận đơn. Trạng thái đơn theo dõi tại mục <strong>Đơn của tôi</strong>.";
-            } else if (q.includes("tồn kho") || q.includes("sẵn hàng") || q.includes("hết")) {
-                reply = "Các sản phẩm có nhãn xanh <strong>Sẵn hàng</strong> đều có thể đặt trực tiếp. Nếu sản phẩm báo <strong>Tạm hết</strong>, bộ phận kho đang nhập bổ sung.";
-            } else if (q.includes("đăng nhập") || q.includes("google") || q.includes("tài khoản")) {
-                reply = "Hệ thống hỗ trợ đăng nhập bằng <strong>Tài khoản Google (Gmail)</strong>, <strong>Tên đăng nhập/Mật khẩu</strong> hoặc <strong>Số điện thoại (OTP)</strong>.";
-            }
+            chatMessages.scrollTop = chatMessages.scrollHeight;
 
             setTimeout(() => {
                 const botDiv = document.createElement("div");
                 botDiv.className = "chat-msg-bot";
-                botDiv.innerHTML = reply;
+                botDiv.innerHTML = getBotReply(text);
                 chatMessages.appendChild(botDiv);
                 chatMessages.scrollTop = chatMessages.scrollHeight;
-            }, 300);
+            }, 250);
+        }
+
+        chatForm.addEventListener("submit", function (e) {
+            e.preventDefault();
+            const text = chatInput.value.trim();
+            chatInput.value = "";
+            sendChatMessage(text);
+        });
+
+        document.querySelectorAll(".quick-chip").forEach(function (btn) {
+            btn.addEventListener("click", function () {
+                const question = this.getAttribute("data-question");
+                sendChatMessage(question);
+            });
         });
 
         // 3. Nền 3D WebGL nhẹ
