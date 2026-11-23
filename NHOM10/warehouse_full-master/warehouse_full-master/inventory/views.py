@@ -1,3 +1,4 @@
+import csv
 from datetime import timedelta
 from decimal import Decimal
 import re
@@ -8,6 +9,7 @@ from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.auth.models import User
 from django.db import transaction
 from django.db.models import Sum
+from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.utils import timezone
 
@@ -205,6 +207,53 @@ def stock_import(request):
 def stock_history_list(request):
     histories = StockHistory.objects.select_related("product").order_by("-created_at")
     return render(request, "inventory/stock_history_list.html", {"histories": histories})
+
+
+@login_required
+@user_passes_test(is_admin_user)
+def export_inventory_csv(request):
+    response = HttpResponse(content_type="text/csv; charset=utf-8")
+    response["Content-Disposition"] = 'attachment; filename="bao_cao_ton_kho_cloudwms.csv"'
+    response.write("\ufeff")
+
+    writer = csv.writer(response)
+    writer.writerow(["Mã SKU", "Tên sản phẩm", "Danh mục", "Nhà cung cấp", "Số lượng tồn", "Đơn giá (VNĐ)", "Giá trị tồn (VNĐ)", "Trạng thái"])
+
+    for p in Product.objects.select_related("category", "supplier").all():
+        writer.writerow([
+            p.sku,
+            p.name,
+            p.category.name if p.category else "Chưa phân loại",
+            p.supplier.name if p.supplier else "Chưa cập nhật",
+            p.quantity,
+            p.price,
+            p.price * p.quantity,
+            p.get_status_display(),
+        ])
+    return response
+
+
+@login_required
+@user_passes_test(is_admin_user)
+def export_history_csv(request):
+    response = HttpResponse(content_type="text/csv; charset=utf-8")
+    response["Content-Disposition"] = 'attachment; filename="so_cai_lich_su_kho_cloudwms.csv"'
+    response.write("\ufeff")
+
+    writer = csv.writer(response)
+    writer.writerow(["Mã phiếu", "Thời gian", "Mã SKU", "Sản phẩm", "Loại giao dịch", "Số lượng", "Ghi chú"])
+
+    for h in StockHistory.objects.select_related("product").order_by("-created_at"):
+        writer.writerow([
+            h.id,
+            timezone.localtime(h.created_at).strftime("%d/%m/%Y %H:%M"),
+            h.product.sku,
+            h.product.name,
+            h.get_action_display(),
+            h.quantity,
+            h.note or "",
+        ])
+    return response
 
 
 @login_required
