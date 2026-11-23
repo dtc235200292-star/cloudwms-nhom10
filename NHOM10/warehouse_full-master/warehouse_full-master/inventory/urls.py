@@ -6,7 +6,11 @@ urlpatterns = [
     path("", views.home, name="home"),
     path("dashboard/", views.dashboard, name="dashboard"),
 
-    # Sản phẩm (hỗ trợ đầy đủ mọi tên route cũ & mới)
+    # Xuất báo cáo CSV
+    path("export/inventory/", views.export_inventory_csv, name="export_inventory_csv"),
+    path("export/history/", views.export_history_csv, name="export_history_csv"),
+
+    # Sản phẩm
     path("products/", views.product_list, name="product_list"),
     path("products/create/", views.product_create, name="product_create"),
     path("products/add/", views.product_create, name="product_add"),
@@ -27,7 +31,7 @@ urlpatterns = [
     path("orders/<int:pk>/reject/", views.order_cancel, name="order_reject"),
     path("orders/<int:pk>/invoice/", views.order_invoice, name="order_invoice"),
 
-    # Xác thực, đăng ký, OTP, Google & Quên mật khẩu (khớp cả 'password_reset' và 'password_reset_custom')
+    # Xác thực, đăng ký, OTP, Google & Quên mật khẩu
     path("accounts/login/", auth_views.LoginView.as_view(template_name="accounts/login.html"), name="login"),
     path("accounts/logout/", auth_views.LogoutView.as_view(), name="logout"),
     path("accounts/register/", views.register_view, name="register"),
