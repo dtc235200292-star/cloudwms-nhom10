@@ -1,5 +1,6 @@
 import json
 import os
+import re
 import secrets
 import urllib.parse
 import urllib.request
@@ -64,8 +65,7 @@ def google_callback(request):
         messages.error(request, "Thiếu cấu hình GOOGLE_CLIENT_ID hoặc GOOGLE_CLIENT_SECRET trên hệ thống.")
         return redirect("login")
 
-    error = request.GET.get("error")
-    if error:
+    if request.GET.get("error"):
         messages.warning(request, "Bạn đã hủy đăng nhập với Google.")
         return redirect("login")
 
@@ -84,7 +84,6 @@ def google_callback(request):
     if "onrender.com" in redirect_uri and redirect_uri.startswith("http://"):
         redirect_uri = "https://" + redirect_uri[len("http://") :]
 
-    # Bước 1: Đổi authorization code lấy access_token
     token_data = urllib.parse.urlencode(
         {
             "code": code,
@@ -109,7 +108,6 @@ def google_callback(request):
             messages.error(request, "Không lấy được token đăng nhập từ Google.")
             return redirect("login")
 
-        # Bước 2: Lấy thông tin email và họ tên từ Google
         userinfo_req = urllib.request.Request(
             "https://www.googleapis.com/oauth2/v3/userinfo",
             headers={"Authorization": f"Bearer {access_token}"},
@@ -126,7 +124,6 @@ def google_callback(request):
         messages.error(request, "Tài khoản Google không cung cấp địa chỉ email.")
         return redirect("login")
 
-    # Bước 3: Tìm user theo email hoặc tự động tạo mới nếu lần đầu đăng nhập
     user = User.objects.filter(email__iexact=email).first()
     if not user:
         base_username = email.split("@")[0]
@@ -148,3 +145,26 @@ def google_callback(request):
     login(request, user, backend="django.contrib.auth.backends.ModelBackend")
     messages.success(request, f"Đăng nhập thành công với tài khoản {email}!")
     return redirect("home")
+
+
+def phone_otp_login(request):
+    if request.method == "POST":
+        raw_phone = request.POST.get("phone", "")
+        otp = request.POST.get("otp", "").strip()
+        phone = re.sub(r"\D", "", raw_phone)
+
+        if len(phone) < 9 or len(otp) != 6 or not otp.isdigit():
+            messages.error(request, "Số điện thoại hoặc mã OTP 6 chữ số không hợp lệ.")
+            return redirect("login")
+
+        username = f"sdt_{phone}"
+        user, created = User.objects.get_or_create(username=username)
+        if created:
+            user.set_unusable_password()
+            user.save()
+
+        login(request, user, backend="django.contrib.auth.backends.ModelBackend")
+        messages.success(request, f"Đăng nhập thành công bằng số điện thoại {raw_phone}!")
+        return redirect("home")
+
+    return redirect("login")
