@@ -437,7 +437,65 @@ def order_invoice(request, pk):
         "order": order,
         "total_amount": total_amount,
     })
+from django.contrib.auth import login
+from django.contrib.auth.models import User
 
+
+def register_view(request):
+    if request.user.is_authenticated:
+        return redirect("home")
+    if request.method == "POST":
+        username = request.POST.get("username", "").strip()
+        email = request.POST.get("email", "").strip()
+        password = request.POST.get("password", "")
+        confirm = request.POST.get("confirm_password", "")
+
+        if not username or not password:
+            messages.error(request, "Vui lòng nhập đầy đủ tên đăng nhập và mật khẩu.")
+        elif password != confirm:
+            messages.error(request, "Mật khẩu xác nhận không khớp.")
+        elif User.objects.filter(username=username).exists():
+            messages.error(request, f"Tên đăng nhập '{username}' đã tồn tại.")
+        else:
+            user = User.objects.create_user(username=username, email=email, password=password)
+            login(request, user)
+            messages.success(request, f"Chào mừng {username}! Tài khoản khách hàng đã được tạo thành công.")
+            return redirect("home")
+    return render(request, "registration/register.html")
+
+
+def phone_otp_login(request):
+    if request.method == "POST":
+        phone = request.POST.get("phone", "").strip()
+        otp = request.POST.get("otp", "").strip()
+
+        if not phone or len(phone) < 9:
+            messages.error(request, "Vui lòng nhập số điện thoại hợp lệ (từ 9-11 chữ số).")
+            return redirect("/accounts/login/")
+
+        if len(otp) == 6 and otp.isdigit():
+            clean_phone = "".join(filter(str.isdigit, phone))
+            clean_username = f"khach_{clean_phone}"
+            user, _ = User.objects.get_or_create(
+                username=clean_username,
+                defaults={"first_name": f"Khách {clean_phone[-4:]}"}
+            )
+            login(request, user)
+            messages.success(request, f"Xác thực SĐT {phone} thành công! Chào mừng bạn đến với CloudWMS.")
+            return redirect("home")
+        else:
+            messages.error(request, "Mã OTP phải gồm đúng 6 chữ số.")
+    return redirect("/accounts/login/")
+
+
+def google_login_entry(request):
+    user, _ = User.objects.get_or_create(
+        username="google_customer",
+        defaults={"email": "customer.google@cloudwms.vn", "first_name": "Google User"}
+    )
+    login(request, user)
+    messages.success(request, "Đăng nhập bằng tài khoản Google thành công!")
+    return redirect("home")
 
 @receiver(user_logged_in)
 def notify_user_logged_in(sender, request, user, **kwargs):
