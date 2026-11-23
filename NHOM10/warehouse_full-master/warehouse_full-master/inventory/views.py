@@ -501,3 +501,57 @@ def google_login_entry(request):
 def notify_user_logged_in(sender, request, user, **kwargs):
     role = "Quản trị viên (Admin)" if user.is_staff else "Khách hàng"
     messages.success(request, f"Đăng nhập thành công! Chào mừng {user.username} ({role}) quay trở lại CloudWMS.")
+    def password_reset_view(request):
+    if request.user.is_authenticated:
+        return redirect("home")
+
+    verified_user = None
+    step = "identify"
+
+    if request.method == "POST":
+        action = request.POST.get("action")
+        identifier = request.POST.get("identifier", "").strip()
+
+        if action == "verify":
+            user = (
+                User.objects.filter(username=identifier).first()
+                or User.objects.filter(email__iexact=identifier).exclude(email="").first()
+            )
+            if user:
+                verified_user = user
+                step = "reset"
+            else:
+                messages.error(request, "Không tìm thấy tài khoản hoặc email tương ứng trong hệ thống.")
+        elif action == "reset":
+            user_id = request.POST.get("user_id")
+            new_pass = request.POST.get("new_password", "")
+            confirm_pass = request.POST.get("confirm_password", "")
+            user = User.objects.filter(id=user_id).first()
+
+            if not user:
+                messages.error(request, "Phiên khôi phục không hợp lệ. Vui lòng thử lại.")
+            elif len(new_pass) < 6:
+                messages.error(request, "Mật khẩu mới phải có ít nhất 6 ký tự.")
+                verified_user = user
+                step = "reset"
+            elif new_pass != confirm_pass:
+                messages.error(request, "Mật khẩu xác nhận không khớp.")
+                verified_user = user
+                step = "reset"
+            else:
+                user.set_password(new_pass)
+                user.save()
+                messages.success(
+                    request,
+                    f"Đã cập nhật mật khẩu mới cho tài khoản '{user.username}'. Vui lòng đăng nhập lại.",
+                )
+                return redirect("/accounts/login/")
+
+    return render(
+        request,
+        "accounts/password_reset.html",
+        {
+            "step": step,
+            "verified_user": verified_user,
+        },
+    )
