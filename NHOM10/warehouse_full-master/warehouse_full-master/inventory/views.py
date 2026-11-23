@@ -1,7 +1,7 @@
 import csv
-from datetime import timedelta
-from decimal import Decimal
+import json
 import re
+from decimal import Decimal
 
 from django.contrib import messages
 from django.contrib.auth import login
@@ -23,7 +23,7 @@ def is_admin_user(user):
 
 def home(request):
     products_qs = Product.objects.select_related("category").filter(status="active").order_by("-created_at")
-    low_stock_count = products_qs.filter(quantity__lt=10).count()
+    low_stock_count = products_qs.filter(quantity__lte=5).count()
     products_list = list(products_qs)
     context = {
         "products": products_list,
@@ -198,7 +198,11 @@ def stock_import(request):
             messages.success(request, f"Đã nhập thêm {quantity} sản phẩm cho '{product.name}'.")
             return redirect("stock_history_list")
     else:
-        form = StockImportForm()
+        initial_data = {}
+        product_id = request.GET.get("product")
+        if product_id and product_id.isdigit():
+            initial_data["product"] = int(product_id)
+        form = StockImportForm(initial=initial_data)
     return render(request, "inventory/form.html", {"form": form, "title": "Nhập hàng vào kho"})
 
 
@@ -259,49 +263,66 @@ def export_history_csv(request):
 @login_required
 @user_passes_test(is_admin_user)
 def dashboard(request):
-    products = Product.objects.all()
-    low_stock_products = products.filter(quantity__lt=10)
+    products = Product.objects.select_related("category").all()
+    out_of_stock_count = products.filter(quantity=0).count()
+    low_stock_products = products.filter(quantity__lte=5).order_by("quantity", "name")
 
-    total_stock_value = sum((p.price * p.quantity for p in products), Decimal("0"))
-    approved_orders = Order.objects.filter(status="approved").select_related("product")
-    total_revenue = sum((o.total_price for o in approved_orders), Decimal("0"))
+    total_stock = products.aggregate(total=Sum("quantity"))["total"] or 0
+    total_value = sum((p.price * p.quantity for p in products), Decimal("0"))
 
-    pending_orders_count = Order.objects.filter(status="pending").count()
-    approved_orders_count = approved_orders.count()
-    cancelled_orders_count = Order.objects.filter(status="rejected").count()
+    total_imported = (
+        StockHistory.objects.filter(action="import").aggregate(total=Sum("quantity"))["total"] or 0
+    )
+    total_exported = (
+        StockHistory.objects.filter(action="export").aggregate(total=Sum("quantity"))["total"] or 0
+    )
 
-    today = timezone.now().date()
-    chart_labels = []
-    chart_in = []
-    chart_out = []
+    approved_orders_qs = Order.objects.filter(status="approved").select_related("product")
+    approved_revenue = sum((o.total_price for o in approved_orders_qs), Decimal("0"))
 
-    for i in range(6, -1, -1):
-        day = today - timedelta(days=i)
-        chart_labels.append(day.strftime("%d/%m"))
-        in_qty = (
-            StockHistory.objects.filter(action="import", created_at__date=day).aggregate(total=Sum("quantity"))["total"]
-            or 0
-        )
-        out_qty = (
-            StockHistory.objects.filter(action="export", created_at__date=day).aggregate(total=Sum("quantity"))["total"]
-            or 0
-        )
-        chart_in.append(in_qty)
-        chart_out.append(out_qty)
+    pending_orders = Order.objects.filter(status="pending").count()
+    approved_orders = approved_orders_qs.count()
+    rejected_orders = Order.objects.filter(status="rejected").count()
+
+    # Dữ liệu biểu đồ cột: Tồn kho theo từng nhóm danh mục
+    cat_labels = []
+    cat_quantities = []
+    for cat in Category.objects.all():
+        qty = products.filter(category=cat).aggregate(total=Sum("quantity"))["total"] or 0
+        cat_labels.append(cat.name)
+        cat_quantities.append(qty)
+
+    uncategorized_qty = products.filter(category__isnull=True).aggregate(total=Sum("quantity"))["total"] or 0
+    if uncategorized_qty > 0:
+        cat_labels.append("Chưa phân loại")
+        cat_quantities.append(uncategorized_qty)
+
+    # Top sản phẩm xuất kho nhiều nhất (từ các đơn hàng đã duyệt)
+    top_products = (
+        approved_orders_qs.values("product__sku", "product__name")
+        .annotate(total_sold=Sum("quantity"))
+        .order_by("-total_sold")[:5]
+    )
+
+    # Đơn hàng mới nhất
+    recent_orders = Order.objects.select_related("user", "product").order_by("-created_at")[:6]
 
     context = {
         "total_products": products.count(),
-        "total_stock": products.aggregate(total=Sum("quantity"))["total"] or 0,
-        "total_stock_value": total_stock_value,
-        "total_revenue": total_revenue,
+        "out_of_stock_count": out_of_stock_count,
+        "total_stock": total_stock,
+        "total_imported": total_imported,
+        "total_exported": total_exported,
+        "total_value": total_value,
+        "approved_revenue": approved_revenue,
+        "pending_orders": pending_orders,
+        "approved_orders": approved_orders,
+        "rejected_orders": rejected_orders,
+        "cat_labels": json.dumps(cat_labels, ensure_ascii=False),
+        "cat_quantities": json.dumps(cat_quantities),
+        "recent_orders": recent_orders,
+        "top_products": top_products,
         "low_stock_products": low_stock_products,
-        "low_stock_count": low_stock_products.count(),
-        "pending_orders_count": pending_orders_count,
-        "approved_orders_count": approved_orders_count,
-        "cancelled_orders_count": cancelled_orders_count,
-        "chart_labels": chart_labels,
-        "chart_in": chart_in,
-        "chart_out": chart_out,
         "recent_histories": StockHistory.objects.select_related("product").order_by("-created_at")[:6],
     }
     return render(request, "inventory/dashboard.html", context)
