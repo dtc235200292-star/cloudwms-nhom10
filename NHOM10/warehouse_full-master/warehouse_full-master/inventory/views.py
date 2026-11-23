@@ -20,12 +20,12 @@ def is_admin_user(user):
 
 
 def home(request):
-    products = Product.objects.filter(status="active")
-    low_stock_count = products.filter(quantity__lt=10).count()
+    products_qs = Product.objects.filter(status="active").order_by("-created_at")
+    low_stock_count = products_qs.filter(quantity__lt=10).count()
     context = {
-        "products": products[:8],
-        "total_products": products.count(),
-        "total_stock": products.aggregate(total=Sum("quantity"))["total"] or 0,
+        "products": list(products_qs[:8]),
+        "total_products": products_qs.count(),
+        "total_stock": products_qs.aggregate(total=Sum("quantity"))["total"] or 0,
         "low_stock_count": low_stock_count,
     }
     return render(request, "inventory/home.html", context)
