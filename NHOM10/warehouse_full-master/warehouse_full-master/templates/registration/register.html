@@ -1,0 +1,103 @@
+{% extends "base.html" %}
+{% block title %}Đăng ký tài khoản — CloudWMS{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center align-items-center py-3 py-md-4">
+    <div class="col-xl-10">
+        <div class="card overflow-hidden border-0 shadow-lg">
+            <div class="row g-0">
+                <!-- Cột trái: Quyền lợi thành viên -->
+                <div class="col-lg-5 d-none d-lg-flex flex-column justify-content-between p-5 text-white"
+                     style="background: linear-gradient(145deg, #1E1B4B 0%, #1D4ED8 55%, #0284C7 100%);">
+                    <div>
+                        <div class="d-inline-flex align-items-center gap-2 px-3 py-1 rounded-pill mb-4"
+                             style="background: rgba(255,255,255,0.15); font-size: 0.78rem; font-weight: 700;">
+                            <i class="bi bi-stars text-warning"></i> Tài khoản Khách hàng CloudWMS
+                        </div>
+                        <h2 class="fw-black mb-3" style="letter-spacing: -0.03em; line-height: 1.2;">
+                            Khởi tạo tài khoản đặt hàng trực tuyến
+                        </h2>
+                        <p class="small opacity-75" style="line-height: 1.65;">
+                            Chỉ mất 30 giây để sở hữu tài khoản đặt vật tư doanh nghiệp, theo dõi hành trình giao nhận và xuất phiếu kho điện tử.
+                        </p>
+                    </div>
+
+                    <ul class="list-unstyled d-flex flex-column gap-3 small my-4">
+                        <li class="d-flex align-items-center gap-2">
+                            <i class="bi bi-check-circle-fill text-info fs-5"></i>
+                            <span>Xem tồn kho thực tế trước khi đặt đơn</span>
+                        </li>
+                        <li class="d-flex align-items-center gap-2">
+                            <i class="bi bi-check-circle-fill text-info fs-5"></i>
+                            <span>Tùy chọn giao hỏa tốc 2–4 giờ nội thành</span>
+                        </li>
+                        <li class="d-flex align-items-center gap-2">
+                            <i class="bi bi-check-circle-fill text-info fs-5"></i>
+                            <span>Trợ lý ảo CloudBot AI hỗ trợ 24/7</span>
+                        </li>
+                    </ul>
+
+                    <div class="small opacity-75">© 2026 CloudWMS Enterprise</div>
+                </div>
+
+                <!-- Cột phải: Form đăng ký -->
+                <div class="col-lg-7 p-4 p-md-5 bg-white">
+                    <div class="mb-4">
+                        <h3 class="fw-black text-dark mb-1" style="letter-spacing: -0.02em;">Tạo tài khoản mới</h3>
+                        <p class="text-muted small mb-0">Đăng ký nhanh bằng Google hoặc điền thông tin bên dưới</p>
+                    </div>
+
+                    <a href="{% url 'google_login_entry' %}" class="btn btn-light border w-100 py-2.5 mb-3 d-flex align-items-center justify-content-center gap-2 fw-semibold shadow-sm" style="border-radius: 13px;">
+                        <svg width="18" height="18" viewBox="0 0 48 48">
+                            <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/>
+                            <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/>
+                            <path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/>
+                            <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/>
+                        </svg>
+                        <span>Đăng ký nhanh bằng Google</span>
+                    </a>
+
+                    <div class="d-flex align-items-center my-3 text-muted small">
+                        <hr class="flex-grow-1">
+                        <span class="px-3">hoặc đăng ký bằng tài khoản</span>
+                        <hr class="flex-grow-1">
+                    </div>
+
+                    <form method="post">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <label class="form-label small fw-bold text-dark">Tên đăng nhập *</label>
+                            <input type="text" name="username" class="form-control" placeholder="VD: nguyenvana" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label small fw-bold text-dark">Email liên hệ</label>
+                            <input type="email" name="email" class="form-control" placeholder="name@company.com">
+                        </div>
+
+                        <div class="row g-3 mb-4">
+                            <div class="col-md-6">
+                                <label class="form-label small fw-bold text-dark">Mật khẩu *</label>
+                                <input type="password" name="password" class="form-control" placeholder="Tối thiểu 6 ký tự" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label small fw-bold text-dark">Nhập lại mật khẩu *</label>
+                                <input type="password" name="confirm_password" class="form-control" placeholder="Xác nhận mật khẩu" required>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary w-100 py-2.5 fw-bold">
+                            Hoàn tất đăng ký <i class="bi bi-person-plus-fill ms-1"></i>
+                        </button>
+                    </form>
+
+                    <div class="text-center mt-4 pt-3 border-top small text-muted">
+                        Đã có tài khoản?
+                        <a href="/accounts/login/" class="fw-bold text-primary text-decoration-none">Đăng nhập ngay</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
