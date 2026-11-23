@@ -12,7 +12,6 @@
             --primary-blue: #1D4ED8;
             --primary-hover: #1E40AF;
             --surface-bg: #F8FAFC;
-            --footer-bg: #0F172A;
         }
         body {
             background-color: var(--surface-bg);
@@ -51,7 +50,7 @@
             padding-top: 1.5rem;
             padding-bottom: 3rem;
         }
-        /* Alert thông báo tích xanh tự động tắt */
+        /* Thông báo tích xanh tự động tắt sau 4 giây */
         .toast-alert-container {
             position: fixed;
             top: 74px;
@@ -68,51 +67,28 @@
             box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.16);
             border-radius: 12px;
         }
-        /* Footer Dark Modern */
+        /* Footer tinh gọn, sang trọng */
         .site-footer {
-            background: linear-gradient(180deg, #0F172A 0%, #0B1120 100%);
+            background: #0F172A;
             color: #94A3B8;
             margin-top: auto;
             border-top: 1px solid #1E293B;
         }
         .site-footer h6 {
             color: #F8FAFC;
-            font-size: 0.85rem;
+            font-size: 0.82rem;
             text-transform: uppercase;
             letter-spacing: 0.05em;
         }
         .footer-link {
             color: #94A3B8;
             text-decoration: none;
-            transition: color 0.15s ease, padding-left 0.15s ease;
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
+            transition: color 0.15s ease;
         }
         .footer-link:hover {
             color: #60A5FA;
-            padding-left: 3px;
         }
-        .status-pill {
-            display: inline-flex;
-            align-items: center;
-            gap: 7px;
-            background: rgba(16, 185, 129, 0.12);
-            border: 1px solid rgba(16, 185, 129, 0.28);
-            color: #34D399;
-            padding: 4px 12px;
-            border-radius: 999px;
-            font-size: 0.78rem;
-            font-weight: 600;
-        }
-        .status-dot {
-            width: 7px;
-            height: 7px;
-            border-radius: 50%;
-            background: #10B981;
-            box-shadow: 0 0 8px #10B981;
-        }
-        /* Chatbot Widget nâng cấp */
+        /* Chatbot chỉ hiển thị cho Khách hàng */
         .chatbot-fab {
             position: fixed;
             bottom: 24px;
@@ -138,7 +114,7 @@
             position: fixed;
             bottom: 90px;
             right: 24px;
-            width: 365px;
+            width: 360px;
             max-width: calc(100vw - 32px);
             background: #fff;
             border: 1px solid #CBD5E1;
@@ -158,7 +134,7 @@
             padding: 12px 14px;
         }
         .chatbot-messages {
-            height: 255px;
+            height: 245px;
             overflow-y: auto;
             padding: 12px;
             background: #F8FAFC;
@@ -298,76 +274,65 @@
         {% block content %}{% endblock %}
     </main>
 
-    <!-- Chân trang (Footer) hiện đại -->
-    <footer class="site-footer pt-5 pb-4 small">
+    <!-- Chân trang (Footer) tinh gọn, đúng trọng tâm -->
+    <footer class="site-footer pt-4 pb-3 small">
         <div class="container">
-            <div class="row g-4 pb-4 border-bottom border-secondary border-opacity-25">
-                <div class="col-lg-4 col-md-6">
+            <div class="row g-4 pb-3 border-bottom border-secondary border-opacity-25">
+                <div class="col-lg-5 col-md-6">
                     <div class="d-flex align-items-center gap-2 fw-bold text-white fs-6 mb-2">
                         <span class="brand-badge"><i class="bi bi-box-seam-fill"></i></span>
-                        <span>CloudWMS — Nhóm 10</span>
+                        <span>CloudWMS</span>
                     </div>
-                    <p class="mb-3" style="line-height: 1.6;">
+                    <p class="mb-0" style="line-height: 1.6;">
                         Hệ thống Quản lý Kho Vật tư – Thiết bị Văn phòng và Đặt hàng Trực tuyến trên Nền tảng Đám mây.
                     </p>
-                    <div class="status-pill">
-                        <span class="status-dot"></span>
-                        <span>Cloud PaaS Active • Sẵn sàng phục vụ</span>
-                    </div>
                 </div>
 
-                <div class="col-lg-2 col-md-6">
-                    <h6 class="fw-bold mb-3">Danh mục</h6>
-                    <ul class="list-unstyled d-flex flex-column gap-2 mb-0">
-                        <li><a href="{% url 'home' %}" class="footer-link"><i class="bi bi-chevron-right small"></i>Trang chủ</a></li>
-                        <li><a href="{% url 'product_list' %}" class="footer-link"><i class="bi bi-chevron-right small"></i>Kho vật tư & thiết bị</a></li>
+                <div class="col-lg-3 col-md-6">
+                    <h6 class="fw-bold mb-2">Liên kết nhanh</h6>
+                    <ul class="list-unstyled d-flex flex-column gap-1.5 mb-0">
+                        <li><a href="{% url 'home' %}" class="footer-link">Trang chủ</a></li>
+                        <li><a href="{% url 'product_list' %}" class="footer-link">Danh mục vật tư & thiết bị</a></li>
                         {% if user.is_authenticated %}
-                            <li><a href="{% url 'my_orders' %}" class="footer-link"><i class="bi bi-chevron-right small"></i>Đơn hàng của tôi</a></li>
+                            {% if user.is_staff %}
+                                <li><a href="{% url 'dashboard' %}" class="footer-link">Quản trị kho hàng</a></li>
+                            {% else %}
+                                <li><a href="{% url 'my_orders' %}" class="footer-link">Đơn hàng của tôi</a></li>
+                            {% endif %}
                         {% else %}
-                            <li><a href="{% url 'login' %}" class="footer-link"><i class="bi bi-chevron-right small"></i>Đăng nhập</a></li>
-                            <li><a href="{% url 'register' %}" class="footer-link"><i class="bi bi-chevron-right small"></i>Đăng ký tài khoản</a></li>
+                            <li><a href="{% url 'login' %}" class="footer-link">Đăng nhập / Đăng ký</a></li>
                         {% endif %}
                     </ul>
                 </div>
 
-                <div class="col-lg-3 col-md-6">
-                    <h6 class="fw-bold mb-3">Tính năng cốt lõi</h6>
-                    <ul class="list-unstyled d-flex flex-column gap-2 mb-0">
-                        <li><i class="bi bi-check2-circle text-primary me-2"></i>Quản lý nhập – xuất – tồn kho</li>
-                        <li><i class="bi bi-check2-circle text-primary me-2"></i>Đặt hàng & duyệt đơn trực tuyến</li>
-                        <li><i class="bi bi-check2-circle text-primary me-2"></i>Đăng nhập Google OAuth & OTP</li>
-                        <li><i class="bi bi-check2-circle text-primary me-2"></i>Xuất báo cáo dữ liệu CSV</li>
-                    </ul>
-                </div>
-
-                <div class="col-lg-3 col-md-6">
-                    <h6 class="fw-bold mb-3">Thông tin triển khai</h6>
-                    <ul class="list-unstyled d-flex flex-column gap-2 mb-0">
-                        <li><i class="bi bi-geo-alt-fill text-info me-2"></i>Kho Vật tư & Thiết bị Văn phòng</li>
-                        <li><i class="bi bi-clock-fill text-info me-2"></i>08:00 – 17:30 (Thứ 2 – Thứ 7)</li>
-                        <li><i class="bi bi-cpu-fill text-info me-2"></i>Python 3.12 • Django 5 • Three.js</li>
+                <div class="col-lg-4 col-md-12">
+                    <h6 class="fw-bold mb-2">Hỗ trợ đặt hàng & Quản lý</h6>
+                    <ul class="list-unstyled d-flex flex-column gap-1.5 mb-0">
+                        <li><i class="bi bi-box-seam text-primary me-2"></i>Cung cấp vật tư, linh kiện & thiết bị văn phòng</li>
+                        <li><i class="bi bi-shield-check text-success me-2"></i>Đặt hàng trực tuyến nhanh chóng, theo dõi đơn 24/7</li>
                     </ul>
                 </div>
             </div>
 
             <div class="d-flex flex-wrap justify-content-between align-items-center pt-3 gap-2 text-secondary">
-                <span>© 2026 <strong class="text-light">CloudWMS</strong> — Đồ án Nhóm 10. Bảo lưu mọi quyền.</span>
-                <span>Vận hành trên Render Cloud PaaS</span>
+                <span>© 2026 <strong class="text-light">CloudWMS</strong> — Nhóm 10.</span>
+                <span>Hệ thống Quản lý Kho Vật tư – Thiết bị Văn phòng</span>
             </div>
         </div>
     </footer>
 
-    <!-- Chatbot Trợ lý Ảo có sẵn câu hỏi gợi ý -->
-    <button type="button" class="chatbot-fab" id="chatbotToggle" title="Trợ lý ảo CloudWMS">
+    <!-- Chatbot Trợ lý Khách hàng (Ẩn hoàn toàn đối với tài khoản Admin/Staff) -->
+    {% if not user.is_staff %}
+    <button type="button" class="chatbot-fab" id="chatbotToggle" title="Hỗ trợ đặt hàng">
         <i class="bi bi-chat-dots-fill"></i>
     </button>
     <div class="chatbot-box" id="chatbotBox">
         <div class="chatbot-header d-flex justify-content-between align-items-center">
             <div class="d-flex align-items-center gap-2 text-nowrap">
-                <i class="bi bi-robot fs-5"></i>
+                <i class="bi bi-headset fs-5"></i>
                 <div>
-                    <div class="fw-semibold" style="font-size: 0.86rem;">Trợ lý Kho & Đặt hàng</div>
-                    <div style="font-size: 0.7rem; opacity: 0.85;">CloudWMS • Hỗ trợ 24/7</div>
+                    <div class="fw-semibold" style="font-size: 0.86rem;">Trợ lý Hỗ trợ Khách hàng</div>
+                    <div style="font-size: 0.7rem; opacity: 0.85;">Tư vấn vật tư & Đặt hàng trực tuyến</div>
                 </div>
             </div>
             <button type="button" class="btn-close btn-close-white btn-sm" id="chatbotClose"></button>
@@ -375,24 +340,24 @@
 
         <div class="chatbot-messages" id="chatbotMessages">
             <div class="chat-msg-bot">
-                Xin chào! Tôi là trợ lý ảo của <strong>CloudWMS</strong>. Bạn có thể chọn nhanh một câu hỏi gợi ý bên dưới hoặc nhập thắc mắc về vật tư, tồn kho và đơn hàng:
+                Xin chào quý khách! Tôi có thể hỗ trợ bạn tra cứu <strong>vật tư – thiết bị văn phòng</strong>, <strong>cách đặt hàng</strong> và <strong>theo dõi đơn hàng</strong>. Mời bạn chọn câu hỏi gợi ý bên dưới:
             </div>
         </div>
 
-        <!-- Danh sách câu hỏi có sẵn bấm chọn nhanh -->
+        <!-- Câu hỏi gợi ý dành riêng cho Khách hàng -->
         <div class="chatbot-quick-replies" id="chatbotQuickReplies">
             <button type="button" class="quick-chip" data-question="Cách đặt hàng vật tư văn phòng?">🛒 Cách đặt hàng?</button>
-            <button type="button" class="quick-chip" data-question="Làm sao biết sản phẩm còn hàng trong kho?">📦 Kiểm tra tồn kho?</button>
-            <button type="button" class="quick-chip" data-question="Hệ thống hỗ trợ những cách đăng nhập nào?">🔐 Cách đăng nhập?</button>
-            <button type="button" class="quick-chip" data-question="Quy trình duyệt đơn và trừ kho tự động?">✅ Duyệt đơn & trừ kho?</button>
-            <button type="button" class="quick-chip" data-question="Cách xuất file báo cáo CSV?">📊 Xuất báo cáo CSV?</button>
+            <button type="button" class="quick-chip" data-question="Làm sao biết sản phẩm còn hàng?">📦 Kiểm tra còn hàng?</button>
+            <button type="button" class="quick-chip" data-question="Xem trạng thái đơn hàng ở đâu?">🧾 Theo dõi đơn hàng?</button>
+            <button type="button" class="quick-chip" data-question="Cách đăng nhập để mua hàng?">🔐 Cách đăng nhập?</button>
         </div>
 
         <form id="chatbotForm" class="p-2 border-top bg-white d-flex gap-1">
-            <input type="text" id="chatbotInput" class="form-control form-control-sm" placeholder="Nhập câu hỏi hoặc chọn gợi ý..." autocomplete="off">
+            <input type="text" id="chatbotInput" class="form-control form-control-sm" placeholder="Nhập câu hỏi cần hỗ trợ..." autocomplete="off">
             <button type="submit" class="btn btn-primary btn-sm px-3"><i class="bi bi-send-fill"></i></button>
         </form>
     </div>
+    {% endif %}
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
@@ -407,7 +372,7 @@
             });
         });
 
-        // 2. Xử lý Chatbot & Câu hỏi gợi ý có sẵn
+        // 2. Xử lý Chatbot Khách hàng (chỉ chạy khi phần tử tồn tại trên trang)
         const chatToggle = document.getElementById("chatbotToggle");
         const chatBox = document.getElementById("chatbotBox");
         const chatClose = document.getElementById("chatbotClose");
@@ -415,67 +380,66 @@
         const chatInput = document.getElementById("chatbotInput");
         const chatMessages = document.getElementById("chatbotMessages");
 
-        chatToggle.addEventListener("click", () => chatBox.classList.toggle("open"));
-        chatClose.addEventListener("click", () => chatBox.classList.remove("open"));
+        if (chatToggle && chatBox) {
+            chatToggle.addEventListener("click", () => chatBox.classList.toggle("open"));
+            chatClose.addEventListener("click", () => chatBox.classList.remove("open"));
 
-        function getBotReply(rawText) {
-            const q = rawText.toLowerCase().trim();
+            function getCustomerBotReply(rawText) {
+                const q = rawText.toLowerCase().trim();
 
-            if (["ok", "oke", "okay", "dạ", "vâng", "cảm ơn", "thanks", "thank you"].includes(q)) {
-                return "Rất vui được hỗ trợ bạn! Bạn có thể bấm chọn thêm các câu hỏi gợi ý bên dưới nếu cần tra cứu thêm thông tin kho và đặt hàng nhé.";
+                if (["ok", "oke", "okay", "dạ", "vâng", "cảm ơn", "thanks", "thank you"].includes(q)) {
+                    return "Cảm ơn quý khách! Nếu cần hỗ trợ thêm về đặt mua vật tư hay kiểm tra đơn hàng, bạn cứ chọn các mục gợi ý bên dưới nhé.";
+                }
+                if (["hi", "hello", "xin chào", "chào"].includes(q)) {
+                    return "Xin chào quý khách! Bạn cần tìm thiết bị văn phòng nào hay cần hướng dẫn đặt hàng trực tuyến ạ?";
+                }
+                if (q.includes("đặt hàng") || q.includes("đặt mua") || q.includes("mua")) {
+                    return "<strong>Hướng dẫn đặt hàng nhanh:</strong><br>1. Đăng nhập tài khoản khách hàng (hoặc dùng Gmail cá nhân).<br>2. Chọn thiết bị tại mục <strong>Sản phẩm</strong> hoặc bấm <strong>Đặt mua</strong>.<br>3. Nhập số lượng cần lấy và xác nhận gửi đơn.";
+                }
+                if (q.includes("còn hàng") || q.includes("tồn kho") || q.includes("sẵn hàng") || q.includes("hết")) {
+                    return "<strong>Kiểm tra tình trạng hàng:</strong><br>• Nhãn xanh <span class='badge bg-success'>Sẵn hàng</span>: Sản phẩm đang có sẵn, quý khách có thể đặt ngay.<br>• Nhãn xám <span class='badge bg-secondary'>Tạm hết</span>: Kho đang nhập thêm hàng, sẽ mở đặt lại sớm nhất.";
+                }
+                if (q.includes("theo dõi") || q.includes("đơn hàng") || q.includes("trạng thái")) {
+                    return "<strong>Theo dõi đơn hàng:</strong><br>Sau khi đăng nhập, quý khách bấm vào mục <strong>Đơn của tôi</strong> trên thanh menu để xem chi tiết từng đơn hàng và trạng thái duyệt đơn.";
+                }
+                if (q.includes("đăng nhập") || q.includes("google") || q.includes("otp") || q.includes("tài khoản")) {
+                    return "<strong>Các cách đăng nhập mua hàng:</strong><br>• <strong>Tiếp tục với Google:</strong> Đăng nhập một chạm bằng tài khoản Gmail.<br>• <strong>Số điện thoại (OTP):</strong> Nhập SĐT và nhận mã xác thực 6 số.<br>• <strong>Tài khoản nội bộ:</strong> Đăng ký nhanh tại mục <em>Đăng ký</em>.";
+                }
+                return "Quý khách vui lòng chọn một trong các <strong>câu hỏi gợi ý bên dưới</strong> (<em>Cách đặt hàng</em>, <em>Kiểm tra còn hàng</em>, <em>Theo dõi đơn hàng</em>) để nhận hướng dẫn chi tiết nhé!";
             }
-            if (["hi", "hello", "xin chào", "chào"].includes(q)) {
-                return "Xin chào bạn! Bạn đang quan tâm đến vật tư – thiết bị văn phòng nào, hay cần hướng dẫn đặt hàng / quản lý kho ạ?";
-            }
-            if (q.includes("đặt hàng") || q.includes("đặt mua") || q.includes("mua")) {
-                return "<strong>Quy trình đặt hàng trực tuyến:</strong><br>1. Đăng nhập tài khoản khách hàng (hoặc Google Gmail).<br>2. Vào <strong>Sản phẩm</strong> hoặc bấm <strong>Đặt mua</strong> trên thiết bị cần lấy.<br>3. Nhập số lượng và gửi đơn. Theo dõi trạng thái tại mục <strong>Đơn của tôi</strong>.";
-            }
-            if (q.includes("tồn kho") || q.includes("còn hàng") || q.includes("sẵn hàng") || q.includes("hết")) {
-                return "<strong>Trạng thái tồn kho:</strong><br>• Nhãn xanh <span class='badge bg-success'>Sẵn hàng</span>: Thiết bị còn trong kho, có thể đặt ngay.<br>• Nhãn xám <span class='badge bg-secondary'>Tạm hết</span>: Đang chờ nhập bổ sung, nút đặt tạm khóa để tránh vượt tồn.";
-            }
-            if (q.includes("đăng nhập") || q.includes("google") || q.includes("otp") || q.includes("tài khoản")) {
-                return "<strong>3 phương thức đăng nhập trên CloudWMS:</strong><br>1. <strong>Tiếp tục với Google:</strong> Dùng trực tiếp tài khoản Gmail bất kỳ.<br>2. <strong>Tài khoản & Mật khẩu:</strong> Dành cho quản trị viên kho và người dùng đăng ký nội bộ.<br>3. <strong>Số điện thoại (OTP):</strong> Xác thực nhanh bằng mã 6 chữ số.";
-            }
-            if (q.includes("duyệt đơn") || q.includes("trừ kho") || q.includes("quy trình")) {
-                return "<strong>Cơ chế duyệt đơn & trừ kho tự động:</strong><br>Khi khách tạo đơn, đơn ở trạng thái <em>Chờ duyệt</em>. Khi Quản trị viên kho (Admin) bấm <strong>Duyệt đơn</strong> trong mục <em>Quản lý đơn</em>, hệ thống tự động trừ số lượng tồn kho tương ứng và ghi nhận lịch sử xuất kho.";
-            }
-            if (q.includes("csv") || q.includes("báo cáo") || q.includes("xuất file")) {
-                return "<strong>Xuất dữ liệu báo cáo CSV:</strong><br>Tài khoản Quản trị viên (Admin) vào mục <strong>Tổng quan kho</strong> hoặc <strong>Quản lý đơn / Sản phẩm</strong> và bấm nút <strong>Xuất CSV</strong> để tải toàn bộ danh sách tồn kho và đơn hàng về máy.";
-            }
-            return "Tôi chưa rõ ý của bạn lắm. Bạn hãy thử bấm một trong các <strong>nút câu hỏi gợi ý bên dưới</strong> (như <em>Cách đặt hàng</em>, <em>Kiểm tra tồn kho</em>, <em>Cách đăng nhập</em>) để xem hướng dẫn chi tiết nhé!";
-        }
 
-        function sendChatMessage(text) {
-            if (!text) return;
+            function sendChatMessage(text) {
+                if (!text) return;
 
-            const userDiv = document.createElement("div");
-            userDiv.className = "chat-msg-user";
-            userDiv.textContent = text;
-            chatMessages.appendChild(userDiv);
-            chatMessages.scrollTop = chatMessages.scrollHeight;
-
-            setTimeout(() => {
-                const botDiv = document.createElement("div");
-                botDiv.className = "chat-msg-bot";
-                botDiv.innerHTML = getBotReply(text);
-                chatMessages.appendChild(botDiv);
+                const userDiv = document.createElement("div");
+                userDiv.className = "chat-msg-user";
+                userDiv.textContent = text;
+                chatMessages.appendChild(userDiv);
                 chatMessages.scrollTop = chatMessages.scrollHeight;
-            }, 250);
-        }
 
-        chatForm.addEventListener("submit", function (e) {
-            e.preventDefault();
-            const text = chatInput.value.trim();
-            chatInput.value = "";
-            sendChatMessage(text);
-        });
+                setTimeout(() => {
+                    const botDiv = document.createElement("div");
+                    botDiv.className = "chat-msg-bot";
+                    botDiv.innerHTML = getCustomerBotReply(text);
+                    chatMessages.appendChild(botDiv);
+                    chatMessages.scrollTop = chatMessages.scrollHeight;
+                }, 250);
+            }
 
-        document.querySelectorAll(".quick-chip").forEach(function (btn) {
-            btn.addEventListener("click", function () {
-                const question = this.getAttribute("data-question");
-                sendChatMessage(question);
+            chatForm.addEventListener("submit", function (e) {
+                e.preventDefault();
+                const text = chatInput.value.trim();
+                chatInput.value = "";
+                sendChatMessage(text);
             });
-        });
+
+            document.querySelectorAll(".quick-chip").forEach(function (btn) {
+                btn.addEventListener("click", function () {
+                    const question = this.getAttribute("data-question");
+                    sendChatMessage(question);
+                });
+            });
+        }
 
         // 3. Nền 3D WebGL nhẹ
         (function () {
