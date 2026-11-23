@@ -24,7 +24,7 @@ def is_admin_user(user):
 def home(request):
     products_qs = Product.objects.select_related("category").filter(status="active").order_by("-created_at")
     low_stock_count = products_qs.filter(quantity__lt=10).count()
-    products_list = list(products_qs[:8])
+    products_list = list(products_qs)
     context = {
         "products": products_list,
         "featured": products_list[0] if products_list else None,
