@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}CloudWMS — Hệ Thống Quản Trị Kho Đám Mây{% endblock %}</title>
+    <title>{% block title %}CloudWMS — Quản Lý Kho Vật Tư & Thiết Bị Văn Phòng{% endblock %}</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -35,7 +35,6 @@
             position: relative;
         }
 
-        /* Chỉ bật nền gradient + 3D Three.js khi KHÔNG phải trang xác thực */
         body.has-3d-env {
             background: radial-gradient(circle at 12% 10%, #DBEAFE 0%, #F8FAFC 42%, #E0E7FF 100%);
         }
@@ -49,7 +48,6 @@
             pointer-events: none;
         }
 
-        /* Navbar kính mờ cao cấp */
         .navbar-cloud {
             background: rgba(255, 255, 255, 0.86);
             backdrop-filter: blur(16px);
@@ -85,7 +83,6 @@
             color: var(--primary) !important;
         }
 
-        /* Hệ thống Card kính mờ & chiều sâu 3D */
         .card, .glass-panel, .card-pro {
             background: var(--glass-bg) !important;
             backdrop-filter: blur(16px);
@@ -147,7 +144,6 @@
 <body class="{% if '/accounts/' not in request.path %}has-3d-env{% endif %}">
 
     {% if '/accounts/' not in request.path %}
-        <!-- Canvas Sân khấu Kho Đám Mây 3D (Chỉ chạy trên các trang hệ thống, tắt ở Đăng nhập/Đăng ký) -->
         <canvas id="warehouse-3d-canvas"></canvas>
     {% endif %}
 
@@ -251,10 +247,10 @@
     <footer class="footer-cloud py-4 mt-5">
         <div class="container d-flex flex-column flex-md-row justify-content-between align-items-center gap-2 text-muted small">
             <div>
-                <strong class="text-dark">CloudWMS</strong> — Hệ thống Quản trị Kho vận & Đặt đơn Đám mây (Nhóm 10)
+                <strong class="text-dark">CloudWMS</strong> — Hệ thống Quản lý Kho Vật tư – Thiết bị Văn phòng & Đặt hàng Trực tuyến (Nhóm 10)
             </div>
             <div>
-                Cloud PaaS Architecture • Django 5 & WebGL 3D Engine
+                Nền tảng Đám mây Cloud PaaS • Django 5 & WebGL 3D Engine
             </div>
         </div>
     </footer>
@@ -264,7 +260,6 @@
     {% if '/accounts/' not in request.path %}
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script>
-        // 1. Sân khấu 3D Hệ thống Kho Hàng Đám Mây (Three.js WebGL)
         (function initWarehouse3D() {
             const canvas = document.getElementById('warehouse-3d-canvas');
             if (!canvas || typeof THREE === 'undefined') return;
@@ -279,7 +274,6 @@
             renderer.setSize(window.innerWidth, window.innerHeight);
             renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 
-            // Ánh sáng 3D tạo khối nổi bật
             const ambientLight = new THREE.AmbientLight(0xffffff, 0.85);
             scene.add(ambientLight);
 
@@ -294,14 +288,12 @@
             const worldGroup = new THREE.Group();
             scene.add(worldGroup);
 
-            // Lưới sàn kho không gian 3D
             const gridHelper = new THREE.GridHelper(90, 36, 0x93C5FD, 0xDBEAFE);
             gridHelper.position.y = -14;
             gridHelper.material.transparent = true;
             gridHelper.material.opacity = 0.45;
             worldGroup.add(gridHelper);
 
-            // Các kiện hàng 3D có viền phát sáng & bề mặt phản chiếu
             const boxGeo = new THREE.BoxGeometry(1.8, 1.8, 1.8);
             const edgesGeo = new THREE.EdgesGeometry(boxGeo);
             const wireMat = new THREE.LineBasicMaterial({ color: 0x2563EB, transparent: true, opacity: 0.38 });
@@ -337,7 +329,6 @@
                 cargoNodes.push(unit);
             }
 
-            // Mạng lưới các đường kết nối dữ liệu đám mây giữa các kiện hàng
             const linePoints = [];
             for (let i = 0; i < cargoNodes.length - 1; i += 2) {
                 linePoints.push(cargoNodes[i].position);
@@ -348,7 +339,6 @@
             const networkLines = new THREE.LineSegments(netGeo, netMat);
             worldGroup.add(networkLines);
 
-            // Hạt dữ liệu bay trong không gian
             const partCount = 180;
             const partPos = new Float32Array(partCount * 3);
             for (let i = 0; i < partCount * 3; i++) {
@@ -392,7 +382,6 @@
             renderLoop();
         })();
 
-        // 2. Hiệu ứng nghiêng thẻ 3D (3D Perspective Tilt) khi di chuột lên các thẻ sản phẩm & thẻ tiêu điểm
         document.addEventListener('DOMContentLoaded', () => {
             document.querySelectorAll('.tilt-3d').forEach((card) => {
                 card.addEventListener('mousemove', (e) => {
