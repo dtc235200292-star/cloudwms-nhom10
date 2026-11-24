@@ -1,182 +1,294 @@
 {% extends "base.html" %}
 
-{% block title %}Trang chủ — Hệ thống Quản lý Kho Vật tư & Đặt hàng Trực tuyến{% endblock %}
+{% block title %}CloudWMS — Hệ thống Quản lý Kho Vật tư – Thiết bị Văn phòng & Đặt hàng Trực tuyến{% endblock %}
 
 {% block extra_css %}
 <style>
-    /* NỀN WEB SỐNG ĐỘNG (AMBIENT MESH + DOT GRID) */
+    /* 1. NỀN TRANG CHUẨN E-COMMERCE LỚN (AMAZON / LAZADA STYLE) */
     body {
-        background-color: #F4F7FC !important;
+        background-color: #EFF2F7 !important;
         background-image:
-            radial-gradient(at 0% 0%, rgba(56, 189, 248, 0.14) 0px, transparent 50%),
-            radial-gradient(at 100% 10%, rgba(99, 102, 241, 0.12) 0px, transparent 48%),
-            radial-gradient(at 50% 100%, rgba(14, 165, 233, 0.1) 0px, transparent 55%),
-            radial-gradient(#CBD5E1 0.85px, transparent 0.85px) !important;
-        background-size: 100% 100%, 100% 100%, 100% 100%, 24px 24px !important;
+            linear-gradient(180deg, #DBEAFE 0%, #EFF2F7 420px, #EFF2F7 100%) !important;
+        background-repeat: no-repeat !important;
     }
 
-    @keyframes floatSlow {
-        0%, 100% { transform: translateY(0px); }
-        50% { transform: translateY(-7px); }
-    }
-    @keyframes glowPulse {
-        0%, 100% { opacity: 0.55; transform: scale(1); }
-        50% { opacity: 0.85; transform: scale(1.08); }
+    /* 2. KHỐI MEGA-HERO 3 CỘT (LAZADA + AMAZON PORTAL) */
+    .ecom-portal-wrap {
+        display: grid;
+        grid-template-columns: 235px 1fr 270px;
+        gap: 14px;
+        align-items: stretch;
     }
 
-    .vivid-hero {
+    /* Cột trái: Danh mục ngành hàng nhanh */
+    .ecom-cat-sidebar {
+        background: #FFFFFF;
+        border-radius: 16px;
+        border: 1px solid #E2E8F0;
+        padding: 12px 0;
+        box-shadow: 0 6px 20px rgba(15, 23, 42, 0.05);
+        display: flex;
+        flex-direction: column;
+    }
+    .ecom-cat-header {
+        font-size: 0.78rem;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+        color: #0F172A;
+        padding: 4px 16px 10px;
+        border-bottom: 1px solid #F1F5F9;
+        display: flex;
+        align-items: center;
+        gap: 7px;
+    }
+    .ecom-cat-list {
+        list-style: none;
+        margin: 6px 0 0;
+        padding: 0;
+        flex-grow: 1;
+    }
+    .ecom-cat-item {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 9px 16px;
+        font-size: 0.83rem;
+        font-weight: 600;
+        color: #334155;
+        cursor: pointer;
+        transition: all 0.16s ease;
+    }
+    .ecom-cat-item:hover {
+        background: #EFF6FF;
+        color: #1D4ED8;
+        padding-left: 20px;
+    }
+    .ecom-cat-item i.chevron {
+        font-size: 0.72rem;
+        opacity: 0.45;
+        transition: transform 0.16s ease, opacity 0.16s ease;
+    }
+    .ecom-cat-item:hover i.chevron {
+        opacity: 1;
+        transform: translateX(3px);
+    }
+
+    /* Cột giữa: Carousel Banner Đẳng cấp Doanh nghiệp */
+    .ecom-carousel {
+        border-radius: 16px;
+        overflow: hidden;
+        box-shadow: 0 14px 32px -10px rgba(15, 23, 42, 0.22);
         position: relative;
-        border-radius: 26px;
-        background: linear-gradient(125deg, #0B1120 0%, #172554 45%, #1D4ED8 82%, #0284C7 100%);
+        min-height: 330px;
+    }
+    .ecom-carousel .carousel-inner,
+    .ecom-carousel .carousel-item {
+        height: 100%;
+        min-height: 330px;
+    }
+    .hero-slide {
+        height: 100%;
+        min-height: 330px;
+        padding: 32px 38px;
         color: #FFFFFF;
-        box-shadow: 0 25px 55px -15px rgba(29, 78, 216, 0.38);
+        display: flex;
+        align-items: center;
+        position: relative;
         overflow: hidden;
     }
-    .hero-orb-1 {
+    .slide-bg-1 {
+        background: linear-gradient(120deg, #0F172A 0%, #1E3A8A 55%, #0284C7 100%);
+    }
+    .slide-bg-2 {
+        background: linear-gradient(120deg, #111827 0%, #312E81 52%, #4F46E5 100%);
+    }
+    .slide-bg-3 {
+        background: linear-gradient(120deg, #064E3B 0%, #0F766E 55%, #0284C7 100%);
+    }
+    .slide-pattern {
         position: absolute;
-        width: 340px;
-        height: 340px;
-        border-radius: 50%;
-        background: radial-gradient(circle, rgba(56, 189, 248, 0.35) 0%, transparent 70%);
-        top: -110px;
-        right: 12%;
-        animation: glowPulse 6s ease-in-out infinite;
+        inset: 0;
+        background-image: radial-gradient(rgba(255, 255, 255, 0.12) 1px, transparent 1px);
+        background-size: 20px 20px;
         pointer-events: none;
     }
-    .hero-orb-2 {
+    .slide-glow {
         position: absolute;
         width: 280px;
         height: 280px;
         border-radius: 50%;
-        background: radial-gradient(circle, rgba(129, 140, 248, 0.32) 0%, transparent 70%);
-        bottom: -100px;
-        left: 28%;
-        animation: glowPulse 8s ease-in-out infinite reverse;
+        background: radial-gradient(circle, rgba(255, 255, 255, 0.22) 0%, transparent 70%);
+        right: -40px;
+        bottom: -60px;
         pointer-events: none;
     }
-    .hero-grid-overlay {
-        position: absolute;
-        inset: 0;
-        background-image:
-            linear-gradient(to right, rgba(255, 255, 255, 0.05) 1px, transparent 1px),
-            linear-gradient(to bottom, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
-        background-size: 30px 30px;
-        pointer-events: none;
-    }
-    .hero-pill-tag {
+    .slide-badge {
         display: inline-flex;
         align-items: center;
-        gap: 8px;
-        background: rgba(255, 255, 255, 0.12);
-        backdrop-filter: blur(8px);
-        border: 1px solid rgba(255, 255, 255, 0.25);
-        color: #E0F2FE;
-        padding: 6px 15px;
+        gap: 6px;
+        background: rgba(255, 255, 255, 0.16);
+        border: 1px solid rgba(255, 255, 255, 0.28);
+        padding: 4px 12px;
         border-radius: 999px;
-        font-size: 0.78rem;
-        font-weight: 600;
+        font-size: 0.74rem;
+        font-weight: 700;
+        letter-spacing: 0.02em;
+        margin-bottom: 12px;
     }
-    .status-dot {
-        width: 8px;
-        height: 8px;
-        border-radius: 50%;
-        background: #34D399;
-        box-shadow: 0 0 0 4px rgba(52, 211, 153, 0.28);
-    }
-    .hero-main-title {
-        font-size: clamp(1.48rem, 2.85vw, 2.25rem);
+    .slide-title {
+        font-size: clamp(1.32rem, 2.2vw, 1.85rem);
         font-weight: 800;
         line-height: 1.24;
-        letter-spacing: -0.02em;
-        color: #FFFFFF;
+        margin-bottom: 10px;
     }
-    .hero-main-title span {
-        background: linear-gradient(90deg, #7DD3FC 0%, #BAE6FD 100%);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
+    .slide-desc {
+        font-size: 0.88rem;
+        color: rgba(241, 245, 249, 0.9);
+        line-height: 1.55;
+        margin-bottom: 20px;
+        max-width: 440px;
     }
-    .hero-lead-text {
-        color: rgba(226, 232, 240, 0.92);
-        font-size: 0.94rem;
-        line-height: 1.65;
-        max-width: 580px;
-    }
-    .btn-cta-primary {
-        background: linear-gradient(135deg, #38BDF8 0%, #2563EB 100%);
-        color: #FFFFFF;
-        border: none;
-        font-weight: 700;
-        padding: 11px 24px;
-        border-radius: 13px;
-        box-shadow: 0 10px 24px -4px rgba(56, 189, 248, 0.55);
-        transition: all 0.22s ease;
-    }
-    .btn-cta-primary:hover {
-        color: #FFFFFF;
-        transform: translateY(-2px);
-        box-shadow: 0 14px 28px -4px rgba(56, 189, 248, 0.7);
-    }
-    .btn-cta-secondary {
+    .slide-showcase-box {
         background: rgba(255, 255, 255, 0.12);
-        backdrop-filter: blur(8px);
-        color: #FFFFFF;
-        border: 1px solid rgba(255, 255, 255, 0.28);
-        font-weight: 600;
-        padding: 11px 24px;
-        border-radius: 13px;
-        transition: all 0.22s ease;
-    }
-    .btn-cta-secondary:hover {
-        background: rgba(255, 255, 255, 0.22);
-        color: #FFFFFF;
-        transform: translateY(-2px);
-    }
-
-    .glass-card-stack {
-        display: flex;
-        flex-direction: column;
-        gap: 12px;
-    }
-    .glass-feature-card {
-        background: rgba(255, 255, 255, 0.11);
         backdrop-filter: blur(12px);
-        border: 1px solid rgba(255, 255, 255, 0.22);
-        border-radius: 16px;
-        padding: 14px 18px;
+        border: 1px solid rgba(255, 255, 255, 0.25);
+        border-radius: 18px;
+        padding: 16px;
+        text-align: center;
+        box-shadow: 0 12px 28px rgba(0, 0, 0, 0.18);
+    }
+    .slide-showcase-img {
+        height: 128px;
+        background: #FFFFFF;
+        border-radius: 12px;
         display: flex;
         align-items: center;
-        gap: 14px;
-        transition: all 0.25s ease;
+        justify-content: center;
+        padding: 10px;
+        margin-bottom: 10px;
     }
-    .glass-feature-card:hover {
-        transform: translateX(6px);
-        background: rgba(255, 255, 255, 0.18);
-        border-color: rgba(125, 211, 252, 0.55);
+    .slide-showcase-img img {
+        max-height: 100%;
+        max-width: 100%;
+        object-fit: contain;
     }
-    .glass-feature-card:nth-child(2) {
-        animation: floatSlow 5.5s ease-in-out infinite;
+    .ecom-carousel .carousel-control-prev,
+    .ecom-carousel .carousel-control-next {
+        width: 36px;
+        height: 36px;
+        background: rgba(15, 23, 42, 0.45);
+        border-radius: 50%;
+        top: 50%;
+        transform: translateY(-50%);
+        opacity: 0;
+        transition: opacity 0.2s ease, background 0.2s ease;
     }
-    .glass-icon-box {
-        width: 44px;
-        height: 44px;
-        border-radius: 12px;
-        background: linear-gradient(135deg, rgba(56, 189, 248, 0.35), rgba(37, 99, 235, 0.35));
-        border: 1px solid rgba(186, 230, 253, 0.35);
-        color: #BAE6FD;
+    .ecom-carousel:hover .carousel-control-prev,
+    .ecom-carousel:hover .carousel-control-next {
+        opacity: 1;
+    }
+    .ecom-carousel .carousel-control-prev { left: 12px; }
+    .ecom-carousel .carousel-control-next { right: 12px; }
+
+    /* Cột phải: Thẻ điều hành nhanh chuẩn Amazon */
+    .ecom-right-card {
+        background: #FFFFFF;
+        border-radius: 16px;
+        border: 1px solid #E2E8F0;
+        padding: 16px;
+        box-shadow: 0 6px 20px rgba(15, 23, 42, 0.05);
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+    }
+    .user-welcome-box {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding-bottom: 12px;
+        border-bottom: 1px solid #F1F5F9;
+    }
+    .user-avatar-circle {
+        width: 42px;
+        height: 42px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #2563EB, #0EA5E9);
+        color: #FFFFFF;
         display: inline-flex;
         align-items: center;
         justify-content: center;
-        font-size: 1.25rem;
+        font-weight: 800;
+        font-size: 1.05rem;
+        flex-shrink: 0;
+    }
+    .quick-tile-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
+        margin: 12px 0;
+    }
+    .quick-tile {
+        background: #F8FAFC;
+        border: 1px solid #E2E8F0;
+        border-radius: 11px;
+        padding: 10px 8px;
+        text-align: center;
+        text-decoration: none;
+        color: #1E293B;
+        transition: all 0.18s ease;
+    }
+    .quick-tile:hover {
+        background: #EFF6FF;
+        border-color: #93C5FD;
+        color: #1D4ED8;
+        transform: translateY(-2px);
+    }
+    .quick-tile i {
+        font-size: 1.2rem;
+        display: block;
+        margin-bottom: 4px;
+    }
+    .quick-tile span {
+        font-size: 0.74rem;
+        font-weight: 700;
+        display: block;
+        line-height: 1.2;
+    }
+
+    /* 3. DẢI CAM KẾT DỊCH VỤ DOANH NGHIỆP (TRUST STRIP) */
+    .trust-strip-bar {
+        background: #FFFFFF;
+        border: 1px solid #E2E8F0;
+        border-radius: 14px;
+        padding: 12px 20px;
+        box-shadow: 0 4px 14px rgba(15, 23, 42, 0.04);
+    }
+    .trust-item {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+    .trust-icon {
+        width: 36px;
+        height: 36px;
+        border-radius: 10px;
+        background: #EFF6FF;
+        color: #1D4ED8;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.05rem;
         flex-shrink: 0;
     }
 
+    /* 4. THANH TÌM KIẾM & LỌC DANH MỤC */
     .filter-bar-card {
-        background: rgba(255, 255, 255, 0.92);
-        backdrop-filter: blur(10px);
+        background: #FFFFFF;
         border: 1px solid #E2E8F0;
-        border-radius: 18px;
+        border-radius: 16px;
         padding: 14px 18px;
-        box-shadow: 0 8px 24px rgba(15, 23, 42, 0.05);
+        box-shadow: 0 4px 16px rgba(15, 23, 42, 0.04);
     }
     .cat-filter-btn {
         border-radius: 999px;
@@ -198,28 +310,29 @@
         background: linear-gradient(135deg, #2563EB 0%, #1D4ED8 100%);
         color: #FFFFFF;
         border-color: #1D4ED8;
-        box-shadow: 0 4px 12px rgba(29, 78, 216, 0.28);
+        box-shadow: 0 4px 12px rgba(29, 78, 216, 0.25);
     }
 
+    /* 5. THẺ SẢN PHẨM CHUẨN SÀN E-COMMERCE */
     .product-pro-card {
         background: #FFFFFF;
         border: 1px solid #E2E8F0;
-        border-radius: 18px;
+        border-radius: 16px;
         overflow: hidden;
         height: 100%;
         display: flex;
         flex-direction: column;
-        box-shadow: 0 6px 18px -4px rgba(15, 23, 42, 0.06);
-        transition: transform 0.24s ease, box-shadow 0.24s ease, border-color 0.24s ease;
+        box-shadow: 0 2px 10px rgba(15, 23, 42, 0.04);
+        transition: transform 0.22s ease, box-shadow 0.22s ease, border-color 0.22s ease;
     }
     .product-pro-card:hover {
-        transform: translateY(-5px);
+        transform: translateY(-4px);
         border-color: #60A5FA;
-        box-shadow: 0 20px 36px -10px rgba(29, 78, 216, 0.16);
+        box-shadow: 0 16px 32px -8px rgba(29, 78, 216, 0.15);
     }
     .product-thumb {
         height: 175px;
-        background: linear-gradient(180deg, #F8FAFC 0%, #F1F5F9 100%);
+        background: #FFFFFF;
         position: relative;
         display: flex;
         align-items: center;
@@ -232,10 +345,10 @@
         max-height: 100%;
         max-width: 100%;
         object-fit: contain;
-        transition: transform 0.32s ease;
+        transition: transform 0.3s ease;
     }
     .product-pro-card:hover .product-thumb img {
-        transform: scale(1.07);
+        transform: scale(1.06);
     }
     .sku-tag {
         position: absolute;
@@ -244,7 +357,7 @@
         background: #0F172A;
         color: #FFFFFF;
         font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-        font-size: 0.7rem;
+        font-size: 0.69rem;
         font-weight: 600;
         padding: 3px 8px;
         border-radius: 6px;
@@ -253,14 +366,14 @@
         position: absolute;
         top: 10px;
         right: 10px;
-        font-size: 0.7rem;
+        font-size: 0.69rem;
         font-weight: 700;
         padding: 3px 9px;
         border-radius: 999px;
     }
     .eye-view-btn {
-        width: 32px;
-        height: 32px;
+        width: 31px;
+        height: 31px;
         border-radius: 50%;
         border: 1px solid #CBD5E1;
         background: #F8FAFC;
@@ -293,11 +406,29 @@
         color: #1D4ED8;
     }
 
-    @media (max-width: 767.98px) {
-        .vivid-hero {
-            border-radius: 20px;
-            padding: 20px 16px !important;
+    @media (max-width: 1199.98px) {
+        .ecom-portal-wrap {
+            grid-template-columns: 1fr 265px;
         }
+        .ecom-cat-sidebar {
+            display: none;
+        }
+    }
+    @media (max-width: 991.98px) {
+        .ecom-portal-wrap {
+            grid-template-columns: 1fr;
+        }
+        .hero-slide {
+            padding: 24px 20px;
+        }
+        .ecom-carousel,
+        .ecom-carousel .carousel-inner,
+        .ecom-carousel .carousel-item,
+        .hero-slide {
+            min-height: auto;
+        }
+    }
+    @media (max-width: 575.98px) {
         .product-thumb {
             height: 135px;
             padding: 10px;
@@ -307,125 +438,291 @@
 {% endblock %}
 
 {% block content %}
-<section class="vivid-hero p-4 p-lg-5 mb-4 fade-up-enter">
-    <div class="hero-orb-1"></div>
-    <div class="hero-orb-2"></div>
-    <div class="hero-grid-overlay"></div>
+<!-- 1. MEGA HERO PORTAL 3 CỘT (CHUẨN AMAZON & LAZADA) -->
+<section class="ecom-portal-wrap mb-3 fade-up-enter">
+    <!-- Cột 1: Danh mục ngành hàng nhanh (Lazada Sidebar) -->
+    <aside class="ecom-cat-sidebar">
+        <div class="ecom-cat-header">
+            <i class="bi bi-list-ul text-primary fs-6"></i>
+            <span>Ngành hàng vật tư</span>
+        </div>
+        <ul class="ecom-cat-list">
+            <li class="ecom-cat-item sidebar-cat-trigger" data-cat="all">
+                <span><i class="bi bi-grid-fill text-primary me-2"></i>Tất cả sản phẩm</span>
+                <i class="bi bi-chevron-right chevron"></i>
+            </li>
+            {% for cat in categories %}
+            <li class="ecom-cat-item sidebar-cat-trigger" data-cat="{{ cat.key }}">
+                <span class="text-truncate"><i class="bi bi-folder2-open text-secondary me-2"></i>{{ cat.name }}</span>
+                <i class="bi bi-chevron-right chevron"></i>
+            </li>
+            {% endfor %}
+            <li class="ecom-cat-item" onclick="window.location.href='{% url 'product_list' %}'">
+                <span><i class="bi bi-upc-scan text-success me-2"></i>Tra cứu theo mã SKU</span>
+                <i class="bi bi-chevron-right chevron"></i>
+            </li>
+        </ul>
+    </aside>
 
-    <div class="row g-4 align-items-center position-relative" style="z-index: 2;">
-        <div class="col-lg-7">
-            <div class="hero-pill-tag mb-3">
-                <span class="status-dot"></span>
-                <span>CloudWMS • Nền tảng Quản lý Kho & Đặt hàng Đám mây</span>
+    <!-- Cột 2: Interactive Carousel Banner 3 Slide -->
+    <div id="cloudWmsHeroCarousel" class="carousel slide ecom-carousel" data-bs-ride="carousel" data-bs-interval="4800">
+        <div class="carousel-indicators mb-2">
+            <button type="button" data-bs-target="#cloudWmsHeroCarousel" data-bs-slide-to="0" class="active" aria-current="true"></button>
+            <button type="button" data-bs-target="#cloudWmsHeroCarousel" data-bs-slide-to="1"></button>
+            <button type="button" data-bs-target="#cloudWmsHeroCarousel" data-bs-slide-to="2"></button>
+        </div>
+
+        <div class="carousel-inner">
+            <!-- Slide 1 -->
+            <div class="carousel-item active">
+                <div class="hero-slide slide-bg-1">
+                    <div class="slide-pattern"></div>
+                    <div class="slide-glow"></div>
+                    <div class="row g-3 align-items-center w-100 position-relative" style="z-index: 2;">
+                        <div class="col-md-7">
+                            <div class="slide-badge">
+                                <i class="bi bi-cloud-check-fill text-info"></i>
+                                <span>CLOUDWMS ENTERPRISE PORTAL</span>
+                            </div>
+                            <h1 class="slide-title">
+                                Hệ thống Quản lý Kho Vật tư – Thiết bị Văn phòng & Đặt hàng Trực tuyến
+                            </h1>
+                            <p class="slide-desc">
+                                Chuẩn hóa định danh mã SKU, kiểm soát tồn kho thời gian thực và đặt hàng vật tư văn phòng trực tuyến chỉ với 1 chạm.
+                            </p>
+                            <div class="d-flex flex-wrap gap-2">
+                                {% if user.is_authenticated and user.is_staff %}
+                                    <a href="{% url 'dashboard' %}" class="btn btn-light text-primary fw-bold px-3 py-2 rounded-3 shadow-sm">
+                                        <i class="bi bi-speedometer2 me-1"></i>Mở Dashboard
+                                    </a>
+                                    <a href="{% url 'stock_import' %}" class="btn btn-outline-light fw-semibold px-3 py-2 rounded-3">
+                                        Nhập kho ngay
+                                    </a>
+                                {% else %}
+                                    <a href="{% url 'order_create' %}" class="btn btn-warning text-dark fw-bold px-3.5 py-2 rounded-3 shadow-sm">
+                                        <i class="bi bi-cart-plus-fill me-1"></i>Đặt hàng ngay
+                                    </a>
+                                    <a href="#catalog-section" class="btn btn-outline-light fw-semibold px-3 py-2 rounded-3">
+                                        Khám phá danh mục
+                                    </a>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="col-md-5 d-none d-md-block">
+                            {% if featured %}
+                            <div class="slide-showcase-box">
+                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                    <span class="badge bg-warning text-dark fw-bold" style="font-size: 0.68rem;">NỔI BẬT TRONG KHO</span>
+                                    <span class="font-monospace small text-info">{{ featured.sku }}</span>
+                                </div>
+                                <a href="{% url 'product_detail' featured.pk %}" class="slide-showcase-img text-decoration-none">
+                                    {% if featured.image %}
+                                        <img src="{{ featured.image.url }}" alt="{{ featured.name }}">
+                                    {% else %}
+                                        <i class="bi bi-box-seam text-primary fs-1"></i>
+                                    {% endif %}
+                                </a>
+                                <div class="fw-bold small text-truncate mb-1">{{ featured.name }}</div>
+                                <div class="fw-bold text-warning fs-6">{{ featured.price_vnd }}</div>
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
             </div>
 
-            <h1 class="hero-main-title mb-3">
-                Hệ thống Quản lý Kho <span>Vật tư – Thiết bị Văn phòng</span> và Đặt hàng Trực tuyến
-            </h1>
+            <!-- Slide 2 -->
+            <div class="carousel-item">
+                <div class="hero-slide slide-bg-2">
+                    <div class="slide-pattern"></div>
+                    <div class="slide-glow"></div>
+                    <div class="row g-3 align-items-center w-100 position-relative" style="z-index: 2;">
+                        <div class="col-md-8">
+                            <div class="slide-badge">
+                                <i class="bi bi-lightning-charge-fill text-warning"></i>
+                                <span>QUY TRÌNH CUNG ỨNG TỰ ĐỘNG</span>
+                            </div>
+                            <h2 class="slide-title">
+                                Theo dõi Đơn đặt hàng & Xuất Phiếu kho Điện tử Minh bạch
+                            </h2>
+                            <p class="slide-desc">
+                                Mọi yêu cầu đặt hàng được đồng bộ trực tiếp tới bộ phận quản lý kho, tự động khấu trừ tồn và xuất hóa đơn điện tử ngay sau khi duyệt.
+                            </p>
+                            <a href="{% url 'my_orders' %}" class="btn btn-light text-dark fw-bold px-3.5 py-2 rounded-3">
+                                <i class="bi bi-receipt-cutoff me-1"></i>Theo dõi đơn hàng của tôi
+                            </a>
+                        </div>
+                        <div class="col-md-4 d-none d-md-flex justify-content-center">
+                            <div class="p-4 rounded-4 text-center" style="background: rgba(255,255,255,0.12); border: 1px solid rgba(255,255,255,0.22);">
+                                <i class="bi bi-file-earmark-check-fill text-warning" style="font-size: 3.4rem;"></i>
+                                <div class="fw-bold small mt-2">Phiếu Xuất Kho Số</div>
+                                <div style="font-size: 0.75rem; opacity: 0.85;">Đối soát chính xác 100%</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
-            <p class="hero-lead-text mb-4">
-                {% if user.is_authenticated and user.is_staff %}
-                    Kiểm soát tập trung danh mục vật tư theo chuẩn mã SKU, tự động hóa phiếu nhập – xuất kho, cảnh báo định mức tồn tối thiểu và phê duyệt đơn đặt hàng theo thời gian thực.
-                {% else %}
-                    Tra cứu nhanh danh mục vật tư – thiết bị văn phòng trực tuyến, xem thông số kỹ thuật chi tiết, đánh giá chất lượng và gửi đơn đặt hàng chỉ với một chạm.
-                {% endif %}
-            </p>
-
-            <div class="d-flex flex-wrap gap-2">
-                {% if user.is_authenticated %}
-                    {% if user.is_staff %}
-                        <a href="{% url 'dashboard' %}" class="btn btn-cta-primary">
-                            <i class="bi bi-speedometer2 me-1"></i>Bảng điều khiển kho
-                        </a>
-                        <a href="{% url 'stock_import' %}" class="btn btn-cta-secondary">
-                            <i class="bi bi-box-arrow-in-down me-1"></i>Lập phiếu nhập kho
-                        </a>
-                    {% else %}
-                        <a href="{% url 'order_create' %}" class="btn btn-cta-primary">
-                            <i class="bi bi-cart-plus-fill me-1"></i>Đặt hàng trực tuyến
-                        </a>
-                        <a href="{% url 'my_orders' %}" class="btn btn-cta-secondary">
-                            <i class="bi bi-bag-check me-1"></i>Đơn hàng của tôi
-                        </a>
-                    {% endif %}
-                {% else %}
-                    <a href="{% url 'login' %}" class="btn btn-cta-primary">
-                        <i class="bi bi-box-arrow-in-right me-1"></i>Đăng nhập đặt hàng
-                    </a>
-                    <a href="#catalog-section" class="btn btn-cta-secondary">
-                        <i class="bi bi-grid me-1"></i>Xem danh mục vật tư
-                    </a>
-                {% endif %}
+            <!-- Slide 3 -->
+            <div class="carousel-item">
+                <div class="hero-slide slide-bg-3">
+                    <div class="slide-pattern"></div>
+                    <div class="slide-glow"></div>
+                    <div class="row g-3 align-items-center w-100 position-relative" style="z-index: 2;">
+                        <div class="col-md-8">
+                            <div class="slide-badge">
+                                <i class="bi bi-shield-check text-info"></i>
+                                <span>VẬT TƯ VĂN PHÒNG CHÍNH HÃNG</span>
+                            </div>
+                            <h2 class="slide-title">
+                                Đầy đủ Thiết bị Văn phòng, Linh kiện Điện tử & Vật tư Tiêu hao
+                            </h2>
+                            <p class="slide-desc">
+                                Từ giấy in Double A, mực in HP chính hãng đến thiết bị mạng, linh kiện máy tính sẵn sàng đáp ứng nhu cầu vận hành doanh nghiệp.
+                            </p>
+                            <a href="#catalog-section" class="btn btn-warning text-dark fw-bold px-3.5 py-2 rounded-3">
+                                <i class="bi bi-bag-check-fill me-1"></i>Xem toàn bộ danh mục
+                            </a>
+                        </div>
+                        <div class="col-md-4 d-none d-md-flex justify-content-center">
+                            <div class="p-4 rounded-4 text-center" style="background: rgba(255,255,255,0.12); border: 1px solid rgba(255,255,255,0.22);">
+                                <i class="bi bi-boxes text-info" style="font-size: 3.4rem;"></i>
+                                <div class="fw-bold small mt-2">{{ total_products }} Mặt hàng SKU</div>
+                                <div style="font-size: 0.75rem; opacity: 0.85;">Sẵn sàng cung ứng ngay</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
 
-        <div class="col-lg-5">
+        <button class="carousel-control-prev" type="button" data-bs-target="#cloudWmsHeroCarousel" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Trước</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#cloudWmsHeroCarousel" data-bs-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Tiếp</span>
+        </button>
+    </div>
+
+    <!-- Cột 3: Thẻ tài khoản & Truy cập nhanh (Amazon Account Card) -->
+    <aside class="ecom-right-card">
+        <div>
+            <div class="user-welcome-box">
+                <div class="user-avatar-circle">
+                    {% if user.is_authenticated %}
+                        {{ user.username|slice:":1"|upper }}
+                    {% else %}
+                        <i class="bi bi-person-fill"></i>
+                    {% endif %}
+                </div>
+                <div class="overflow-hidden">
+                    <div class="text-muted" style="font-size: 0.74rem;">Xin chào,</div>
+                    <div class="fw-bold text-dark text-truncate" style="font-size: 0.9rem;">
+                        {% if user.is_authenticated %}{{ user.username }}{% else %}Khách doanh nghiệp{% endif %}
+                    </div>
+                </div>
+            </div>
+
             {% if user.is_authenticated and user.is_staff %}
-            <div class="glass-card-stack">
-                <div class="glass-feature-card justify-content-between">
-                    <div class="d-flex align-items-center gap-3">
-                        <span class="glass-icon-box"><i class="bi bi-upc-scan"></i></span>
-                        <div>
-                            <div class="fw-bold text-white small">Tổng mặt hàng (SKU)</div>
-                            <div style="font-size: 0.76rem; color: #CBD5E1;">Danh mục vật tư đang quản lý</div>
-                        </div>
-                    </div>
-                    <div class="fs-3 fw-bold text-info">{{ total_products }}</div>
-                </div>
-
-                <div class="glass-feature-card justify-content-between">
-                    <div class="d-flex align-items-center gap-3">
-                        <span class="glass-icon-box"><i class="bi bi-boxes"></i></span>
-                        <div>
-                            <div class="fw-bold text-white small">Tổng số lượng tồn kho</div>
-                            <div style="font-size: 0.76rem; color: #CBD5E1;">Đơn vị sản phẩm sẵn sàng xuất</div>
-                        </div>
-                    </div>
-                    <div class="fs-3 fw-bold text-white">{{ total_stock }}</div>
-                </div>
-
-                <div class="glass-feature-card justify-content-between">
-                    <div class="d-flex align-items-center gap-3">
-                        <span class="glass-icon-box" style="background: rgba(245, 158, 11, 0.25); color: #FCD34D;"><i class="bi bi-exclamation-triangle-fill"></i></span>
-                        <div>
-                            <div class="fw-bold text-white small">Cảnh báo định mức</div>
-                            <div style="font-size: 0.76rem; color: #CBD5E1;">Mặt hàng tồn thấp (≤ 5)</div>
-                        </div>
-                    </div>
-                    <div class="fs-3 fw-bold text-warning">{{ low_stock_count }}</div>
-                </div>
+            <div class="quick-tile-grid">
+                <a href="{% url 'dashboard' %}" class="quick-tile">
+                    <i class="bi bi-speedometer2 text-primary"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="{% url 'order_list' %}" class="quick-tile">
+                    <i class="bi bi-clipboard-check text-success"></i>
+                    <span>Duyệt đơn</span>
+                </a>
+                <a href="{% url 'stock_import' %}" class="quick-tile">
+                    <i class="bi bi-box-arrow-in-down text-info"></i>
+                    <span>Nhập kho</span>
+                </a>
+                <a href="{% url 'stock_history_list' %}" class="quick-tile">
+                    <i class="bi bi-journal-text text-warning"></i>
+                    <span>Sổ cái kho</span>
+                </a>
             </div>
             {% else %}
-            <div class="glass-card-stack">
-                <div class="glass-feature-card">
-                    <span class="glass-icon-box"><i class="bi bi-patch-check-fill"></i></span>
-                    <div>
-                        <div class="fw-bold text-white small">Vật tư – Thiết bị Chính hãng</div>
-                        <div style="font-size: 0.78rem; color: #CBD5E1;">Định danh chuẩn mã SKU, niêm yết giá minh bạch</div>
-                    </div>
-                </div>
-
-                <div class="glass-feature-card">
-                    <span class="glass-icon-box"><i class="bi bi-lightning-charge-fill"></i></span>
-                    <div>
-                        <div class="fw-bold text-white small">Đặt hàng Trực tuyến 1 Chạm</div>
-                        <div style="font-size: 0.78rem; color: #CBD5E1;">Tự động gắn sản phẩm, tính tổng thanh toán tức thì</div>
-                    </div>
-                </div>
-
-                <div class="glass-feature-card">
-                    <span class="glass-icon-box"><i class="bi bi-file-earmark-text-fill"></i></span>
-                    <div>
-                        <div class="fw-bold text-white small">Phiếu Xuất kho Điện tử</div>
-                        <div style="font-size: 0.78rem; color: #CBD5E1;">Theo dõi tiến độ duyệt đơn & in hóa đơn trực tuyến</div>
-                    </div>
-                </div>
+            <div class="quick-tile-grid">
+                <a href="{% url 'order_create' %}" class="quick-tile">
+                    <i class="bi bi-cart-plus-fill text-primary"></i>
+                    <span>Đặt hàng mới</span>
+                </a>
+                <a href="{% url 'my_orders' %}" class="quick-tile">
+                    <i class="bi bi-bag-check-fill text-success"></i>
+                    <span>Đơn của tôi</span>
+                </a>
+                <a href="{% url 'product_list' %}" class="quick-tile">
+                    <i class="bi bi-grid-3x3-gap-fill text-info"></i>
+                    <span>Bảng giá SKU</span>
+                </a>
+                <a href="#catalog-section" class="quick-tile">
+                    <i class="bi bi-star-fill text-warning"></i>
+                    <span>Đánh giá SP</span>
+                </a>
             </div>
             {% endif %}
+        </div>
+
+        <div class="p-2.5 rounded-3" style="background: #F8FAFC; border: 1px dashed #CBD5E1;">
+            <div class="d-flex justify-content-between align-items-center small">
+                <span class="text-muted fw-semibold">Trạng thái kho:</span>
+                <span class="badge bg-success bg-opacity-10 text-success border border-success border-opacity-25">
+                    <i class="bi bi-circle-fill me-1" style="font-size: 0.45rem;"></i>Hoạt động
+                </span>
+            </div>
+            <div class="text-muted mt-1" style="font-size: 0.74rem;">
+                Hiện có <strong class="text-dark">{{ total_products }}</strong> danh mục vật tư sẵn sàng phục vụ.
+            </div>
+        </div>
+    </aside>
+</section>
+
+<!-- 2. DẢI CAM KẾT DỊCH VỤ DOANH NGHIỆP (TRUST STRIP) -->
+<section class="trust-strip-bar mb-4 fade-up-enter">
+    <div class="row g-3">
+        <div class="col-6 col-lg-3">
+            <div class="trust-item">
+                <span class="trust-icon"><i class="bi bi-patch-check-fill"></i></span>
+                <div>
+                    <div class="fw-bold text-dark" style="font-size: 0.82rem;">Chuẩn định danh SKU</div>
+                    <div class="text-muted" style="font-size: 0.73rem;">100% vật tư có mã quản lý</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-lg-3">
+            <div class="trust-item">
+                <span class="trust-icon" style="background: #ECFDF5; color: #059669;"><i class="bi bi-lightning-charge-fill"></i></span>
+                <div>
+                    <div class="fw-bold text-dark" style="font-size: 0.82rem;">Xử lý đơn siêu tốc</div>
+                    <div class="text-muted" style="font-size: 0.73rem;">Đồng bộ tồn kho tức thì</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-lg-3">
+            <div class="trust-item">
+                <span class="trust-icon" style="background: #FFFBEB; color: #D97706;"><i class="bi bi-file-earmark-ruled-fill"></i></span>
+                <div>
+                    <div class="fw-bold text-dark" style="font-size: 0.82rem;">Phiếu xuất kho điện tử</div>
+                    <div class="text-muted" style="font-size: 0.73rem;">Hỗ trợ xuất & in chứng từ</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-lg-3">
+            <div class="trust-item">
+                <span class="trust-icon" style="background: #F5F3FF; color: #6D28D9;"><i class="bi bi-shield-lock-fill"></i></span>
+                <div>
+                    <div class="fw-bold text-dark" style="font-size: 0.82rem;">Vận hành Cloud 24/7</div>
+                    <div class="text-muted" style="font-size: 0.73rem;">An toàn & bảo mật dữ liệu</div>
+                </div>
+            </div>
         </div>
     </div>
 </section>
 
+<!-- 3. DANH MỤC VẬT TƯ – THIẾT BỊ VĂN PHÒNG -->
 <section id="catalog-section" class="fade-up-enter delay-1">
     <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-2 mb-3">
         <div>
@@ -493,15 +790,9 @@
                         <span class="text-primary fw-semibold" style="font-size: 0.72rem;">
                             {{ p.category.name|default:"Vật tư văn phòng" }}
                         </span>
-                        {% if p.avg_rating %}
-                            <span class="text-warning fw-semibold" style="font-size: 0.72rem;">
-                                <i class="bi bi-star-fill"></i> {{ p.avg_rating }} ({{ p.review_count }})
-                            </span>
-                        {% else %}
-                            <span class="text-muted" style="font-size: 0.69rem;">
-                                Chưa có đánh giá
-                            </span>
-                        {% endif %}
+                        <span class="text-warning fw-semibold" style="font-size: 0.72rem;">
+                            <i class="bi bi-star-fill"></i> {{ p.avg_rating }} ({{ p.review_count }})
+                        </span>
                     </div>
 
                     <h6 class="fw-bold mb-2" style="font-size: 0.88rem;">
@@ -561,6 +852,7 @@
     document.addEventListener("DOMContentLoaded", function () {
         const searchInput = document.getElementById("homeProductSearch");
         const catButtons = document.querySelectorAll(".cat-filter-btn");
+        const sidebarTriggers = document.querySelectorAll(".sidebar-cat-trigger");
         const items = document.querySelectorAll(".product-grid-item");
         let activeCat = "all";
 
@@ -579,16 +871,35 @@
             });
         }
 
+        function setActiveCategory(catKey) {
+            activeCat = normalizeStr(catKey);
+            catButtons.forEach(b => {
+                if (normalizeStr(b.getAttribute("data-cat")) === activeCat) {
+                    b.classList.add("active");
+                } else {
+                    b.classList.remove("active");
+                }
+            });
+            filterCatalog();
+        }
+
         if (searchInput) {
             searchInput.addEventListener("input", filterCatalog);
         }
 
         catButtons.forEach(btn => {
             btn.addEventListener("click", function () {
-                catButtons.forEach(b => b.classList.remove("active"));
-                this.classList.add("active");
-                activeCat = normalizeStr(this.getAttribute("data-cat"));
-                filterCatalog();
+                setActiveCategory(this.getAttribute("data-cat"));
+            });
+        });
+
+        sidebarTriggers.forEach(item => {
+            item.addEventListener("click", function () {
+                setActiveCategory(this.getAttribute("data-cat"));
+                const catalogEl = document.getElementById("catalog-section");
+                if (catalogEl) {
+                    catalogEl.scrollIntoView({ behavior: "smooth", block: "start" });
+                }
             });
         });
     });
