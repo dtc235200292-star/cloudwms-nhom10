@@ -29,7 +29,6 @@ def format_vnd_price(value):
 
 
 def get_product_rating_data(request, product):
-    """Sinh điểm đánh giá tự nhiên từ 4.5 - 5.0 theo từng sản phẩm và kết hợp nhận xét thực tế."""
     rng = random.Random(f"cloudwms_prod_{product.id}_{product.sku}")
     base_rating = round(rng.uniform(4.5, 5.0), 1)
     base_count = rng.randint(6, 28)
