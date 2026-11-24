@@ -7,193 +7,189 @@
     body {
         background-color: #EAEDED !important;
         background-image: none !important;
+        overflow-x: hidden;
     }
 
-    .market-hero-grid {
-        display: grid;
-        grid-template-columns: 245px 1fr;
-        gap: 16px;
-        align-items: stretch;
-    }
-
-    .market-sidebar {
-        background: #FFFFFF;
-        border-radius: 12px;
-        border: 1px solid #D5D9D9;
-        padding: 12px 0;
-        display: flex;
-        flex-direction: column;
-    }
-    .market-sidebar-title {
-        font-size: 0.8rem;
-        font-weight: 800;
-        text-transform: uppercase;
-        letter-spacing: 0.04em;
-        color: #0F1111;
-        padding: 4px 18px 10px;
-        border-bottom: 1px solid #EAEDED;
-    }
-    .market-cat-list {
-        list-style: none;
-        margin: 6px 0 0;
-        padding: 0;
-    }
-    .market-cat-item {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        padding: 10px 18px;
-        font-size: 0.85rem;
-        font-weight: 500;
-        color: #0F1111;
-        cursor: pointer;
-        transition: background 0.15s ease, color 0.15s ease;
-    }
-    .market-cat-item:hover,
-    .market-cat-item.active {
-        background: #F0F6FF;
-        color: #007185;
-        font-weight: 700;
-    }
-    .market-cat-item i.arrow {
-        font-size: 0.72rem;
-        color: #888C8C;
-    }
-
-    .market-carousel {
-        border-radius: 12px;
-        overflow: hidden;
+    .amz-subnav-wrap {
+        width: 100vw;
         position: relative;
-        min-height: 320px;
-        box-shadow: 0 4px 16px rgba(15, 23, 42, 0.08);
-    }
-    .market-carousel .carousel-inner,
-    .market-carousel .carousel-item {
-        height: 100%;
-        min-height: 320px;
-    }
-    .market-slide {
-        height: 100%;
-        min-height: 320px;
-        padding: 32px 64px;
+        left: 50%;
+        right: 50%;
+        margin-left: -50vw;
+        margin-right: -50vw;
+        margin-top: -1.5rem;
+        background-color: #232F3E;
         color: #FFFFFF;
+        border-bottom: 1px solid #131921;
+    }
+    .amz-subnav-inner {
+        max-width: 1360px;
+        margin: 0 auto;
+        padding: 6px 16px;
         display: flex;
         align-items: center;
+        gap: 6px;
+        overflow-x: auto;
+        scrollbar-width: none;
     }
-    .theme-navy {
-        background: linear-gradient(115deg, #131921 0%, #232F3E 55%, #1D4ED8 100%);
+    .amz-subnav-inner::-webkit-scrollbar {
+        display: none;
     }
-    .theme-royal {
-        background: linear-gradient(115deg, #0F172A 0%, #1E3A8A 60%, #0284C7 100%);
+    .amz-nav-pill {
+        background: transparent;
+        border: 1px solid transparent;
+        color: #FFFFFF;
+        font-size: 0.83rem;
+        font-weight: 600;
+        padding: 5px 12px;
+        border-radius: 4px;
+        white-space: nowrap;
+        cursor: pointer;
+        transition: border-color 0.15s ease, background 0.15s ease;
     }
-    .theme-emerald {
-        background: linear-gradient(115deg, #064E3B 0%, #047857 58%, #0D9488 100%);
+    .amz-nav-pill:hover {
+        border-color: #FFFFFF;
     }
-    .slide-kicker {
+    .amz-nav-pill.active {
+        border-color: #FF9900;
+        color: #FF9900;
+    }
+
+    .amz-hero-fullbleed {
+        width: 100vw;
+        position: relative;
+        left: 50%;
+        right: 50%;
+        margin-left: -50vw;
+        margin-right: -50vw;
+        overflow: hidden;
+    }
+    .amz-slide {
+        min-height: 410px;
+        padding: 44px 0 115px;
+        color: #FFFFFF;
+        position: relative;
+    }
+    .amz-slide::after {
+        content: "";
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        height: 120px;
+        background: linear-gradient(180deg, rgba(234, 237, 237, 0) 0%, #EAEDED 100%);
+        pointer-events: none;
+    }
+    .amz-bg-1 {
+        background: linear-gradient(125deg, #0F172A 0%, #1E293B 42%, #1D4ED8 100%);
+    }
+    .amz-bg-2 {
+        background: linear-gradient(125deg, #131921 0%, #1E3A5F 52%, #0284C7 100%);
+    }
+    .amz-bg-3 {
+        background: linear-gradient(125deg, #064E3B 0%, #0F766E 55%, #0D9488 100%);
+    }
+    .amz-slide-container {
+        max-width: 1320px;
+        margin: 0 auto;
+        padding: 0 76px;
+        position: relative;
+        z-index: 2;
+    }
+    .amz-kicker {
         display: inline-block;
         background: #FF9900;
-        color: #111111;
-        font-size: 0.72rem;
+        color: #0F1111;
+        font-size: 0.74rem;
         font-weight: 800;
         text-transform: uppercase;
-        letter-spacing: 0.04em;
-        padding: 3px 10px;
+        letter-spacing: 0.05em;
+        padding: 4px 12px;
         border-radius: 4px;
+        margin-bottom: 14px;
+    }
+    .amz-hero-title {
+        font-size: clamp(1.55rem, 2.7vw, 2.35rem);
+        font-weight: 800;
+        line-height: 1.22;
+        letter-spacing: -0.01em;
         margin-bottom: 12px;
     }
-    .slide-heading {
-        font-size: clamp(1.35rem, 2.2vw, 1.9rem);
-        font-weight: 800;
-        line-height: 1.25;
-        margin-bottom: 10px;
-    }
-    .slide-subtext {
-        font-size: 0.9rem;
+    .amz-hero-desc {
+        font-size: 0.96rem;
         color: #E2E8F0;
-        line-height: 1.55;
-        margin-bottom: 20px;
-        max-width: 480px;
+        line-height: 1.6;
+        max-width: 540px;
+        margin-bottom: 22px;
     }
-    .btn-amazon-gold {
+    .btn-amz-gold {
         background: #FFD814;
         border: 1px solid #FCD200;
         color: #0F1111;
         font-weight: 700;
-        font-size: 0.88rem;
-        padding: 9px 20px;
+        font-size: 0.9rem;
+        padding: 10px 22px;
         border-radius: 8px;
         transition: background 0.15s ease;
     }
-    .btn-amazon-gold:hover {
+    .btn-amz-gold:hover {
         background: #F7CA00;
         color: #0F1111;
     }
-    .slide-product-card {
-        background: #FFFFFF;
+    .amz-hero-showcase {
+        background: rgba(255, 255, 255, 0.98);
         color: #0F1111;
-        border-radius: 10px;
-        padding: 14px;
-        text-align: center;
-        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.22);
+        border-radius: 12px;
+        padding: 16px;
+        box-shadow: 0 18px 40px rgba(0, 0, 0, 0.28);
+        max-width: 310px;
+        margin-left: auto;
     }
-    .slide-product-img {
-        height: 130px;
+    .amz-showcase-img {
+        height: 140px;
         display: flex;
         align-items: center;
         justify-content: center;
-        margin-bottom: 8px;
+        margin: 8px 0;
     }
-    .slide-product-img img {
+    .amz-showcase-img img {
         max-height: 100%;
         max-width: 100%;
         object-fit: contain;
     }
 
-    .market-carousel .carousel-control-prev,
-    .market-carousel .carousel-control-next {
-        width: 42px;
-        height: 76px;
-        top: 50%;
+    .amz-hero-fullbleed .carousel-control-prev,
+    .amz-hero-fullbleed .carousel-control-next {
+        width: 52px;
+        height: 120px;
+        top: 36%;
         transform: translateY(-50%);
-        background: rgba(15, 23, 42, 0.35);
+        background: transparent;
         border-radius: 6px;
-        opacity: 0.85;
-        transition: background 0.15s ease;
+        border: 2px solid transparent;
+        opacity: 0.9;
+        z-index: 5;
     }
-    .market-carousel .carousel-control-prev:hover,
-    .market-carousel .carousel-control-next:hover {
-        background: rgba(15, 23, 42, 0.7);
+    .amz-hero-fullbleed .carousel-control-prev:hover,
+    .amz-hero-fullbleed .carousel-control-next:hover {
+        border-color: #FFFFFF;
+        background: rgba(15, 23, 42, 0.25);
         opacity: 1;
     }
-    .market-carousel .carousel-control-prev { left: 8px; }
-    .market-carousel .carousel-control-next { right: 8px; }
+    .amz-hero-fullbleed .carousel-control-prev { left: 12px; }
+    .amz-hero-fullbleed .carousel-control-next { right: 12px; }
 
-    .catalog-toolbar {
+    .amz-overlap-section {
+        position: relative;
+        z-index: 10;
+        margin-top: -82px;
+    }
+    .amz-search-strip {
         background: #FFFFFF;
         border: 1px solid #D5D9D9;
         border-radius: 10px;
-        padding: 12px 16px;
-    }
-    .cat-pill {
-        border-radius: 999px;
-        font-size: 0.82rem;
-        font-weight: 600;
-        padding: 6px 15px;
-        border: 1px solid #D5D9D9;
-        background: #FFFFFF;
-        color: #0F1111;
-        white-space: nowrap;
-        transition: all 0.15s ease;
-    }
-    .cat-pill:hover {
-        background: #F7FAFA;
-        border-color: #007185;
-        color: #007185;
-    }
-    .cat-pill.active {
-        background: #232F3E;
-        color: #FFFFFF;
-        border-color: #232F3E;
+        padding: 14px 18px;
+        box-shadow: 0 6px 20px rgba(15, 23, 42, 0.08);
     }
 
     .product-pro-card {
@@ -207,11 +203,11 @@
         transition: box-shadow 0.2s ease, transform 0.2s ease;
     }
     .product-pro-card:hover {
-        transform: translateY(-3px);
-        box-shadow: 0 10px 24px rgba(15, 23, 42, 0.1);
+        transform: translateY(-4px);
+        box-shadow: 0 14px 28px rgba(15, 23, 42, 0.12);
     }
     .product-thumb {
-        height: 180px;
+        height: 185px;
         background: #FFFFFF;
         position: relative;
         display: flex;
@@ -251,8 +247,8 @@
         border-radius: 4px;
     }
     .eye-view-btn {
-        width: 31px;
-        height: 31px;
+        width: 32px;
+        height: 32px;
         border-radius: 6px;
         border: 1px solid #D5D9D9;
         background: #F7FAFA;
@@ -283,26 +279,16 @@
         color: #C7511F;
     }
 
-    @media (max-width: 991.98px) {
-        .market-hero-grid {
-            grid-template-columns: 1fr;
-        }
-        .market-sidebar {
-            display: none;
-        }
-        .market-slide {
-            padding: 28px 50px;
-        }
-        .market-carousel,
-        .market-carousel .carousel-inner,
-        .market-carousel .carousel-item,
-        .market-slide {
+    @media (max-width: 767.98px) {
+        .amz-slide {
             min-height: auto;
+            padding: 28px 0 86px;
         }
-    }
-    @media (max-width: 575.98px) {
-        .market-slide {
-            padding: 22px 42px;
+        .amz-slide-container {
+            padding: 0 46px;
+        }
+        .amz-overlap-section {
+            margin-top: -54px;
         }
         .product-thumb {
             height: 140px;
@@ -313,71 +299,58 @@
 {% endblock %}
 
 {% block content %}
-<section class="market-hero-grid mb-4">
-    <aside class="market-sidebar">
-        <div class="market-sidebar-title">
-            <i class="bi bi-list me-1"></i>Danh mục ngành hàng
-        </div>
-        <ul class="market-cat-list">
-            <li class="market-cat-item sidebar-cat-link active" data-cat="all">
-                <span>Tất cả vật tư ({{ products|length }})</span>
-                <i class="bi bi-chevron-right arrow"></i>
-            </li>
-            {% for cat in categories %}
-            <li class="market-cat-item sidebar-cat-link" data-cat="{{ cat.key }}">
-                <span class="text-truncate">{{ cat.name }}</span>
-                <i class="bi bi-chevron-right arrow"></i>
-            </li>
-            {% endfor %}
-        </ul>
-    </aside>
+<div class="amz-subnav-wrap">
+    <div class="amz-subnav-inner">
+        <button type="button" class="amz-nav-pill active" data-cat="all">
+            <i class="bi bi-list me-1"></i>Tất cả danh mục ({{ products|length }})
+        </button>
+        {% for cat in categories %}
+            <button type="button" class="amz-nav-pill" data-cat="{{ cat.key }}">{{ cat.name }}</button>
+        {% endfor %}
+    </div>
+</div>
 
-    <div id="marketHeroCarousel" class="carousel slide market-carousel" data-bs-ride="carousel" data-bs-interval="5000">
-        <div class="carousel-indicators mb-2">
-            <button type="button" data-bs-target="#marketHeroCarousel" data-bs-slide-to="0" class="active"></button>
-            <button type="button" data-bs-target="#marketHeroCarousel" data-bs-slide-to="1"></button>
-            <button type="button" data-bs-target="#marketHeroCarousel" data-bs-slide-to="2"></button>
-        </div>
-
-        <div class="carousel-inner">
-            <div class="carousel-item active">
-                <div class="market-slide theme-navy">
-                    <div class="row g-4 align-items-center w-100">
-                        <div class="col-md-7">
-                            <span class="slide-kicker">CloudWMS Enterprise</span>
-                            <h1 class="slide-heading">
-                                Kho Vật tư – Thiết bị Văn phòng & Đặt hàng Trực tuyến
+<section id="amzMainBanner" class="carousel slide amz-hero-fullbleed" data-bs-ride="carousel" data-bs-interval="5000">
+    <div class="carousel-inner">
+        <div class="carousel-item active">
+            <div class="amz-slide amz-bg-1">
+                <div class="amz-slide-container">
+                    <div class="row g-4 align-items-center">
+                        <div class="col-lg-7">
+                            <span class="amz-kicker">CloudWMS Enterprise</span>
+                            <h1 class="amz-hero-title">
+                                Hệ thống Quản lý Kho Vật tư – Thiết bị Văn phòng & Đặt hàng Trực tuyến
                             </h1>
-                            <p class="slide-subtext">
-                                Quản lý chuẩn mã SKU, đồng bộ tồn kho thời gian thực và đặt hàng trực tuyến nhanh chóng.
+                            <p class="amz-hero-desc">
+                                Chuẩn hóa định danh mã SKU, kiểm soát tồn kho thời gian thực và đặt hàng vật tư văn phòng trực tuyến nhanh chóng.
                             </p>
                             <div class="d-flex flex-wrap gap-2">
                                 {% if user.is_authenticated and user.is_staff %}
-                                    <a href="{% url 'dashboard' %}" class="btn btn-amazon-gold">
+                                    <a href="{% url 'dashboard' %}" class="btn btn-amz-gold">
                                         Bảng điều khiển kho
                                     </a>
                                     <a href="{% url 'stock_import' %}" class="btn btn-outline-light fw-semibold px-3 py-2 rounded-3">
                                         Nhập hàng vào kho
                                     </a>
                                 {% else %}
-                                    <a href="{% url 'order_create' %}" class="btn btn-amazon-gold">
-                                        Đặt hàng ngay
+                                    <a href="{% url 'order_create' %}" class="btn btn-amz-gold">
+                                        Đặt hàng trực tuyến
                                     </a>
                                     <a href="#catalog-section" class="btn btn-outline-light fw-semibold px-3 py-2 rounded-3">
-                                        Xem danh mục
+                                        Xem danh mục vật tư
                                     </a>
                                 {% endif %}
                             </div>
                         </div>
 
-                        <div class="col-md-5 d-none d-md-block">
+                        <div class="col-lg-5 d-none d-lg-block">
                             {% if featured %}
-                            <div class="slide-product-card">
-                                <div class="d-flex justify-content-between align-items-center mb-1">
-                                    <span class="badge bg-danger" style="font-size: 0.66rem;">NỔI BẬT</span>
-                                    <span class="font-monospace text-muted" style="font-size: 0.72rem;">{{ featured.sku }}</span>
+                            <div class="amz-hero-showcase">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <span class="badge bg-danger" style="font-size: 0.68rem;">SẢN PHẨM NỔI BẬT</span>
+                                    <span class="font-monospace text-muted" style="font-size: 0.74rem;">{{ featured.sku }}</span>
                                 </div>
-                                <a href="{% url 'product_detail' featured.pk %}" class="slide-product-img text-decoration-none">
+                                <a href="{% url 'product_detail' featured.pk %}" class="amz-showcase-img text-decoration-none">
                                     {% if featured.image %}
                                         <img src="{{ featured.image.url }}" alt="{{ featured.name }}">
                                     {% else %}
@@ -385,85 +358,83 @@
                                     {% endif %}
                                 </a>
                                 <div class="fw-bold small text-truncate">{{ featured.name }}</div>
-                                <div class="fw-bold text-danger fs-6 mt-1">{{ featured.price_vnd }}</div>
+                                <div class="d-flex justify-content-between align-items-center mt-2">
+                                    <span class="fw-bold text-danger fs-5">{{ featured.price_vnd }}</span>
+                                    <a href="{% url 'product_detail' featured.pk %}" class="btn btn-sm btn-outline-dark fw-semibold">Chi tiết</a>
+                                </div>
                             </div>
                             {% endif %}
                         </div>
                     </div>
                 </div>
             </div>
+        </div>
 
-            <div class="carousel-item">
-                <div class="market-slide theme-royal">
-                    <div class="row g-4 align-items-center w-100">
-                        <div class="col-md-8">
-                            <span class="slide-kicker">Cung ứng Tự động</span>
-                            <h2 class="slide-heading">
-                                Theo dõi Đơn đặt hàng & Phiếu Xuất kho Điện tử
+        <div class="carousel-item">
+            <div class="amz-slide amz-bg-2">
+                <div class="amz-slide-container">
+                    <div class="row g-4 align-items-center">
+                        <div class="col-lg-8">
+                            <span class="amz-kicker">Cung ứng Tự động</span>
+                            <h2 class="amz-hero-title">
+                                Theo dõi Đơn đặt hàng & Phiếu Xuất kho Điện tử Minh bạch
                             </h2>
-                            <p class="slide-subtext">
-                                Mọi đơn hàng được xử lý minh bạch, tự động khấu trừ tồn kho và xuất chứng từ điện tử ngay sau khi duyệt.
+                            <p class="amz-hero-desc">
+                                Mọi yêu cầu đặt hàng được đồng bộ trực tiếp tới kho vận, tự động khấu trừ tồn và xuất chứng từ điện tử ngay sau khi phê duyệt.
                             </p>
-                            <a href="{% url 'my_orders' %}" class="btn btn-amazon-gold">
-                                Kiểm tra đơn hàng của tôi
+                            <a href="{% url 'my_orders' %}" class="btn btn-amz-gold">
+                                Theo dõi đơn hàng của tôi
                             </a>
-                        </div>
-                        <div class="col-md-4 d-none d-md-flex justify-content-center">
-                            <i class="bi bi-file-earmark-check text-warning" style="font-size: 5rem;"></i>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="carousel-item">
-                <div class="market-slide theme-emerald">
-                    <div class="row g-4 align-items-center w-100">
-                        <div class="col-md-8">
-                            <span class="slide-kicker">Chính hãng 100%</span>
-                            <h2 class="slide-heading">
-                                Đầy đủ Thiết bị Văn phòng, Linh kiện & Vật tư Tiêu hao
-                            </h2>
-                            <p class="slide-subtext">
-                                Đáp ứng trọn gói nhu cầu văn phòng phẩm, mực in, thiết bị mạng và linh kiện máy tính cho doanh nghiệp.
-                            </p>
-                            <a href="#catalog-section" class="btn btn-amazon-gold">
-                                Khám phá {{ total_products }} sản phẩm
-                            </a>
-                        </div>
-                        <div class="col-md-4 d-none d-md-flex justify-content-center">
-                            <i class="bi bi-boxes text-warning" style="font-size: 5rem;"></i>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <button class="carousel-control-prev" type="button" data-bs-target="#marketHeroCarousel" data-bs-slide="prev">
-            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-            <span class="visually-hidden">Trước</span>
-        </button>
-        <button class="carousel-control-next" type="button" data-bs-target="#marketHeroCarousel" data-bs-slide="next">
-            <span class="carousel-control-next-icon" aria-hidden="true"></span>
-            <span class="visually-hidden">Tiếp</span>
-        </button>
-    </div>
-</section>
-
-<section id="catalog-section">
-    <div class="catalog-toolbar mb-3">
-        <div class="row g-2 align-items-center">
-            <div class="col-lg-4">
-                <div class="input-group input-group-sm">
-                    <span class="input-group-text bg-white border-end-0"><i class="bi bi-search text-muted"></i></span>
-                    <input type="text" id="homeProductSearch" class="form-control border-start-0" placeholder="Tìm tên vật tư hoặc mã SKU...">
+        <div class="carousel-item">
+            <div class="amz-slide amz-bg-3">
+                <div class="amz-slide-container">
+                    <div class="row g-4 align-items-center">
+                        <div class="col-lg-8">
+                            <span class="amz-kicker">Chính hãng 100%</span>
+                            <h2 class="amz-hero-title">
+                                Đầy đủ Thiết bị Văn phòng, Linh kiện Điện tử & Vật tư Tiêu hao
+                            </h2>
+                            <p class="amz-hero-desc">
+                                Cung ứng trọn gói giấy in, mực in, thiết bị mạng và linh kiện máy tính sẵn sàng phục vụ vận hành doanh nghiệp.
+                            </p>
+                            <a href="#catalog-section" class="btn btn-amz-gold">
+                                Khám phá {{ total_products }} mặt hàng
+                            </a>
+                        </div>
+                    </div>
                 </div>
             </div>
-            <div class="col-lg-8">
-                <div class="d-flex gap-2 overflow-auto">
-                    <button type="button" class="cat-pill active" data-cat="all">Tất cả ({{ products|length }})</button>
-                    {% for cat in categories %}
-                        <button type="button" class="cat-pill" data-cat="{{ cat.key }}">{{ cat.name }}</button>
-                    {% endfor %}
+        </div>
+    </div>
+
+    <button class="carousel-control-prev" type="button" data-bs-target="#amzMainBanner" data-bs-slide="prev">
+        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Trước</span>
+    </button>
+    <button class="carousel-control-next" type="button" data-bs-target="#amzMainBanner" data-bs-slide="next">
+        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Tiếp</span>
+    </button>
+</section>
+
+<section id="catalog-section" class="amz-overlap-section">
+    <div class="amz-search-strip mb-4">
+        <div class="row g-2 align-items-center">
+            <div class="col-md-5">
+                <div class="fw-bold text-dark" style="font-size: 1.05rem;">
+                    Danh mục Vật tư – Thiết bị Văn phòng
+                </div>
+            </div>
+            <div class="col-md-7">
+                <div class="input-group">
+                    <span class="input-group-text bg-white border-end-0"><i class="bi bi-search text-muted"></i></span>
+                    <input type="text" id="homeProductSearch" class="form-control border-start-0" placeholder="Tìm kiếm nhanh theo tên vật tư, thiết bị hoặc mã SKU...">
                 </div>
             </div>
         </div>
@@ -518,7 +489,7 @@
                     </h6>
 
                     <div class="mt-auto pt-2 border-top d-flex justify-content-between align-items-center gap-1">
-                        <div class="fw-bold text-danger" style="font-size: 0.95rem;">
+                        <div class="fw-bold text-danger" style="font-size: 0.96rem;">
                             {{ p.price_vnd }}
                         </div>
 
@@ -534,12 +505,12 @@
                                             Sửa
                                         </a>
                                     {% else %}
-                                        <a href="{% url 'order_create' %}?product={{ p.id }}" class="btn btn-amazon-gold btn-sm px-2.5" style="font-size: 0.75rem; padding: 4px 10px;">
+                                        <a href="{% url 'order_create' %}?product={{ p.id }}" class="btn btn-amz-gold btn-sm px-2.5" style="font-size: 0.75rem; padding: 4px 10px;">
                                             Đặt hàng
                                         </a>
                                     {% endif %}
                                 {% else %}
-                                    <a href="{% url 'login' %}?next={% url 'order_create' %}%3Fproduct%3D{{ p.id }}" class="btn btn-amazon-gold btn-sm px-2.5" style="font-size: 0.75rem; padding: 4px 10px;">
+                                    <a href="{% url 'login' %}?next={% url 'order_create' %}%3Fproduct%3D{{ p.id }}" class="btn btn-amz-gold btn-sm px-2.5" style="font-size: 0.75rem; padding: 4px 10px;">
                                         Đặt hàng
                                     </a>
                                 {% endif %}
@@ -567,8 +538,7 @@
 <script>
     document.addEventListener("DOMContentLoaded", function () {
         const searchInput = document.getElementById("homeProductSearch");
-        const catPills = document.querySelectorAll(".cat-pill");
-        const sidebarLinks = document.querySelectorAll(".sidebar-cat-link");
+        const navPills = document.querySelectorAll(".amz-nav-pill");
         const items = document.querySelectorAll(".product-grid-item");
         let activeCat = "all";
 
@@ -587,30 +557,16 @@
             });
         }
 
-        function setCategory(catKey) {
-            activeCat = normalizeStr(catKey);
-            catPills.forEach(btn => {
-                btn.classList.toggle("active", normalizeStr(btn.getAttribute("data-cat")) === activeCat);
-            });
-            sidebarLinks.forEach(li => {
-                li.classList.toggle("active", normalizeStr(li.getAttribute("data-cat")) === activeCat);
-            });
-            filterCatalog();
-        }
-
         if (searchInput) {
             searchInput.addEventListener("input", filterCatalog);
         }
 
-        catPills.forEach(btn => {
+        navPills.forEach(btn => {
             btn.addEventListener("click", function () {
-                setCategory(this.getAttribute("data-cat"));
-            });
-        });
-
-        sidebarLinks.forEach(li => {
-            li.addEventListener("click", function () {
-                setCategory(this.getAttribute("data-cat"));
+                navPills.forEach(b => b.classList.remove("active"));
+                this.classList.add("active");
+                activeCat = normalizeStr(this.getAttribute("data-cat"));
+                filterCatalog();
             });
         });
     });
