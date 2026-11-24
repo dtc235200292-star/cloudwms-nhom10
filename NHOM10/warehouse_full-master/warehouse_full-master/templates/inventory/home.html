@@ -1,177 +1,119 @@
 {% extends "base.html" %}
+{% load humanize %}
 
 {% block title %}Trang chủ — Hệ thống Quản lý Kho Vật tư & Đặt hàng Trực tuyến{% endblock %}
 
 {% block extra_css %}
 <style>
-    /* ============================================================
-       ENTERPRISE HERO SECTION — CHUẨN SAAS HIỆN ĐẠI (MOBILE + DESKTOP)
-       ============================================================ */
     .enterprise-hero {
         position: relative;
-        border-radius: 24px;
-        background: linear-gradient(135deg, #FFFFFF 0%, #F0F7FF 55%, #E0F2FE 100%);
-        border: 1px solid rgba(186, 230, 253, 0.95);
-        box-shadow: 0 20px 50px -15px rgba(15, 23, 42, 0.08), 0 4px 16px rgba(29, 78, 216, 0.05);
+        border-radius: 22px;
+        background: linear-gradient(135deg, #0F172A 0%, #1E3A8A 58%, #0284C7 100%);
+        color: #FFFFFF;
+        box-shadow: 0 20px 45px -15px rgba(15, 23, 42, 0.35);
         overflow: hidden;
     }
-
-    /* Đường lưới kiến trúc mờ tinh tế ở góc phải */
     .hero-arch-pattern {
         position: absolute;
-        top: 0;
-        right: 0;
-        width: 55%;
-        height: 100%;
+        inset: 0;
         background-image:
-            linear-gradient(to right, rgba(29, 78, 216, 0.045) 1px, transparent 1px),
-            linear-gradient(to bottom, rgba(29, 78, 216, 0.045) 1px, transparent 1px);
+            linear-gradient(to right, rgba(255, 255, 255, 0.04) 1px, transparent 1px),
+            linear-gradient(to bottom, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
         background-size: 32px 32px;
-        mask-image: linear-gradient(to left, rgba(0,0,0,0.85) 20%, transparent 100%);
-        -webkit-mask-image: linear-gradient(to left, rgba(0,0,0,0.85) 20%, transparent 100%);
         pointer-events: none;
     }
-
     .hero-pill-tag {
         display: inline-flex;
         align-items: center;
         gap: 8px;
-        background: #FFFFFF;
-        border: 1px solid #BFDBFE;
-        color: #1D4ED8;
-        padding: 6px 14px;
+        background: rgba(255, 255, 255, 0.12);
+        border: 1px solid rgba(255, 255, 255, 0.24);
+        color: #E0F2FE;
+        padding: 5px 14px;
         border-radius: 999px;
         font-size: 0.78rem;
-        font-weight: 700;
-        box-shadow: 0 2px 8px rgba(29, 78, 216, 0.06);
+        font-weight: 600;
     }
     .status-indicator {
         width: 8px;
         height: 8px;
         border-radius: 50%;
-        background: #10B981;
-        box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.2);
+        background: #34D399;
+        box-shadow: 0 0 0 3px rgba(52, 211, 153, 0.25);
     }
-
     .hero-main-title {
-        font-size: clamp(1.48rem, 2.85vw, 2.3rem);
+        font-size: clamp(1.42rem, 2.7vw, 2.15rem);
         font-weight: 800;
-        line-height: 1.24;
-        letter-spacing: -0.025em;
-        color: #0F172A;
+        line-height: 1.25;
+        letter-spacing: -0.02em;
+        color: #FFFFFF;
     }
     .hero-main-title span {
-        color: #1D4ED8;
+        color: #7DD3FC;
     }
-
     .hero-lead-text {
-        color: #475569;
-        font-size: 0.95rem;
-        line-height: 1.65;
-        max-width: 560px;
+        color: rgba(226, 232, 240, 0.9);
+        font-size: 0.93rem;
+        line-height: 1.62;
+        max-width: 580px;
     }
-
-    /* Nút hành động chuẩn SaaS */
     .btn-cta-primary {
-        background: #1D4ED8;
+        background: linear-gradient(135deg, #38BDF8 0%, #2563EB 100%);
         color: #FFFFFF;
         border: none;
-        font-weight: 600;
-        padding: 11px 22px;
+        font-weight: 700;
+        padding: 10px 22px;
         border-radius: 12px;
-        box-shadow: 0 8px 20px -4px rgba(29, 78, 216, 0.38);
+        box-shadow: 0 8px 20px -4px rgba(56, 189, 248, 0.5);
         transition: all 0.2s ease;
     }
     .btn-cta-primary:hover {
-        background: #1E40AF;
         color: #FFFFFF;
         transform: translateY(-2px);
-        box-shadow: 0 12px 24px -4px rgba(29, 78, 216, 0.48);
     }
     .btn-cta-secondary {
-        background: #FFFFFF;
-        color: #1E293B;
-        border: 1px solid #CBD5E1;
+        background: rgba(255, 255, 255, 0.12);
+        color: #FFFFFF;
+        border: 1px solid rgba(255, 255, 255, 0.28);
         font-weight: 600;
-        padding: 11px 22px;
+        padding: 10px 22px;
         border-radius: 12px;
         transition: all 0.2s ease;
     }
     .btn-cta-secondary:hover {
-        background: #F8FAFC;
-        border-color: #94A3B8;
-        color: #0F172A;
+        background: rgba(255, 255, 255, 0.22);
+        color: #FFFFFF;
         transform: translateY(-2px);
     }
-
-    /* 3 Điểm nhấn giá trị nhỏ gọn dưới nút bấm */
-    .hero-trust-row {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 18px;
-        padding-top: 16px;
-        border-top: 1px solid rgba(203, 213, 225, 0.65);
-        font-size: 0.82rem;
-        color: #475569;
-        font-weight: 500;
-    }
-    .hero-trust-row i {
-        color: #1D4ED8;
-        font-size: 0.95rem;
-    }
-
-    /* ============================================================
-       KHUNG MÔ PHỎNG GIAO DIỆN HỆ THỐNG THỰC TẾ BÊN PHẢI (UI PREVIEW)
-       ============================================================ */
-    .ui-preview-window {
-        background: #FFFFFF;
-        border: 1px solid #E2E8F0;
-        border-radius: 18px;
-        box-shadow: 0 24px 48px -12px rgba(15, 23, 42, 0.14), 0 0 0 1px rgba(255, 255, 255, 0.8) inset;
-        overflow: hidden;
-        transition: transform 0.25s ease-out, box-shadow 0.25s ease;
-    }
-    .ui-window-topbar {
-        background: #F8FAFC;
-        border-bottom: 1px solid #E2E8F0;
-        padding: 10px 16px;
+    .feature-glass-item {
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.18);
+        border-radius: 14px;
+        padding: 14px 16px;
         display: flex;
         align-items: center;
-        justify-content: space-between;
+        gap: 14px;
+        transition: transform 0.2s ease, background 0.2s ease;
     }
-    .window-dots {
-        display: flex;
-        gap: 6px;
+    .feature-glass-item:hover {
+        transform: translateX(4px);
+        background: rgba(255, 255, 255, 0.16);
     }
-    .window-dots span {
-        width: 9px;
-        height: 9px;
-        border-radius: 50%;
-    }
-    .preview-metric-box {
-        background: #F8FAFC;
-        border: 1px solid #E2E8F0;
-        border-radius: 12px;
-        padding: 12px 14px;
-    }
-    .preview-list-item {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        padding: 10px 12px;
+    .feature-icon-circle {
+        width: 42px;
+        height: 42px;
         border-radius: 11px;
-        background: #FFFFFF;
-        border: 1px solid #F1F5F9;
-        transition: border-color 0.2s ease, background-color 0.2s ease;
+        background: rgba(56, 189, 248, 0.2);
+        color: #7DD3FC;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.2rem;
+        flex-shrink: 0;
     }
-    .preview-list-item:hover {
-        border-color: #BFDBFE;
-        background: #F8FAFC;
-    }
-
-    /* Thanh tìm kiếm & lọc danh mục */
     .filter-bar-card {
-        background: rgba(255, 255, 255, 0.95);
+        background: rgba(255, 255, 255, 0.96);
         border: 1px solid #E2E8F0;
         border-radius: 16px;
         padding: 14px 18px;
@@ -199,13 +141,6 @@
         border-color: #1D4ED8;
         box-shadow: 0 4px 12px rgba(29, 78, 216, 0.25);
     }
-
-    /* Thẻ sản phẩm */
-    .tilt-3d-card {
-        transform-style: preserve-3d;
-        will-change: transform;
-        transition: transform 0.2s ease-out, box-shadow 0.25s ease, border-color 0.25s ease;
-    }
     .product-pro-card {
         background: #FFFFFF;
         border: 1px solid #E2E8F0;
@@ -215,8 +150,10 @@
         display: flex;
         flex-direction: column;
         box-shadow: 0 4px 14px -4px rgba(15, 23, 42, 0.05);
+        transition: transform 0.22s ease, box-shadow 0.22s ease, border-color 0.22s ease;
     }
     .product-pro-card:hover {
+        transform: translateY(-4px);
         border-color: #93C5FD;
         box-shadow: 0 18px 34px -10px rgba(29, 78, 216, 0.14);
     }
@@ -261,29 +198,24 @@
         padding: 3px 9px;
         border-radius: 999px;
     }
-    .product-title-clamp {
+    .product-title-link {
+        color: #0F172A;
+        text-decoration: none;
         display: -webkit-box;
         -webkit-line-clamp: 2;
         -webkit-box-orient: vertical;
         overflow: hidden;
         min-height: 2.6em;
         line-height: 1.32;
+        transition: color 0.15s ease;
     }
-
+    .product-title-link:hover {
+        color: #1D4ED8;
+    }
     @media (max-width: 767.98px) {
         .enterprise-hero {
             border-radius: 18px;
             padding: 20px 16px !important;
-        }
-        .hero-main-title {
-            font-size: 1.38rem;
-        }
-        .hero-lead-text {
-            font-size: 0.86rem;
-        }
-        .btn-cta-primary, .btn-cta-secondary {
-            padding: 9px 16px;
-            font-size: 0.86rem;
         }
         .product-thumb {
             height: 132px;
@@ -294,12 +226,10 @@
 {% endblock %}
 
 {% block content %}
-<!-- 1. HERO BANNER TĨNH CHUẨN ENTERPRISE (KHÔNG TỰ NHẢY SLIDE, DỄ ĐỌC, RÕ TRỌNG TÂM) -->
 <section class="enterprise-hero p-4 p-lg-5 mb-4 fade-up-enter">
     <div class="hero-arch-pattern"></div>
 
     <div class="row g-4 align-items-center position-relative" style="z-index: 2;">
-        <!-- Cột trái: Nội dung cốt lõi của đề tài -->
         <div class="col-lg-7">
             <div class="hero-pill-tag mb-3">
                 <span class="status-indicator"></span>
@@ -314,11 +244,11 @@
                 {% if user.is_authenticated and user.is_staff %}
                     Quản lý tập trung danh mục vật tư – thiết bị theo mã SKU, kiểm soát chặt chẽ phiếu nhập – xuất kho, cảnh báo định mức tồn tối thiểu và phê duyệt đơn đặt hàng theo thời gian thực.
                 {% else %}
-                    Tra cứu nhanh danh mục vật tư – thiết bị văn phòng trực tuyến, kiểm tra trạng thái sẵn hàng và gửi yêu cầu đặt hàng nhanh chóng, minh bạch trên nền tảng đám mây.
+                    Tra cứu nhanh danh mục vật tư – thiết bị văn phòng trực tuyến, xem chi tiết thông số sản phẩm, đánh giá chất lượng và gửi yêu cầu đặt hàng nhanh chóng.
                 {% endif %}
             </p>
 
-            <div class="d-flex flex-wrap gap-2 mb-4">
+            <div class="d-flex flex-wrap gap-2">
                 {% if user.is_authenticated %}
                     {% if user.is_staff %}
                         <a href="{% url 'dashboard' %}" class="btn btn-cta-primary">
@@ -344,127 +274,86 @@
                     </a>
                 {% endif %}
             </div>
-
-            <div class="hero-trust-row">
-                <span><i class="bi bi-check-circle-fill me-1"></i>Định danh chuẩn mã SKU</span>
-                <span><i class="bi bi-check-circle-fill me-1"></i>Đặt hàng & duyệt đơn trực tuyến</span>
-                <span><i class="bi bi-check-circle-fill me-1"></i>Phiếu xuất kho điện tử</span>
-            </div>
         </div>
 
-        <!-- Cột phải: Khung mô phỏng giao diện hệ thống trực quan (Tách biệt Admin vs Khách hàng) -->
         <div class="col-lg-5">
-            <div class="ui-preview-window tilt-3d-card">
-                <div class="ui-window-topbar">
-                    <div class="window-dots">
-                        <span style="background: #EF4444;"></span>
-                        <span style="background: #F59E0B;"></span>
-                        <span style="background: #10B981;"></span>
+            {% if user.is_authenticated and user.is_staff %}
+            <div class="d-flex flex-column gap-2.5">
+                <div class="feature-glass-item justify-content-between">
+                    <div class="d-flex align-items-center gap-3">
+                        <span class="feature-icon-circle"><i class="bi bi-upc-scan"></i></span>
+                        <div>
+                            <div class="fw-bold text-white small">Tổng mặt hàng (SKU)</div>
+                            <div style="font-size: 0.76rem; color: #CBD5E1;">Danh mục vật tư đang quản lý</div>
+                        </div>
                     </div>
-                    <span class="small fw-semibold text-secondary">
-                        {% if user.is_authenticated and user.is_staff %}
-                            Giám sát tồn kho trực tuyến
-                        {% else %}
-                            Cổng đặt hàng vật tư trực tuyến
-                        {% endif %}
-                    </span>
-                    <span class="badge bg-success bg-opacity-10 text-success fw-semibold" style="font-size: 0.7rem;">Trực tuyến</span>
+                    <div class="fs-3 fw-bold text-info">{{ total_products }}</div>
                 </div>
 
-                <div class="p-3 p-sm-4">
-                    {% if user.is_authenticated and user.is_staff %}
-                    <!-- Giao diện tóm tắt kho dành riêng cho Quản trị viên -->
-                    <div class="row g-2 mb-3">
-                        <div class="col-4">
-                            <div class="preview-metric-box text-center">
-                                <div class="fs-4 fw-bold text-primary">{{ total_products }}</div>
-                                <div class="text-muted" style="font-size: 0.72rem;">Mã SKU</div>
-                            </div>
-                        </div>
-                        <div class="col-4">
-                            <div class="preview-metric-box text-center">
-                                <div class="fs-4 fw-bold text-dark">{{ total_stock }}</div>
-                                <div class="text-muted" style="font-size: 0.72rem;">Tổng tồn kho</div>
-                            </div>
-                        </div>
-                        <div class="col-4">
-                            <div class="preview-metric-box text-center">
-                                <div class="fs-4 fw-bold text-danger">{{ low_stock_count }}</div>
-                                <div class="text-muted" style="font-size: 0.72rem;">Sắp hết (≤5)</div>
-                            </div>
+                <div class="feature-glass-item justify-content-between">
+                    <div class="d-flex align-items-center gap-3">
+                        <span class="feature-icon-circle"><i class="bi bi-boxes"></i></span>
+                        <div>
+                            <div class="fw-bold text-white small">Tổng số lượng tồn kho</div>
+                            <div style="font-size: 0.76rem; color: #CBD5E1;">Đơn vị sản phẩm sẵn sàng xuất</div>
                         </div>
                     </div>
+                    <div class="fs-3 fw-bold text-white">{{ total_stock|intcomma }}</div>
+                </div>
 
-                    <div class="small fw-bold text-dark mb-2">Vật tư mới cập nhật trong kho</div>
-                    <div class="d-flex flex-column gap-2">
-                        {% for item in products|slice:":3" %}
-                        <div class="preview-list-item">
-                            <div class="text-truncate pe-2">
-                                <div class="fw-semibold text-dark small text-truncate">{{ item.name }}</div>
-                                <div class="text-muted" style="font-size: 0.72rem;">{{ item.sku }} • {{ item.category.name|default:"Vật tư" }}</div>
-                            </div>
-                            <span class="badge {% if item.quantity > 5 %}bg-success{% elif item.quantity > 0 %}bg-warning text-dark{% else %}bg-secondary{% endif %} rounded-pill">
-                                Tồn: {{ item.quantity }}
-                            </span>
+                <div class="feature-glass-item justify-content-between">
+                    <div class="d-flex align-items-center gap-3">
+                        <span class="feature-icon-circle" style="background: rgba(245, 158, 11, 0.25); color: #FCD34D;"><i class="bi bi-exclamation-triangle-fill"></i></span>
+                        <div>
+                            <div class="fw-bold text-white small">Cảnh báo định mức</div>
+                            <div style="font-size: 0.76rem; color: #CBD5E1;">Mặt hàng tồn thấp (≤ 5)</div>
                         </div>
-                        {% endfor %}
                     </div>
-
-                    {% else %}
-                    <!-- Giao diện hướng dẫn & sản phẩm tiêu biểu dành riêng cho Khách hàng -->
-                    <div class="small fw-bold text-dark mb-2">
-                        <i class="bi bi-stars text-primary me-1"></i>Vật tư – Thiết bị sẵn sàng cung ứng
-                    </div>
-                    <div class="d-flex flex-column gap-2 mb-3">
-                        {% for item in products|slice:":3" %}
-                        <div class="preview-list-item">
-                            <div class="text-truncate pe-2">
-                                <div class="fw-semibold text-dark small text-truncate">{{ item.name }}</div>
-                                <div class="text-muted" style="font-size: 0.72rem;">{{ item.sku }} • {{ item.price|floatformat:0 }} đ</div>
-                            </div>
-                            {% if item.quantity > 0 %}
-                                <span class="badge bg-success bg-opacity-10 text-success border border-success border-opacity-25 rounded-pill">Sẵn hàng</span>
-                            {% else %}
-                                <span class="badge bg-secondary bg-opacity-10 text-secondary rounded-pill">Tạm hết</span>
-                            {% endif %}
-                        </div>
-                        {% endfor %}
-                    </div>
-
-                    <div class="preview-metric-box d-flex align-items-center justify-content-between">
-                        <div class="small text-secondary">
-                            <i class="bi bi-info-circle text-primary me-1"></i>Chọn sản phẩm bên dưới để đặt đơn
-                        </div>
-                        <a href="#catalog-section" class="btn btn-primary btn-sm rounded-pill px-3 fw-semibold" style="font-size: 0.75rem;">
-                            Tra cứu ngay
-                        </a>
-                    </div>
-                    {% endif %}
+                    <div class="fs-3 fw-bold text-warning">{{ low_stock_count }}</div>
                 </div>
             </div>
+            {% else %}
+            <div class="d-flex flex-column gap-2.5">
+                <div class="feature-glass-item">
+                    <span class="feature-icon-circle"><i class="bi bi-patch-check-fill"></i></span>
+                    <div>
+                        <div class="fw-bold text-white small">Vật tư – Thiết bị Chính hãng</div>
+                        <div style="font-size: 0.78rem; color: #CBD5E1;">Định danh chuẩn mã SKU, niêm yết giá minh bạch</div>
+                    </div>
+                </div>
+
+                <div class="feature-glass-item">
+                    <span class="feature-icon-circle"><i class="bi bi-lightning-charge-fill"></i></span>
+                    <div>
+                        <div class="fw-bold text-white small">Đặt hàng Trực tuyến 1 Chạm</div>
+                        <div style="font-size: 0.78rem; color: #CBD5E1;">Chọn sản phẩm trực tiếp, tự động tính tổng thanh toán</div>
+                    </div>
+                </div>
+
+                <div class="feature-glass-item">
+                    <span class="feature-icon-circle"><i class="bi bi-file-earmark-text-fill"></i></span>
+                    <div>
+                        <div class="fw-bold text-white small">Phiếu Xuất kho Điện tử</div>
+                        <div style="font-size: 0.78rem; color: #CBD5E1;">Theo dõi tiến độ duyệt đơn & in hóa đơn trực tuyến</div>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
         </div>
     </div>
 </section>
 
-<!-- 2. DANH MỤC VẬT TƯ – THIẾT BỊ VĂN PHÒNG -->
 <section id="catalog-section" class="fade-up-enter delay-1">
     <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-2 mb-3">
         <div>
             <h4 class="fw-bold mb-0 text-dark">Danh mục Vật tư – Thiết bị Văn phòng</h4>
-            <p class="text-muted small mb-0">
-                {% if user.is_authenticated and user.is_staff %}
-                    Theo dõi số lượng tồn kho từng mặt hàng theo thời gian thực
-                {% else %}
-                    Chọn vật tư – thiết bị cần đặt mua trực tuyến
-                {% endif %}
-            </p>
+            <p class="text-muted small mb-0">Bấm vào sản phẩm để xem thông tin chi tiết & đánh giá, hoặc bấm Đặt hàng ngay</p>
         </div>
         <a href="{% url 'product_list' %}" class="btn btn-outline-primary btn-sm rounded-pill px-3 align-self-start align-self-md-auto bg-white">
             Xem tất cả <i class="bi bi-arrow-right ms-1"></i>
         </a>
     </div>
 
-    <!-- Thanh tìm kiếm & lọc danh mục -->
     <div class="filter-bar-card mb-4">
         <div class="row g-2 align-items-center">
             <div class="col-lg-5">
@@ -484,14 +373,13 @@
         </div>
     </div>
 
-    <!-- Lưới sản phẩm -->
     <div class="row g-3" id="homeProductGrid">
         {% for p in products %}
         <div class="col-6 col-md-4 col-lg-3 product-grid-item"
              data-name="{{ p.name|lower }} {{ p.sku|lower }}"
              data-cat="{{ p.category.name|default:'none'|lower|striptags }}">
-            <div class="product-pro-card tilt-3d-card">
-                <div class="product-thumb">
+            <div class="product-pro-card">
+                <a href="{% url 'product_detail' p.pk %}" class="product-thumb text-decoration-none">
                     <span class="sku-tag">{{ p.sku }}</span>
 
                     {% if user.is_authenticated and user.is_staff %}
@@ -515,19 +403,27 @@
                     {% else %}
                         <i class="bi bi-box-seam text-secondary opacity-50" style="font-size: 2.8rem;"></i>
                     {% endif %}
-                </div>
+                </a>
 
                 <div class="p-3 d-flex flex-column flex-grow-1">
-                    <div class="text-primary fw-semibold mb-1" style="font-size: 0.72rem;">
-                        {{ p.category.name|default:"Vật tư văn phòng" }}
+                    <div class="d-flex justify-content-between align-items-center mb-1">
+                        <span class="text-primary fw-semibold" style="font-size: 0.72rem;">
+                            {{ p.category.name|default:"Vật tư văn phòng" }}
+                        </span>
+                        <span class="text-warning" style="font-size: 0.72rem;">
+                            <i class="bi bi-star-fill"></i> 5.0
+                        </span>
                     </div>
-                    <h6 class="fw-bold text-dark product-title-clamp mb-2" style="font-size: 0.88rem;">
-                        {{ p.name }}
+
+                    <h6 class="fw-bold mb-2" style="font-size: 0.88rem;">
+                        <a href="{% url 'product_detail' p.pk %}" class="product-title-link">
+                            {{ p.name }}
+                        </a>
                     </h6>
 
                     <div class="mt-auto pt-2 border-top d-flex justify-content-between align-items-center gap-1">
-                        <div class="fw-bold text-dark" style="font-size: 0.94rem;">
-                            {{ p.price|floatformat:0 }} đ
+                        <div class="fw-bold text-danger" style="font-size: 0.94rem;">
+                            {{ p.price|floatformat:0|intcomma }} đ
                         </div>
                         {% if p.quantity > 0 %}
                             {% if user.is_authenticated %}
@@ -536,12 +432,12 @@
                                         Cập nhật
                                     </a>
                                 {% else %}
-                                    <a href="{% url 'order_create' %}" class="btn btn-primary btn-sm rounded-pill px-2.5 fw-semibold" style="font-size: 0.74rem;">
+                                    <a href="{% url 'order_create' %}?product={{ p.id }}" class="btn btn-primary btn-sm rounded-pill px-2.5 fw-semibold" style="font-size: 0.74rem;">
                                         Đặt hàng
                                     </a>
                                 {% endif %}
                             {% else %}
-                                <a href="{% url 'login' %}" class="btn btn-outline-primary btn-sm rounded-pill px-2.5 fw-semibold" style="font-size: 0.74rem;">
+                                <a href="{% url 'login' %}?next={% url 'order_create' %}%3Fproduct%3D{{ p.id }}" class="btn btn-outline-primary btn-sm rounded-pill px-2.5 fw-semibold" style="font-size: 0.74rem;">
                                     Đặt hàng
                                 </a>
                             {% endif %}
@@ -567,26 +463,6 @@
 {% block extra_js %}
 <script>
     document.addEventListener("DOMContentLoaded", function () {
-        // Hiệu ứng nghiêng nổi khối 3D nhẹ khi di chuột trên Desktop
-        if (window.matchMedia("(hover: hover) and (pointer: fine)").matches) {
-            document.querySelectorAll(".tilt-3d-card").forEach(card => {
-                card.addEventListener("mousemove", function (e) {
-                    const rect = card.getBoundingClientRect();
-                    const x = e.clientX - rect.left;
-                    const y = e.clientY - rect.top;
-                    const centerX = rect.width / 2;
-                    const centerY = rect.height / 2;
-                    const rotateX = ((y - centerY) / centerY) * -4;
-                    const rotateY = ((x - centerX) / centerX) * 4;
-                    card.style.transform = `perspective(1000px) rotateX(${rotateX.toFixed(2)}deg) rotateY(${rotateY.toFixed(2)}deg) translateY(-3px)`;
-                });
-                card.addEventListener("mouseleave", function () {
-                    card.style.transform = "perspective(1000px) rotateX(0deg) rotateY(0deg) translateY(0)";
-                });
-            });
-        }
-
-        // Lọc danh mục & tìm kiếm trực tiếp
         const searchInput = document.getElementById("homeProductSearch");
         const catButtons = document.querySelectorAll(".cat-filter-btn");
         const items = document.querySelectorAll(".product-grid-item");
