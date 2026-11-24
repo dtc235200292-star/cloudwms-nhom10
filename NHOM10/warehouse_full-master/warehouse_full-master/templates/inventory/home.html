@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}CloudWMS — Hệ thống Quản lý Kho Vật tư – Thiết bị Văn phòng & Đặt hàng Trực tuyến{% endblock %}
+{% block title %}Hệ thống Quản lý Kho Vật tư – Thiết bị Văn phòng và Đặt hàng Trực tuyến trên Nền tảng Đám mây{% endblock %}
 
 {% block extra_css %}
 <style>
@@ -9,6 +9,15 @@
         background-image: none !important;
         color: #1A1D20;
         overflow-x: hidden;
+    }
+
+    main.container,
+    .container.my-4,
+    .container.py-4 {
+        max-width: 96% !important;
+        width: 96% !important;
+        padding-left: 16px !important;
+        padding-right: 16px !important;
     }
 
     .toz-category-bar {
@@ -24,9 +33,9 @@
         border-bottom: 1px solid #ECEEF2;
     }
     .toz-category-inner {
-        max-width: 1320px;
+        max-width: 96%;
         margin: 0 auto;
-        padding: 10px 20px;
+        padding: 10px 16px;
         display: flex;
         align-items: center;
         justify-content: space-between;
@@ -35,7 +44,7 @@
     .toz-nav-links {
         display: flex;
         align-items: center;
-        gap: 6px;
+        gap: 8px;
         overflow-x: auto;
         scrollbar-width: none;
     }
@@ -46,9 +55,9 @@
         background: transparent;
         border: none;
         color: #2B3035;
-        font-size: 0.85rem;
+        font-size: 0.86rem;
         font-weight: 600;
-        padding: 7px 14px;
+        padding: 7px 15px;
         border-radius: 6px;
         white-space: nowrap;
         cursor: pointer;
@@ -63,7 +72,7 @@
         background: #1E293B;
     }
     .toz-top-search {
-        width: 340px;
+        width: 380px;
         max-width: 100%;
         flex-shrink: 0;
     }
@@ -76,7 +85,7 @@
     }
     .toz-top-search input {
         border-radius: 0 999px 999px 0;
-        font-size: 0.84rem;
+        font-size: 0.85rem;
         padding: 7px 16px 7px 4px;
         border: 1px solid #DCE0E5;
         border-left: none;
@@ -117,24 +126,24 @@
         color: #FFFFFF;
     }
     .toz-slide-container {
-        max-width: 1320px;
+        max-width: 96%;
         margin: 0 auto;
-        padding: 0 72px;
+        padding: 0 64px;
         width: 100%;
     }
     .toz-eyebrow {
         display: inline-block;
-        font-size: 0.75rem;
+        font-size: 0.76rem;
         font-weight: 700;
-        letter-spacing: 0.12em;
+        letter-spacing: 0.1em;
         text-transform: uppercase;
         color: #F59E0B;
         margin-bottom: 12px;
     }
     .toz-hero-heading {
-        font-size: clamp(1.55rem, 2.7vw, 2.35rem);
+        font-size: clamp(1.5rem, 2.5vw, 2.25rem);
         font-weight: 800;
-        line-height: 1.24;
+        line-height: 1.28;
         letter-spacing: -0.015em;
         margin-bottom: 14px;
     }
@@ -142,7 +151,7 @@
         font-size: 0.96rem;
         color: #CBD5E1;
         line-height: 1.65;
-        max-width: 540px;
+        max-width: 620px;
         margin-bottom: 24px;
     }
     .btn-toz-accent {
@@ -166,7 +175,7 @@
         color: #1A1D20;
         border-radius: 12px;
         padding: 20px;
-        max-width: 330px;
+        max-width: 360px;
         margin-left: auto;
         box-shadow: 0 20px 45px rgba(0, 0, 0, 0.24);
     }
@@ -188,7 +197,7 @@
         backdrop-filter: blur(10px);
         border-radius: 14px;
         padding: 24px;
-        max-width: 330px;
+        max-width: 360px;
         margin-left: auto;
         color: #FFFFFF;
     }
@@ -211,7 +220,7 @@
     .toz-hero-full .carousel-control-next { right: 16px; }
 
     .toz-pillars-section {
-        padding: 34px 0;
+        padding: 32px 0;
         border-bottom: 1px solid #ECEEF2;
     }
     .toz-pillar-box {
@@ -231,7 +240,7 @@
         margin-bottom: 6px;
     }
     .toz-pillar-title {
-        font-size: 0.88rem;
+        font-size: 0.9rem;
         font-weight: 800;
         text-transform: uppercase;
         color: #1A1D20;
@@ -239,7 +248,7 @@
         letter-spacing: 0.02em;
     }
     .toz-pillar-desc {
-        font-size: 0.82rem;
+        font-size: 0.84rem;
         color: #64748B;
         line-height: 1.5;
         margin-bottom: 0;
@@ -247,10 +256,10 @@
 
     .toz-section-header {
         text-align: center;
-        margin-bottom: 26px;
+        margin-bottom: 24px;
     }
     .toz-section-kicker {
-        font-size: 0.74rem;
+        font-size: 0.75rem;
         font-weight: 700;
         letter-spacing: 0.14em;
         text-transform: uppercase;
@@ -259,7 +268,7 @@
         margin-bottom: 4px;
     }
     .toz-section-title {
-        font-size: 1.5rem;
+        font-size: 1.55rem;
         font-weight: 800;
         color: #1A1D20;
         text-transform: uppercase;
@@ -267,14 +276,14 @@
         margin-bottom: 4px;
     }
     .toz-section-sub {
-        font-size: 0.86rem;
+        font-size: 0.88rem;
         color: #64748B;
     }
 
     .toz-offer-grid {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-        gap: 12px;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 14px;
         margin-bottom: 32px;
     }
     .toz-offer-tile {
@@ -300,9 +309,31 @@
         margin-bottom: 6px;
     }
     .toz-offer-tile span {
-        font-size: 0.84rem;
+        font-size: 0.86rem;
         font-weight: 700;
         color: #1E293B;
+    }
+
+    .wide-product-grid {
+        display: grid;
+        grid-template-columns: repeat(5, minmax(0, 1fr));
+        gap: 18px;
+    }
+    @media (max-width: 1399.98px) {
+        .wide-product-grid {
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+        }
+    }
+    @media (max-width: 991.98px) {
+        .wide-product-grid {
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+        }
+    }
+    @media (max-width: 767.98px) {
+        .wide-product-grid {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 12px;
+        }
     }
 
     .toz-product-card {
@@ -455,7 +486,7 @@
         <div class="toz-top-search">
             <div class="input-group input-group-sm">
                 <span class="input-group-text"><i class="bi bi-search text-muted"></i></span>
-                <input type="text" id="homeProductSearch" class="form-control" placeholder="Tìm vật tư hoặc mã SKU...">
+                <input type="text" id="homeProductSearch" class="form-control" placeholder="Tìm vật tư, thiết bị hoặc mã SKU...">
             </div>
         </div>
     </div>
@@ -467,13 +498,13 @@
             <div class="toz-slide toz-slide-1">
                 <div class="toz-slide-container">
                     <div class="row g-4 align-items-center">
-                        <div class="col-lg-7">
-                            <span class="toz-eyebrow">CLOUDWMS OFFICE SOLUTIONS</span>
+                        <div class="col-lg-8">
+                            <span class="toz-eyebrow">NỀN TẢNG ĐIỆN TOÁN ĐÁM MÂY — NHÓM 10</span>
                             <h1 class="toz-hero-heading">
-                                Có tất cả vật tư & thiết bị văn phòng doanh nghiệp bạn cần
+                                Hệ thống Quản lý Kho Vật tư – Thiết bị Văn phòng và Đặt hàng Trực tuyến trên Nền tảng Đám mây
                             </h1>
                             <p class="toz-hero-lead">
-                                Hệ thống quản lý kho chuẩn mã SKU kết hợp đặt hàng trực tuyến đồng bộ, hiện đại, minh bạch và sẵn sàng đáp ứng mọi nhu cầu vận hành văn phòng.
+                                Chuẩn hóa quản lý danh mục vật tư theo mã SKU, đồng bộ tồn kho thời gian thực và hỗ trợ đặt hàng trực tuyến minh bạch, hiện đại cho doanh nghiệp.
                             </p>
                             <div class="d-flex flex-wrap gap-2">
                                 {% if user.is_authenticated and user.is_staff %}
@@ -488,13 +519,13 @@
                                         Đặt hàng trực tuyến
                                     </a>
                                     <a href="#catalog-section" class="btn btn-outline-light fw-semibold px-4 py-2 rounded-2">
-                                        Xem danh mục
+                                        Xem danh mục vật tư
                                     </a>
                                 {% endif %}
                             </div>
                         </div>
 
-                        <div class="col-lg-5 d-none d-lg-block">
+                        <div class="col-lg-4 d-none d-lg-block">
                             {% if featured %}
                             <div class="toz-featured-frame">
                                 <div class="d-flex justify-content-between align-items-center">
@@ -525,7 +556,7 @@
             <div class="toz-slide toz-slide-2">
                 <div class="toz-slide-container">
                     <div class="row g-4 align-items-center">
-                        <div class="col-lg-7">
+                        <div class="col-lg-8">
                             <span class="toz-eyebrow">CUNG ỨNG ĐỒNG BỘ & CHÍNH XÁC</span>
                             <h2 class="toz-hero-heading">
                                 Quy trình Đặt hàng & Xuất Phiếu kho Điện tử Khép kín
@@ -537,7 +568,7 @@
                                 Tra cứu đơn hàng của tôi
                             </a>
                         </div>
-                        <div class="col-lg-5 d-none d-lg-block">
+                        <div class="col-lg-4 d-none d-lg-block">
                             <div class="toz-slide-stat-card">
                                 <div class="d-flex align-items-center gap-3 mb-3">
                                     <div class="rounded-3 bg-warning text-dark d-flex align-items-center justify-content-center" style="width: 48px; height: 48px;">
@@ -562,7 +593,7 @@
             <div class="toz-slide toz-slide-3">
                 <div class="toz-slide-container">
                     <div class="row g-4 align-items-center">
-                        <div class="col-lg-7">
+                        <div class="col-lg-8">
                             <span class="toz-eyebrow">DANH MỤC ĐA DẠNG — SẴN SÀNG CUNG ỨNG</span>
                             <h2 class="toz-hero-heading">
                                 Đầy đủ Thiết bị Văn phòng, Linh kiện Điện tử & Vật tư Tiêu hao
@@ -574,7 +605,7 @@
                                 Khám phá {{ total_products }} sản phẩm
                             </a>
                         </div>
-                        <div class="col-lg-5 d-none d-lg-block">
+                        <div class="col-lg-4 d-none d-lg-block">
                             <div class="toz-slide-stat-card">
                                 <div class="d-flex align-items-center gap-3 mb-3">
                                     <div class="rounded-3 bg-info text-dark d-flex align-items-center justify-content-center" style="width: 48px; height: 48px;">
@@ -659,9 +690,9 @@
         {% endfor %}
     </div>
 
-    <div class="row g-4" id="homeProductGrid">
+    <div class="wide-product-grid" id="homeProductGrid">
         {% for p in products %}
-        <div class="col-6 col-md-4 col-lg-3 product-grid-item"
+        <div class="product-grid-item"
              data-name="{{ p.name|lower }} {{ p.sku|lower }}"
              data-cat="{{ p.category.name|default:'none'|lower|striptags }}">
             <div class="toz-product-card">
