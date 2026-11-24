@@ -14,11 +14,8 @@
         :root {
             --primary-blue: #1D4ED8;
             --accent-cyan: #0EA5E9;
-            --surface-glass: rgba(255, 255, 255, 0.88);
-            --border-glass: rgba(226, 232, 240, 0.9);
         }
 
-        /* Nền Aurora SaaS hiện đại: Chuyển sắc tinh tế, sang trọng trên cả Mobile & Desktop */
         body {
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
             min-height: 100vh;
@@ -26,76 +23,36 @@
             flex-direction: column;
             overflow-x: hidden;
             color: #0F172A;
-            background-color: #F4F7FB;
+            background: linear-gradient(160deg, #EBF3FF 0%, #F8FAFC 42%, #EEF2FF 100%);
             position: relative;
         }
 
-        /* Lớp ánh sáng Aurora nền động tinh tế (tạo chiều sâu không rối mắt) */
-        .aurora-bg {
+        /* Canvas nền 3D tương tác nhẹ (mạng lưới đám mây & chiều sâu không gian) */
+        #cloud-3d-stage {
             position: fixed;
             inset: 0;
             z-index: -1;
-            overflow: hidden;
             pointer-events: none;
-            background: linear-gradient(180deg, #EEF4FF 0%, #F8FAFC 45%, #F1F5F9 100%);
-        }
-        .aurora-orb {
-            position: absolute;
-            border-radius: 50%;
-            filter: blur(80px);
-            opacity: 0.55;
-            animation: floatOrb 16s ease-in-out infinite alternate;
-        }
-        .aurora-orb-1 {
-            width: 520px;
-            height: 520px;
-            top: -160px;
-            left: -120px;
-            background: radial-gradient(circle, rgba(59, 130, 246, 0.28), transparent 70%);
-        }
-        .aurora-orb-2 {
-            width: 480px;
-            height: 480px;
-            top: -100px;
-            right: -120px;
-            background: radial-gradient(circle, rgba(14, 165, 233, 0.24), transparent 70%);
-            animation-delay: -5s;
-        }
-        .aurora-orb-3 {
-            width: 440px;
-            height: 440px;
-            bottom: -140px;
-            left: 35%;
-            background: radial-gradient(circle, rgba(99, 102, 241, 0.14), transparent 70%);
-            animation-delay: -10s;
-        }
-        @keyframes floatOrb {
-            0% { transform: translate(0, 0) scale(1); }
-            100% { transform: translate(35px, 25px) scale(1.08); }
         }
 
-        /* Thẻ nổi khối Glassmorphism & Hover mượt */
+        /* Thẻ nổi khối Glassmorphism */
         .card, .reveal-item {
-            background: var(--surface-glass) !important;
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border: 1px solid var(--border-glass) !important;
+            background: rgba(255, 255, 255, 0.88) !important;
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            border: 1px solid rgba(226, 232, 240, 0.92) !important;
             border-radius: 16px !important;
-            box-shadow: 0 4px 20px -2px rgba(15, 23, 42, 0.05), 0 1px 3px rgba(15, 23, 42, 0.03) !important;
-            transition: transform 0.25s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.25s ease, border-color 0.25s ease;
-        }
-        .card:hover {
-            box-shadow: 0 14px 30px -6px rgba(29, 78, 216, 0.1) !important;
-            border-color: rgba(147, 197, 253, 0.85) !important;
+            box-shadow: 0 8px 24px -6px rgba(15, 23, 42, 0.06), 0 1px 3px rgba(15, 23, 42, 0.03) !important;
+            transition: transform 0.25s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.25s ease;
         }
 
         /* Navbar kính mờ */
         .navbar-cloud {
-            background: rgba(255, 255, 255, 0.85);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            border-bottom: 1px solid rgba(226, 232, 240, 0.85);
-            box-shadow: 0 2px 14px rgba(15, 23, 42, 0.03);
+            background: rgba(255, 255, 255, 0.84);
+            backdrop-filter: blur(18px);
+            -webkit-backdrop-filter: blur(18px);
+            border-bottom: 1px solid rgba(203, 213, 225, 0.7);
+            box-shadow: 0 2px 16px rgba(15, 23, 42, 0.04);
         }
         .brand-badge {
             width: 36px;
@@ -107,17 +64,16 @@
             align-items: center;
             justify-content: center;
             font-size: 1.05rem;
-            box-shadow: 0 4px 12px rgba(29, 78, 216, 0.28);
+            box-shadow: 0 4px 12px rgba(29, 78, 216, 0.3);
             flex-shrink: 0;
         }
         .nav-link {
-            position: relative;
             border-radius: 8px;
             padding: 7px 12px !important;
-            transition: background-color 0.18s ease, color 0.18s ease;
+            transition: all 0.18s ease;
         }
         .nav-link:hover {
-            background-color: rgba(29, 78, 216, 0.07);
+            background-color: rgba(29, 78, 216, 0.08);
             color: #1D4ED8 !important;
         }
 
@@ -132,26 +88,20 @@
                 padding-left: 12px;
                 padding-right: 12px;
             }
-            .aurora-orb {
-                width: 280px;
-                height: 280px;
-                filter: blur(55px);
-            }
         }
 
-        /* Hiệu ứng xuất hiện mượt khi tải trang */
+        /* Hiệu ứng xuất hiện 3D mượt khi mở trang */
         .fade-up-enter {
             opacity: 0;
-            transform: translateY(16px);
-            animation: fadeUpEnter 0.55s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+            transform: translateY(18px) scale(0.99);
+            animation: fadeUpEnter 0.6s cubic-bezier(0.22, 1, 0.36, 1) forwards;
         }
-        .delay-1 { animation-delay: 0.08s; }
-        .delay-2 { animation-delay: 0.16s; }
-        .delay-3 { animation-delay: 0.24s; }
+        .delay-1 { animation-delay: 0.1s; }
+        .delay-2 { animation-delay: 0.2s; }
         @keyframes fadeUpEnter {
             to {
                 opacity: 1;
-                transform: translateY(0);
+                transform: translateY(0) scale(1);
             }
         }
 
@@ -295,12 +245,8 @@
     {% block extra_css %}{% endblock %}
 </head>
 <body>
-    <!-- Nền Aurora chuyển sắc mượt mà -->
-    <div class="aurora-bg" aria-hidden="true">
-        <div class="aurora-orb aurora-orb-1"></div>
-        <div class="aurora-orb aurora-orb-2"></div>
-        <div class="aurora-orb aurora-orb-3"></div>
-    </div>
+    <!-- Nền 3D Mạng lưới Đám mây chuyển động theo con trỏ -->
+    <canvas id="cloud-3d-stage" aria-hidden="true"></canvas>
 
     <nav class="navbar navbar-expand-lg navbar-cloud sticky-top">
         <div class="container">
@@ -449,7 +395,7 @@
                 <i class="bi bi-headset fs-5"></i>
                 <div>
                     <div class="fw-semibold" style="font-size: 0.86rem;">Hỗ trợ Đặt hàng Vật tư</div>
-                    <div style="font-size: 0.7rem; opacity: 0.85;">Tra cứu tồn kho & hướng dẫn đặt đơn</div>
+                    <div style="font-size: 0.7rem; opacity: 0.85;">Tra cứu tình trạng & hướng dẫn đặt đơn</div>
                 </div>
             </div>
             <button type="button" class="btn-close btn-close-white btn-sm" id="chatbotClose"></button>
@@ -457,13 +403,13 @@
 
         <div class="chatbot-messages" id="chatbotMessages">
             <div class="chat-msg-bot">
-                Xin chào! Tôi có thể hỗ trợ bạn cách <strong>đặt hàng vật tư</strong>, <strong>kiểm tra tình trạng tồn kho</strong> và <strong>theo dõi đơn hàng</strong>. Mời bạn chọn câu hỏi gợi ý bên dưới:
+                Xin chào! Tôi có thể hỗ trợ bạn cách <strong>đặt hàng vật tư</strong>, <strong>kiểm tra tình trạng sẵn hàng</strong> và <strong>theo dõi đơn hàng</strong>. Mời bạn chọn câu hỏi gợi ý bên dưới:
             </div>
         </div>
 
         <div class="chatbot-quick-replies" id="chatbotQuickReplies">
             <button type="button" class="quick-chip" data-question="Cách đặt hàng vật tư văn phòng?">Cách đặt hàng?</button>
-            <button type="button" class="quick-chip" data-question="Làm sao biết vật tư còn hàng?">Kiểm tra tồn kho?</button>
+            <button type="button" class="quick-chip" data-question="Làm sao biết vật tư còn hàng?">Kiểm tra sẵn hàng?</button>
             <button type="button" class="quick-chip" data-question="Xem trạng thái đơn hàng ở đâu?">Theo dõi đơn?</button>
             <button type="button" class="quick-chip" data-question="Cách đăng nhập hệ thống?">Cách đăng nhập?</button>
         </div>
@@ -478,6 +424,7 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
     <script>
+        // 1. Tự động tắt thông báo tích xanh sau 4 giây
         document.addEventListener("DOMContentLoaded", function () {
             document.querySelectorAll(".auto-dismiss-alert").forEach(function (el) {
                 setTimeout(function () {
@@ -486,6 +433,90 @@
             });
         });
 
+        // 2. Hiệu ứng nền 3D Particle Network chiều sâu (mượt 60fps trên cả Mobile & Desktop)
+        (function () {
+            const canvas = document.getElementById("cloud-3d-stage");
+            if (!canvas) return;
+            const ctx = canvas.getContext("2d");
+            let width, height, particles = [];
+            const mouse = { x: null, y: null };
+            const isMobile = window.innerWidth < 768;
+            const count = isMobile ? 28 : 55;
+
+            function resize() {
+                width = canvas.width = window.innerWidth;
+                height = canvas.height = window.innerHeight;
+            }
+            resize();
+            window.addEventListener("resize", resize);
+            window.addEventListener("mousemove", e => { mouse.x = e.clientX; mouse.y = e.clientY; });
+            window.addEventListener("mouseleave", () => { mouse.x = null; mouse.y = null; });
+
+            for (let i = 0; i < count; i++) {
+                const z = Math.random() * 0.8 + 0.2;
+                particles.push({
+                    x: Math.random() * width,
+                    y: Math.random() * height,
+                    z: z,
+                    vx: (Math.random() - 0.5) * 0.45 * z,
+                    vy: (Math.random() - 0.5) * 0.45 * z,
+                    radius: 2.2 * z + 0.8
+                });
+            }
+
+            function draw() {
+                ctx.clearRect(0, 0, width, height);
+                for (let i = 0; i < particles.length; i++) {
+                    const p = particles[i];
+                    p.x += p.vx;
+                    p.y += p.vy;
+                    if (p.x < 0 || p.x > width) p.vx *= -1;
+                    if (p.y < 0 || p.y > height) p.vy *= -1;
+
+                    // Vẽ điểm nút 3D
+                    ctx.beginPath();
+                    ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+                    ctx.fillStyle = `rgba(29, 78, 216, ${0.18 + p.z * 0.25})`;
+                    ctx.fill();
+
+                    // Nối các nút gần nhau tạo cấu trúc mạng đám mây 3D
+                    for (let j = i + 1; j < particles.length; j++) {
+                        const p2 = particles[j];
+                        const dx = p.x - p2.x;
+                        const dy = p.y - p2.y;
+                        const dist = Math.sqrt(dx * dx + dy * dy);
+                        const maxDist = isMobile ? 105 : 145;
+                        if (dist < maxDist) {
+                            ctx.beginPath();
+                            ctx.moveTo(p.x, p.y);
+                            ctx.lineTo(p2.x, p2.y);
+                            ctx.strokeStyle = `rgba(59, 130, 246, ${(1 - dist / maxDist) * 0.16})`;
+                            ctx.lineWidth = 0.8;
+                            ctx.stroke();
+                        }
+                    }
+
+                    // Tương tác nhẹ với con trỏ chuột
+                    if (mouse.x !== null) {
+                        const mdx = p.x - mouse.x;
+                        const mdy = p.y - mouse.y;
+                        const mdist = Math.sqrt(mdx * mdx + mdy * mdy);
+                        if (mdist < 160) {
+                            ctx.beginPath();
+                            ctx.moveTo(p.x, p.y);
+                            ctx.lineTo(mouse.x, mouse.y);
+                            ctx.strokeStyle = `rgba(14, 165, 233, ${(1 - mdist / 160) * 0.26})`;
+                            ctx.lineWidth = 1;
+                            ctx.stroke();
+                        }
+                    }
+                }
+                requestAnimationFrame(draw);
+            }
+            draw();
+        })();
+
+        // 3. Chatbot Khách hàng
         const chatToggle = document.getElementById("chatbotToggle");
         const chatBox = document.getElementById("chatbotBox");
         const chatClose = document.getElementById("chatbotClose");
@@ -503,10 +534,10 @@
                     return "Cảm ơn bạn! Nếu cần tra cứu thêm vật tư hay đơn hàng, hãy chọn các câu hỏi gợi ý bên dưới nhé.";
                 }
                 if (q.includes("đặt hàng") || q.includes("mua")) {
-                    return "<strong>Quy trình đặt hàng:</strong><br>1. Đăng nhập tài khoản.<br>2. Chọn vật tư tại <strong>Danh mục vật tư</strong> hoặc bấm <strong>Đặt hàng</strong>.<br>3. Nhập số lượng và gửi yêu cầu để kho duyệt.";
+                    return "<strong>Quy trình đặt hàng:</strong><br>1. Đăng nhập tài khoản.<br>2. Chọn vật tư tại <strong>Danh mục vật tư</strong> hoặc bấm <strong>Đặt hàng</strong>.<br>3. Nhập số lượng và gửi yêu cầu để hệ thống xử lý.";
                 }
-                if (q.includes("còn hàng") || q.includes("tồn kho")) {
-                    return "<strong>Trạng thái tồn kho:</strong><br>• <span class='badge bg-success'>Còn hàng</span>: Đang có sẵn trong kho.<br>• <span class='badge bg-secondary'>Hết hàng</span>: Đang chờ nhập bổ sung.";
+                if (q.includes("còn hàng") || q.includes("tồn kho") || q.includes("sẵn hàng")) {
+                    return "<strong>Trạng thái sản phẩm:</strong><br>• <span class='badge bg-success'>Sẵn hàng</span>: Đang có sẵn để đặt mua ngay.<br>• <span class='badge bg-secondary'>Tạm hết</span>: Đang chờ nhập bổ sung.";
                 }
                 if (q.includes("theo dõi") || q.includes("đơn")) {
                     return "Bạn vào mục <strong>Đơn của tôi</strong> trên thanh menu để xem trạng thái duyệt đơn và tải phiếu xuất kho.";
