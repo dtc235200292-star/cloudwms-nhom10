@@ -5,184 +5,173 @@
 {% block extra_css %}
 <style>
     /* ============================================================
-       HERO BANNER SLIDER 3D CHUẨN ENTERPRISE (MOBILE + DESKTOP)
+       ENTERPRISE HERO SECTION — CHUẨN SAAS HIỆN ĐẠI (MOBILE + DESKTOP)
        ============================================================ */
-    .wms-hero-banner {
+    .enterprise-hero {
         position: relative;
         border-radius: 24px;
+        background: linear-gradient(135deg, #FFFFFF 0%, #F0F7FF 55%, #E0F2FE 100%);
+        border: 1px solid rgba(186, 230, 253, 0.95);
+        box-shadow: 0 20px 50px -15px rgba(15, 23, 42, 0.08), 0 4px 16px rgba(29, 78, 216, 0.05);
         overflow: hidden;
-        background: linear-gradient(125deg, #0B132B 0%, #1E3A8A 52%, #0369A1 100%);
-        color: #FFFFFF;
-        box-shadow: 0 24px 48px -16px rgba(15, 23, 42, 0.38), 0 4px 16px rgba(29, 78, 216, 0.18);
-        border: 1px solid rgba(147, 197, 253, 0.25);
     }
 
-    /* Hiệu ứng lưới 3D & ánh sáng nền bên trong Banner */
-    .banner-grid-overlay {
+    /* Đường lưới kiến trúc mờ tinh tế ở góc phải */
+    .hero-arch-pattern {
         position: absolute;
-        inset: 0;
+        top: 0;
+        right: 0;
+        width: 55%;
+        height: 100%;
         background-image:
-            linear-gradient(rgba(255, 255, 255, 0.04) 1px, transparent 1px),
-            linear-gradient(90deg, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
-        background-size: 36px 36px;
-        mask-image: radial-gradient(ellipse at center, black 35%, transparent 80%);
-        -webkit-mask-image: radial-gradient(ellipse at center, black 35%, transparent 80%);
-        pointer-events: none;
-    }
-    .banner-glow-1 {
-        position: absolute;
-        top: -90px;
-        right: -60px;
-        width: 360px;
-        height: 360px;
-        border-radius: 50%;
-        background: radial-gradient(circle, rgba(56, 189, 248, 0.35) 0%, transparent 70%);
-        filter: blur(20px);
-        pointer-events: none;
-    }
-    .banner-glow-2 {
-        position: absolute;
-        bottom: -110px;
-        left: -60px;
-        width: 320px;
-        height: 320px;
-        border-radius: 50%;
-        background: radial-gradient(circle, rgba(99, 102, 241, 0.32) 0%, transparent 70%);
-        filter: blur(24px);
+            linear-gradient(to right, rgba(29, 78, 216, 0.045) 1px, transparent 1px),
+            linear-gradient(to bottom, rgba(29, 78, 216, 0.045) 1px, transparent 1px);
+        background-size: 32px 32px;
+        mask-image: linear-gradient(to left, rgba(0,0,0,0.85) 20%, transparent 100%);
+        -webkit-mask-image: linear-gradient(to left, rgba(0,0,0,0.85) 20%, transparent 100%);
         pointer-events: none;
     }
 
-    .banner-badge {
+    .hero-pill-tag {
         display: inline-flex;
         align-items: center;
         gap: 8px;
-        background: rgba(255, 255, 255, 0.12);
-        backdrop-filter: blur(10px);
-        border: 1px solid rgba(255, 255, 255, 0.22);
-        color: #E0F2FE;
+        background: #FFFFFF;
+        border: 1px solid #BFDBFE;
+        color: #1D4ED8;
         padding: 6px 14px;
         border-radius: 999px;
         font-size: 0.78rem;
-        font-weight: 600;
-        letter-spacing: 0.01em;
+        font-weight: 700;
+        box-shadow: 0 2px 8px rgba(29, 78, 216, 0.06);
     }
-    .live-dot {
+    .status-indicator {
         width: 8px;
         height: 8px;
         border-radius: 50%;
-        background: #34D399;
-        box-shadow: 0 0 0 0 rgba(52, 211, 153, 0.7);
-        animation: pulseLive 2s infinite;
-    }
-    @keyframes pulseLive {
-        0% { box-shadow: 0 0 0 0 rgba(52, 211, 153, 0.7); }
-        70% { box-shadow: 0 0 0 7px rgba(52, 211, 153, 0); }
-        100% { box-shadow: 0 0 0 0 rgba(52, 211, 153, 0); }
+        background: #10B981;
+        box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.2);
     }
 
-    .banner-heading {
-        font-size: clamp(1.42rem, 2.9vw, 2.35rem);
+    .hero-main-title {
+        font-size: clamp(1.48rem, 2.85vw, 2.3rem);
         font-weight: 800;
         line-height: 1.24;
-        letter-spacing: -0.02em;
-        color: #FFFFFF;
+        letter-spacing: -0.025em;
+        color: #0F172A;
     }
-    .banner-heading .highlight-text {
-        background: linear-gradient(90deg, #7DD3FC 0%, #38BDF8 50%, #A5F3FC 100%);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
+    .hero-main-title span {
+        color: #1D4ED8;
     }
-    .banner-desc {
-        color: rgba(226, 232, 240, 0.88);
-        font-size: 0.94rem;
-        line-height: 1.62;
+
+    .hero-lead-text {
+        color: #475569;
+        font-size: 0.95rem;
+        line-height: 1.65;
         max-width: 560px;
     }
 
-    /* Nút bấm sáng nổi bật trên nền Banner tối */
-    .btn-banner-primary {
-        background: linear-gradient(135deg, #38BDF8 0%, #2563EB 100%);
+    /* Nút hành động chuẩn SaaS */
+    .btn-cta-primary {
+        background: #1D4ED8;
         color: #FFFFFF;
         border: none;
-        font-weight: 700;
-        box-shadow: 0 10px 24px -6px rgba(56, 189, 248, 0.55);
-        transition: transform 0.2s ease, box-shadow 0.2s ease;
-    }
-    .btn-banner-primary:hover {
-        color: #FFFFFF;
-        transform: translateY(-2px);
-        box-shadow: 0 14px 28px -6px rgba(56, 189, 248, 0.7);
-    }
-    .btn-banner-glass {
-        background: rgba(255, 255, 255, 0.12);
-        color: #FFFFFF;
-        border: 1px solid rgba(255, 255, 255, 0.28);
-        backdrop-filter: blur(8px);
         font-weight: 600;
+        padding: 11px 22px;
+        border-radius: 12px;
+        box-shadow: 0 8px 20px -4px rgba(29, 78, 216, 0.38);
         transition: all 0.2s ease;
     }
-    .btn-banner-glass:hover {
-        background: rgba(255, 255, 255, 0.22);
+    .btn-cta-primary:hover {
+        background: #1E40AF;
         color: #FFFFFF;
+        transform: translateY(-2px);
+        box-shadow: 0 12px 24px -4px rgba(29, 78, 216, 0.48);
+    }
+    .btn-cta-secondary {
+        background: #FFFFFF;
+        color: #1E293B;
+        border: 1px solid #CBD5E1;
+        font-weight: 600;
+        padding: 11px 22px;
+        border-radius: 12px;
+        transition: all 0.2s ease;
+    }
+    .btn-cta-secondary:hover {
+        background: #F8FAFC;
+        border-color: #94A3B8;
+        color: #0F172A;
         transform: translateY(-2px);
     }
 
-    /* Đồ họa 3D Isometric lơ lửng bên phải Banner */
-    .iso-3d-wrapper {
-        position: relative;
+    /* 3 Điểm nhấn giá trị nhỏ gọn dưới nút bấm */
+    .hero-trust-row {
         display: flex;
-        align-items: center;
-        justify-content: center;
-        animation: float3D 4.5s ease-in-out infinite;
+        flex-wrap: wrap;
+        gap: 18px;
+        padding-top: 16px;
+        border-top: 1px solid rgba(203, 213, 225, 0.65);
+        font-size: 0.82rem;
+        color: #475569;
+        font-weight: 500;
     }
-    @keyframes float3D {
-        0%, 100% { transform: translateY(0px); }
-        50% { transform: translateY(-10px); }
-    }
-    .iso-glass-card {
-        background: rgba(255, 255, 255, 0.1);
-        backdrop-filter: blur(14px);
-        -webkit-backdrop-filter: blur(14px);
-        border: 1px solid rgba(255, 255, 255, 0.22);
-        border-radius: 20px;
-        padding: 18px;
-        width: 100%;
-        max-width: 390px;
-        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.25);
-    }
-    .mini-kpi-glass {
-        background: rgba(15, 23, 42, 0.42);
-        border: 1px solid rgba(255, 255, 255, 0.14);
-        border-radius: 12px;
-        padding: 10px 12px;
+    .hero-trust-row i {
+        color: #1D4ED8;
+        font-size: 0.95rem;
     }
 
-    /* Điều hướng Slide Banner */
-    .banner-indicators {
+    /* ============================================================
+       KHUNG MÔ PHỎNG GIAO DIỆN HỆ THỐNG THỰC TẾ BÊN PHẢI (UI PREVIEW)
+       ============================================================ */
+    .ui-preview-window {
+        background: #FFFFFF;
+        border: 1px solid #E2E8F0;
+        border-radius: 18px;
+        box-shadow: 0 24px 48px -12px rgba(15, 23, 42, 0.14), 0 0 0 1px rgba(255, 255, 255, 0.8) inset;
+        overflow: hidden;
+        transition: transform 0.25s ease-out, box-shadow 0.25s ease;
+    }
+    .ui-window-topbar {
+        background: #F8FAFC;
+        border-bottom: 1px solid #E2E8F0;
+        padding: 10px 16px;
         display: flex;
         align-items: center;
-        gap: 8px;
+        justify-content: space-between;
     }
-    .banner-dot {
-        width: 26px;
-        height: 5px;
-        border-radius: 999px;
-        background: rgba(255, 255, 255, 0.28);
-        border: none;
-        padding: 0;
-        transition: all 0.3s ease;
-        cursor: pointer;
+    .window-dots {
+        display: flex;
+        gap: 6px;
     }
-    .banner-dot.active {
-        width: 44px;
-        background: #38BDF8;
-        box-shadow: 0 0 10px rgba(56, 189, 248, 0.8);
+    .window-dots span {
+        width: 9px;
+        height: 9px;
+        border-radius: 50%;
+    }
+    .preview-metric-box {
+        background: #F8FAFC;
+        border: 1px solid #E2E8F0;
+        border-radius: 12px;
+        padding: 12px 14px;
+    }
+    .preview-list-item {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 10px 12px;
+        border-radius: 11px;
+        background: #FFFFFF;
+        border: 1px solid #F1F5F9;
+        transition: border-color 0.2s ease, background-color 0.2s ease;
+    }
+    .preview-list-item:hover {
+        border-color: #BFDBFE;
+        background: #F8FAFC;
     }
 
     /* Thanh tìm kiếm & lọc danh mục */
     .filter-bar-card {
-        background: rgba(255, 255, 255, 0.92);
-        backdrop-filter: blur(12px);
+        background: rgba(255, 255, 255, 0.95);
         border: 1px solid #E2E8F0;
         border-radius: 16px;
         padding: 14px 18px;
@@ -205,57 +194,57 @@
         background: #EFF6FF;
     }
     .cat-filter-btn.active {
-        background: linear-gradient(135deg, #1D4ED8, #2563EB);
+        background: #1D4ED8;
         color: #FFFFFF;
         border-color: #1D4ED8;
-        box-shadow: 0 4px 12px rgba(29, 78, 216, 0.28);
+        box-shadow: 0 4px 12px rgba(29, 78, 216, 0.25);
     }
 
-    /* Thẻ sản phẩm 3D */
+    /* Thẻ sản phẩm */
     .tilt-3d-card {
         transform-style: preserve-3d;
         will-change: transform;
-        transition: transform 0.18s ease-out, box-shadow 0.25s ease, border-color 0.25s ease;
+        transition: transform 0.2s ease-out, box-shadow 0.25s ease, border-color 0.25s ease;
     }
     .product-pro-card {
-        background: rgba(255, 255, 255, 0.96);
+        background: #FFFFFF;
         border: 1px solid #E2E8F0;
         border-radius: 16px;
         overflow: hidden;
         height: 100%;
         display: flex;
         flex-direction: column;
-        box-shadow: 0 6px 18px -6px rgba(15, 23, 42, 0.06);
+        box-shadow: 0 4px 14px -4px rgba(15, 23, 42, 0.05);
     }
     .product-pro-card:hover {
-        border-color: #60A5FA;
-        box-shadow: 0 20px 38px -12px rgba(29, 78, 216, 0.18);
+        border-color: #93C5FD;
+        box-shadow: 0 18px 34px -10px rgba(29, 78, 216, 0.14);
     }
     .product-thumb {
         height: 170px;
-        background: linear-gradient(180deg, #F8FAFC 0%, #EEF2F6 100%);
+        background: #F8FAFC;
         position: relative;
         display: flex;
         align-items: center;
         justify-content: center;
         padding: 14px;
-        border-bottom: 1px solid #E2E8F0;
+        border-bottom: 1px solid #F1F5F9;
         overflow: hidden;
     }
     .product-thumb img {
         max-height: 100%;
         max-width: 100%;
         object-fit: contain;
-        transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+        transition: transform 0.3s ease;
     }
     .product-pro-card:hover .product-thumb img {
-        transform: scale(1.09) translateY(-2px);
+        transform: scale(1.06);
     }
     .sku-tag {
         position: absolute;
         top: 10px;
         left: 10px;
-        background: rgba(15, 23, 42, 0.85);
+        background: #0F172A;
         color: #FFFFFF;
         font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
         font-size: 0.7rem;
@@ -281,24 +270,20 @@
         line-height: 1.32;
     }
 
-    /* Tối ưu hiển thị Banner cực đẹp trên Điện thoại (Mobile) */
     @media (max-width: 767.98px) {
-        .wms-hero-banner {
+        .enterprise-hero {
             border-radius: 18px;
             padding: 20px 16px !important;
         }
-        .banner-heading {
-            font-size: 1.35rem;
-            line-height: 1.28;
+        .hero-main-title {
+            font-size: 1.38rem;
         }
-        .banner-desc {
-            font-size: 0.85rem;
-            margin-bottom: 1rem !important;
+        .hero-lead-text {
+            font-size: 0.86rem;
         }
-        .iso-glass-card {
-            padding: 12px 14px;
-            border-radius: 14px;
-            max-width: 100%;
+        .btn-cta-primary, .btn-cta-secondary {
+            padding: 9px 16px;
+            font-size: 0.86rem;
         }
         .product-thumb {
             height: 132px;
@@ -309,221 +294,153 @@
 {% endblock %}
 
 {% block content %}
-<!-- 1. HERO BANNER SLIDER CHUYÊN NGHIỆP (MOBILE & DESKTOP) -->
-<section class="wms-hero-banner p-4 p-lg-5 mb-4 fade-up-enter" id="heroBannerSection">
-    <div class="banner-grid-overlay"></div>
-    <div class="banner-glow-1"></div>
-    <div class="banner-glow-2"></div>
+<!-- 1. HERO BANNER TĨNH CHUẨN ENTERPRISE (KHÔNG TỰ NHẢY SLIDE, DỄ ĐỌC, RÕ TRỌNG TÂM) -->
+<section class="enterprise-hero p-4 p-lg-5 mb-4 fade-up-enter">
+    <div class="hero-arch-pattern"></div>
 
-    <div class="position-relative" style="z-index: 2;">
-        <!-- SLIDE 1 -->
-        <div class="hero-slide-item" data-slide="0">
-            <div class="row g-3 g-lg-4 align-items-center">
-                <div class="col-lg-7">
-                    <div class="banner-badge mb-3">
-                        <span class="live-dot"></span>
-                        <span>CloudWMS • Nền tảng Đám mây (Nhóm 10)</span>
+    <div class="row g-4 align-items-center position-relative" style="z-index: 2;">
+        <!-- Cột trái: Nội dung cốt lõi của đề tài -->
+        <div class="col-lg-7">
+            <div class="hero-pill-tag mb-3">
+                <span class="status-indicator"></span>
+                <span>CloudWMS • Nền tảng Quản lý Kho & Đặt hàng Đám mây</span>
+            </div>
+
+            <h1 class="hero-main-title mb-3">
+                Hệ thống Quản lý Kho <span>Vật tư – Thiết bị Văn phòng</span> và Đặt hàng Trực tuyến
+            </h1>
+
+            <p class="hero-lead-text mb-4">
+                {% if user.is_authenticated and user.is_staff %}
+                    Quản lý tập trung danh mục vật tư – thiết bị theo mã SKU, kiểm soát chặt chẽ phiếu nhập – xuất kho, cảnh báo định mức tồn tối thiểu và phê duyệt đơn đặt hàng theo thời gian thực.
+                {% else %}
+                    Tra cứu nhanh danh mục vật tư – thiết bị văn phòng trực tuyến, kiểm tra trạng thái sẵn hàng và gửi yêu cầu đặt hàng nhanh chóng, minh bạch trên nền tảng đám mây.
+                {% endif %}
+            </p>
+
+            <div class="d-flex flex-wrap gap-2 mb-4">
+                {% if user.is_authenticated %}
+                    {% if user.is_staff %}
+                        <a href="{% url 'dashboard' %}" class="btn btn-cta-primary">
+                            <i class="bi bi-speedometer2 me-1"></i>Bảng điều khiển kho
+                        </a>
+                        <a href="{% url 'stock_import' %}" class="btn btn-cta-secondary">
+                            <i class="bi bi-box-arrow-in-down me-1"></i>Lập phiếu nhập kho
+                        </a>
+                    {% else %}
+                        <a href="{% url 'order_create' %}" class="btn btn-cta-primary">
+                            <i class="bi bi-cart-plus-fill me-1"></i>Đặt hàng trực tuyến
+                        </a>
+                        <a href="{% url 'my_orders' %}" class="btn btn-cta-secondary">
+                            <i class="bi bi-bag-check me-1"></i>Đơn hàng của tôi
+                        </a>
+                    {% endif %}
+                {% else %}
+                    <a href="{% url 'login' %}" class="btn btn-cta-primary">
+                        <i class="bi bi-box-arrow-in-right me-1"></i>Đăng nhập đặt hàng
+                    </a>
+                    <a href="#catalog-section" class="btn btn-cta-secondary">
+                        <i class="bi bi-grid me-1"></i>Xem danh mục vật tư
+                    </a>
+                {% endif %}
+            </div>
+
+            <div class="hero-trust-row">
+                <span><i class="bi bi-check-circle-fill me-1"></i>Định danh chuẩn mã SKU</span>
+                <span><i class="bi bi-check-circle-fill me-1"></i>Đặt hàng & duyệt đơn trực tuyến</span>
+                <span><i class="bi bi-check-circle-fill me-1"></i>Phiếu xuất kho điện tử</span>
+            </div>
+        </div>
+
+        <!-- Cột phải: Khung mô phỏng giao diện hệ thống trực quan (Tách biệt Admin vs Khách hàng) -->
+        <div class="col-lg-5">
+            <div class="ui-preview-window tilt-3d-card">
+                <div class="ui-window-topbar">
+                    <div class="window-dots">
+                        <span style="background: #EF4444;"></span>
+                        <span style="background: #F59E0B;"></span>
+                        <span style="background: #10B981;"></span>
                     </div>
-                    <h1 class="banner-heading mb-3">
-                        Hệ thống Quản lý Kho <span class="highlight-text">Vật tư – Thiết bị Văn phòng</span> & Đặt hàng Trực tuyến
-                    </h1>
-                    <p class="banner-desc mb-4">
+                    <span class="small fw-semibold text-secondary">
                         {% if user.is_authenticated and user.is_staff %}
-                            Quản lý danh mục vật tư theo mã SKU, theo dõi biến động nhập – xuất kho theo thời gian thực và cảnh báo định mức tồn kho tự động.
+                            Giám sát tồn kho trực tuyến
                         {% else %}
-                            Tra cứu nhanh danh mục vật tư – thiết bị văn phòng trực tuyến, kiểm tra trạng thái sẵn hàng và gửi yêu cầu đặt hàng mọi lúc, mọi nơi.
+                            Cổng đặt hàng vật tư trực tuyến
                         {% endif %}
-                    </p>
-
-                    <div class="d-flex flex-wrap gap-2">
-                        {% if user.is_authenticated %}
-                            {% if user.is_staff %}
-                                <a href="{% url 'dashboard' %}" class="btn btn-banner-primary px-4 py-2.5 rounded-3">
-                                    <i class="bi bi-speedometer2 me-1"></i>Bảng điều khiển kho
-                                </a>
-                                <a href="{% url 'stock_import' %}" class="btn btn-banner-glass px-4 py-2.5 rounded-3">
-                                    <i class="bi bi-box-arrow-in-down me-1"></i>Lập phiếu nhập kho
-                                </a>
-                            {% else %}
-                                <a href="{% url 'order_create' %}" class="btn btn-banner-primary px-4 py-2.5 rounded-3">
-                                    <i class="bi bi-cart-plus-fill me-1"></i>Đặt hàng trực tuyến
-                                </a>
-                                <a href="{% url 'my_orders' %}" class="btn btn-banner-glass px-4 py-2.5 rounded-3">
-                                    <i class="bi bi-bag-check me-1"></i>Đơn hàng của tôi
-                                </a>
-                            {% endif %}
-                        {% else %}
-                            <a href="{% url 'login' %}" class="btn btn-banner-primary px-4 py-2.5 rounded-3">
-                                <i class="bi bi-box-arrow-in-right me-1"></i>Đăng nhập đặt hàng
-                            </a>
-                            <a href="#catalog-section" class="btn btn-banner-glass px-4 py-2.5 rounded-3">
-                                <i class="bi bi-grid me-1"></i>Danh mục vật tư
-                            </a>
-                        {% endif %}
-                    </div>
+                    </span>
+                    <span class="badge bg-success bg-opacity-10 text-success fw-semibold" style="font-size: 0.7rem;">Trực tuyến</span>
                 </div>
 
-                <!-- Khối minh họa 3D Isometric bên phải (Tự động gọn đẹp trên Mobile) -->
-                <div class="col-lg-5">
-                    <div class="iso-3d-wrapper">
-                        <div class="iso-glass-card">
-                            <div class="d-flex align-items-center justify-content-between mb-3">
-                                <div class="d-flex align-items-center gap-2">
-                                    <span class="badge bg-info text-dark fw-bold px-2.5 py-1.5 rounded-pill">
-                                        <i class="bi bi-cloud-check-fill me-1"></i>Cloud Sync
-                                    </span>
-                                    <span class="small text-light opacity-75">Trạng thái trực tuyến</span>
-                                </div>
-                                <i class="bi bi-box-seam text-info fs-4"></i>
+                <div class="p-3 p-sm-4">
+                    {% if user.is_authenticated and user.is_staff %}
+                    <!-- Giao diện tóm tắt kho dành riêng cho Quản trị viên -->
+                    <div class="row g-2 mb-3">
+                        <div class="col-4">
+                            <div class="preview-metric-box text-center">
+                                <div class="fs-4 fw-bold text-primary">{{ total_products }}</div>
+                                <div class="text-muted" style="font-size: 0.72rem;">Mã SKU</div>
                             </div>
-
-                            <!-- Đồ họa SVG 3D Kho Vật tư - Thiết bị -->
-                            <div class="text-center my-2 d-none d-sm-block">
-                                <svg width="240" height="115" viewBox="0 0 260 125" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                    <defs>
-                                        <linearGradient id="boxTop" x1="0" y1="0" x2="1" y2="1">
-                                            <stop offset="0%" stop-color="#7DD3FC"/>
-                                            <stop offset="100%" stop-color="#38BDF8"/>
-                                        </linearGradient>
-                                        <linearGradient id="boxLeft" x1="0" y1="0" x2="0" y2="1">
-                                            <stop offset="0%" stop-color="#2563EB"/>
-                                            <stop offset="100%" stop-color="#1E40AF"/>
-                                        </linearGradient>
-                                        <linearGradient id="boxRight" x1="0" y1="0" x2="0" y2="1">
-                                            <stop offset="0%" stop-color="#0284C7"/>
-                                            <stop offset="100%" stop-color="#0369A1"/>
-                                        </linearGradient>
-                                    </defs>
-                                    <!-- Khối hộp 3D trung tâm -->
-                                    <polygon points="130,14 184,42 130,70 76,42" fill="url(#boxTop)"/>
-                                    <polygon points="76,42 130,70 130,116 76,88" fill="url(#boxLeft)"/>
-                                    <polygon points="184,42 130,70 130,116 184,88" fill="url(#boxRight)"/>
-                                    <!-- Khối hộp vệ tinh trái -->
-                                    <polygon points="46,48 72,61 46,74 20,61" fill="#93C5FD" opacity="0.85"/>
-                                    <polygon points="20,61 46,74 46,98 20,85" fill="#1D4ED8" opacity="0.85"/>
-                                    <polygon points="72,61 46,74 46,98 72,85" fill="#3B82F6" opacity="0.85"/>
-                                    <!-- Khối hộp vệ tinh phải -->
-                                    <polygon points="214,48 240,61 214,74 188,61" fill="#67E8F9" opacity="0.85"/>
-                                    <polygon points="188,61 214,74 214,98 188,85" fill="#0E7490" opacity="0.85"/>
-                                    <polygon points="240,61 214,74 214,98 240,85" fill="#06B6D4" opacity="0.85"/>
-                                    <!-- Đường kết nối đám mây -->
-                                    <path d="M72 61 L96 52" stroke="#BAE6FD" stroke-width="2" stroke-dasharray="4 3"/>
-                                    <path d="M188 61 L164 52" stroke="#BAE6FD" stroke-width="2" stroke-dasharray="4 3"/>
-                                </svg>
-                            </div>
-
-                            <!-- Phân quyền thông số bên trong thẻ 3D -->
-                            {% if user.is_authenticated and user.is_staff %}
-                            <div class="row g-2 mt-1">
-                                <div class="col-4">
-                                    <div class="mini-kpi-glass text-center">
-                                        <div class="fs-5 fw-bold text-info count-up" data-target="{{ total_products }}">{{ total_products }}</div>
-                                        <div style="font-size: 0.7rem;" class="text-light opacity-75">Mã SKU</div>
-                                    </div>
-                                </div>
-                                <div class="col-4">
-                                    <div class="mini-kpi-glass text-center">
-                                        <div class="fs-5 fw-bold text-white count-up" data-target="{{ total_stock }}">{{ total_stock }}</div>
-                                        <div style="font-size: 0.7rem;" class="text-light opacity-75">Tồn kho</div>
-                                    </div>
-                                </div>
-                                <div class="col-4">
-                                    <div class="mini-kpi-glass text-center">
-                                        <div class="fs-5 fw-bold text-warning count-up" data-target="{{ low_stock_count }}">{{ low_stock_count }}</div>
-                                        <div style="font-size: 0.7rem;" class="text-light opacity-75">Sắp hết</div>
-                                    </div>
-                                </div>
-                            </div>
-                            {% else %}
-                            <div class="row g-2 mt-1">
-                                <div class="col-6">
-                                    <div class="mini-kpi-glass d-flex align-items-center gap-2">
-                                        <i class="bi bi-upc-scan text-info fs-5"></i>
-                                        <div>
-                                            <div class="fw-bold small text-white">Chuẩn mã SKU</div>
-                                            <div style="font-size: 0.68rem;" class="text-light opacity-75">Tra cứu chính xác</div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-6">
-                                    <div class="mini-kpi-glass d-flex align-items-center gap-2">
-                                        <i class="bi bi-lightning-charge-fill text-warning fs-5"></i>
-                                        <div>
-                                            <div class="fw-bold small text-white">Đặt đơn nhanh</div>
-                                            <div style="font-size: 0.68rem;" class="text-light opacity-75">Xử lý trực tuyến</div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            {% endif %}
                         </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- SLIDE 2 -->
-        <div class="hero-slide-item d-none" data-slide="1">
-            <div class="row g-3 g-lg-4 align-items-center">
-                <div class="col-lg-7">
-                    <div class="banner-badge mb-3">
-                        <i class="bi bi-cart-check-fill text-info"></i>
-                        <span>Quy trình Đặt hàng & Xuất kho Tự động</span>
-                    </div>
-                    <h2 class="banner-heading mb-3">
-                        Đặt hàng Vật tư Văn phòng <span class="highlight-text">Nhanh chóng – Minh bạch</span>
-                    </h2>
-                    <p class="banner-desc mb-4">
-                        Lựa chọn thiết bị văn phòng, linh kiện điện tử và vật tư tiêu hao trực tiếp trên hệ thống. Theo dõi trạng thái duyệt đơn và tải phiếu xuất kho tức thì.
-                    </p>
-                    <div class="d-flex flex-wrap gap-2">
-                        <a href="#catalog-section" class="btn btn-banner-primary px-4 py-2.5 rounded-3">
-                            <i class="bi bi-search me-1"></i>Chọn vật tư ngay
-                        </a>
-                        {% if user.is_authenticated and not user.is_staff %}
-                        <a href="{% url 'my_orders' %}" class="btn btn-banner-glass px-4 py-2.5 rounded-3">
-                            <i class="bi bi-receipt me-1"></i>Kiểm tra đơn đã đặt
-                        </a>
-                        {% endif %}
-                    </div>
-                </div>
-                <div class="col-lg-5">
-                    <div class="iso-3d-wrapper">
-                        <div class="iso-glass-card">
-                            <div class="fw-bold small text-info mb-2"><i class="bi bi-diagram-3-fill me-1"></i>Quy trình 3 bước trực tuyến</div>
-                            <div class="d-flex flex-column gap-2">
-                                <div class="mini-kpi-glass d-flex align-items-center gap-2">
-                                    <span class="badge bg-primary rounded-pill">1</span>
-                                    <span class="small text-white">Tra cứu vật tư sẵn hàng theo danh mục</span>
-                                </div>
-                                <div class="mini-kpi-glass d-flex align-items-center gap-2">
-                                    <span class="badge bg-info text-dark rounded-pill">2</span>
-                                    <span class="small text-white">Tạo đơn đặt hàng & xác nhận số lượng</span>
-                                </div>
-                                <div class="mini-kpi-glass d-flex align-items-center gap-2">
-                                    <span class="badge bg-success rounded-pill">3</span>
-                                    <span class="small text-white">Nhận duyệt đơn & phiếu xuất kho điện tử</span>
-                                </div>
+                        <div class="col-4">
+                            <div class="preview-metric-box text-center">
+                                <div class="fs-4 fw-bold text-dark">{{ total_stock }}</div>
+                                <div class="text-muted" style="font-size: 0.72rem;">Tổng tồn kho</div>
+                            </div>
+                        </div>
+                        <div class="col-4">
+                            <div class="preview-metric-box text-center">
+                                <div class="fs-4 fw-bold text-danger">{{ low_stock_count }}</div>
+                                <div class="text-muted" style="font-size: 0.72rem;">Sắp hết (≤5)</div>
                             </div>
                         </div>
                     </div>
-                </div>
-            </div>
-        </div>
 
-        <!-- Thanh điều khiển chuyển Slide Banner -->
-        <div class="d-flex justify-content-between align-items-center mt-4 pt-2 border-top border-white border-opacity-10">
-            <div class="banner-indicators">
-                <button type="button" class="banner-dot active" data-target-slide="0" aria-label="Slide 1"></button>
-                <button type="button" class="banner-dot" data-target-slide="1" aria-label="Slide 2"></button>
-            </div>
-            <div class="d-flex gap-2">
-                <button type="button" class="btn btn-sm btn-banner-glass rounded-circle" id="prevBannerBtn" style="width: 32px; height: 32px; padding: 0;">
-                    <i class="bi bi-chevron-left"></i>
-                </button>
-                <button type="button" class="btn btn-sm btn-banner-glass rounded-circle" id="nextBannerBtn" style="width: 32px; height: 32px; padding: 0;">
-                    <i class="bi bi-chevron-right"></i>
-                </button>
+                    <div class="small fw-bold text-dark mb-2">Vật tư mới cập nhật trong kho</div>
+                    <div class="d-flex flex-column gap-2">
+                        {% for item in products|slice:":3" %}
+                        <div class="preview-list-item">
+                            <div class="text-truncate pe-2">
+                                <div class="fw-semibold text-dark small text-truncate">{{ item.name }}</div>
+                                <div class="text-muted" style="font-size: 0.72rem;">{{ item.sku }} • {{ item.category.name|default:"Vật tư" }}</div>
+                            </div>
+                            <span class="badge {% if item.quantity > 5 %}bg-success{% elif item.quantity > 0 %}bg-warning text-dark{% else %}bg-secondary{% endif %} rounded-pill">
+                                Tồn: {{ item.quantity }}
+                            </span>
+                        </div>
+                        {% endfor %}
+                    </div>
+
+                    {% else %}
+                    <!-- Giao diện hướng dẫn & sản phẩm tiêu biểu dành riêng cho Khách hàng -->
+                    <div class="small fw-bold text-dark mb-2">
+                        <i class="bi bi-stars text-primary me-1"></i>Vật tư – Thiết bị sẵn sàng cung ứng
+                    </div>
+                    <div class="d-flex flex-column gap-2 mb-3">
+                        {% for item in products|slice:":3" %}
+                        <div class="preview-list-item">
+                            <div class="text-truncate pe-2">
+                                <div class="fw-semibold text-dark small text-truncate">{{ item.name }}</div>
+                                <div class="text-muted" style="font-size: 0.72rem;">{{ item.sku }} • {{ item.price|floatformat:0 }} đ</div>
+                            </div>
+                            {% if item.quantity > 0 %}
+                                <span class="badge bg-success bg-opacity-10 text-success border border-success border-opacity-25 rounded-pill">Sẵn hàng</span>
+                            {% else %}
+                                <span class="badge bg-secondary bg-opacity-10 text-secondary rounded-pill">Tạm hết</span>
+                            {% endif %}
+                        </div>
+                        {% endfor %}
+                    </div>
+
+                    <div class="preview-metric-box d-flex align-items-center justify-content-between">
+                        <div class="small text-secondary">
+                            <i class="bi bi-info-circle text-primary me-1"></i>Chọn sản phẩm bên dưới để đặt đơn
+                        </div>
+                        <a href="#catalog-section" class="btn btn-primary btn-sm rounded-pill px-3 fw-semibold" style="font-size: 0.75rem;">
+                            Tra cứu ngay
+                        </a>
+                    </div>
+                    {% endif %}
+                </div>
             </div>
         </div>
     </div>
@@ -567,7 +484,7 @@
         </div>
     </div>
 
-    <!-- Lưới sản phẩm 3D -->
+    <!-- Lưới sản phẩm -->
     <div class="row g-3" id="homeProductGrid">
         {% for p in products %}
         <div class="col-6 col-md-4 col-lg-3 product-grid-item"
@@ -650,56 +567,7 @@
 {% block extra_js %}
 <script>
     document.addEventListener("DOMContentLoaded", function () {
-        // 1. Điều khiển Hero Banner Slider tự động chuyển mượt + nút bấm tay
-        const slides = document.querySelectorAll(".hero-slide-item");
-        const dots = document.querySelectorAll(".banner-dot");
-        const prevBtn = document.getElementById("prevBannerBtn");
-        const nextBtn = document.getElementById("nextBannerBtn");
-        let currentSlide = 0;
-
-        function showSlide(index) {
-            if (!slides.length) return;
-            currentSlide = (index + slides.length) % slides.length;
-            slides.forEach((s, i) => {
-                if (i === currentSlide) {
-                    s.classList.remove("d-none");
-                } else {
-                    s.classList.add("d-none");
-                }
-            });
-            dots.forEach((d, i) => d.classList.toggle("active", i === currentSlide));
-        }
-
-        if (prevBtn) prevBtn.addEventListener("click", () => showSlide(currentSlide - 1));
-        if (nextBtn) nextBtn.addEventListener("click", () => showSlide(currentSlide + 1));
-        dots.forEach(dot => {
-            dot.addEventListener("click", () => showSlide(parseInt(dot.getAttribute("data-target-slide"), 10)));
-        });
-        if (slides.length > 1) {
-            setInterval(() => showSlide(currentSlide + 1), 6500);
-        }
-
-        // 2. Hiệu ứng đếm số KPI (cho Admin)
-        document.querySelectorAll(".count-up").forEach(el => {
-            const target = parseInt(el.getAttribute("data-target") || "0", 10);
-            if (isNaN(target) || target <= 0) return;
-            const duration = 900;
-            const startTime = performance.now();
-
-            function step(now) {
-                const progress = Math.min((now - startTime) / duration, 1);
-                const easeOut = 1 - Math.pow(1 - progress, 3);
-                el.textContent = Math.floor(easeOut * target);
-                if (progress < 1) {
-                    requestAnimationFrame(step);
-                } else {
-                    el.textContent = target;
-                }
-            }
-            requestAnimationFrame(step);
-        });
-
-        // 3. Hiệu ứng nghiêng nổi khối 3D Perspective Tilt khi di chuột trên Desktop
+        // Hiệu ứng nghiêng nổi khối 3D nhẹ khi di chuột trên Desktop
         if (window.matchMedia("(hover: hover) and (pointer: fine)").matches) {
             document.querySelectorAll(".tilt-3d-card").forEach(card => {
                 card.addEventListener("mousemove", function (e) {
@@ -708,17 +576,17 @@
                     const y = e.clientY - rect.top;
                     const centerX = rect.width / 2;
                     const centerY = rect.height / 2;
-                    const rotateX = ((y - centerY) / centerY) * -5;
-                    const rotateY = ((x - centerX) / centerX) * 5;
-                    card.style.transform = `perspective(900px) rotateX(${rotateX.toFixed(2)}deg) rotateY(${rotateY.toFixed(2)}deg) translateY(-4px)`;
+                    const rotateX = ((y - centerY) / centerY) * -4;
+                    const rotateY = ((x - centerX) / centerX) * 4;
+                    card.style.transform = `perspective(1000px) rotateX(${rotateX.toFixed(2)}deg) rotateY(${rotateY.toFixed(2)}deg) translateY(-3px)`;
                 });
                 card.addEventListener("mouseleave", function () {
-                    card.style.transform = "perspective(900px) rotateX(0deg) rotateY(0deg) translateY(0)";
+                    card.style.transform = "perspective(1000px) rotateX(0deg) rotateY(0deg) translateY(0)";
                 });
             });
         }
 
-        // 4. Lọc danh mục & tìm kiếm trực tiếp
+        // Lọc danh mục & tìm kiếm trực tiếp
         const searchInput = document.getElementById("homeProductSearch");
         const catButtons = document.querySelectorAll(".cat-filter-btn");
         const items = document.querySelectorAll(".product-grid-item");
