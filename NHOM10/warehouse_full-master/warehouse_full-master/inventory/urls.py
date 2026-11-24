@@ -24,4 +24,5 @@ urlpatterns = [
     path("accounts/phone-otp/", views.phone_otp_login, name="phone_otp_login"),
     path("accounts/google-entry/", views.google_login_entry, name="google_login_entry"),
     path("accounts/password-reset/", views.password_reset_view, name="password_reset_custom"),
+    path("accounts/password_reset/", views.password_reset_view, name="password_reset"),
 ]
