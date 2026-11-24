@@ -26,6 +26,12 @@ def home(request):
     low_stock_count = products_qs.filter(quantity__lte=5).count()
     products_list = list(products_qs)
 
+    # Gắn thông tin đánh giá thật từ session (không gán cứng 5.0 ảo)
+    for p in products_list:
+        reviews = request.session.get(f"product_reviews_{p.id}", [])
+        p.review_count = len(reviews)
+        p.avg_rating = round(sum(r["rating"] for r in reviews) / len(reviews), 1) if reviews else None
+
     unique_categories = []
     seen_names = set()
     for cat in Category.objects.all().order_by("id"):
@@ -77,7 +83,7 @@ def product_detail(request, pk):
             messages.success(request, "Cảm ơn bạn đã gửi đánh giá sản phẩm!")
             return redirect("product_detail", pk=product.pk)
 
-    avg_rating = round(sum(r["rating"] for r in reviews) / len(reviews), 1) if reviews else 5.0
+    avg_rating = round(sum(r["rating"] for r in reviews) / len(reviews), 1) if reviews else None
     related_products = Product.objects.filter(
         status="active", category=product.category
     ).exclude(pk=product.pk)[:4]
