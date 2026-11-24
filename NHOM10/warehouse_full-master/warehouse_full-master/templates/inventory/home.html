@@ -63,20 +63,29 @@
         background: #1E293B;
     }
     .toz-top-search {
-        min-width: 260px;
-        max-width: 320px;
+        width: 340px;
+        max-width: 100%;
+        flex-shrink: 0;
+    }
+    .toz-top-search .input-group-text {
+        background: #F8F9FA;
+        border: 1px solid #DCE0E5;
+        border-right: none;
+        border-radius: 999px 0 0 999px;
+        padding-left: 14px;
     }
     .toz-top-search input {
-        border-radius: 999px;
+        border-radius: 0 999px 999px 0;
         font-size: 0.84rem;
-        padding: 6px 14px;
+        padding: 7px 16px 7px 4px;
         border: 1px solid #DCE0E5;
+        border-left: none;
         background: #F8F9FA;
     }
     .toz-top-search input:focus {
         background: #FFFFFF;
-        border-color: #D97706;
-        box-shadow: 0 0 0 3px rgba(217, 119, 6, 0.12);
+        border-color: #DCE0E5;
+        box-shadow: none;
     }
 
     .toz-hero-full {
@@ -90,8 +99,8 @@
         border-bottom: 1px solid #ECEEF2;
     }
     .toz-slide {
-        min-height: 400px;
-        padding: 48px 0;
+        min-height: 390px;
+        padding: 44px 0;
         display: flex;
         align-items: center;
     }
@@ -110,7 +119,7 @@
     .toz-slide-container {
         max-width: 1320px;
         margin: 0 auto;
-        padding: 0 64px;
+        padding: 0 72px;
         width: 100%;
     }
     .toz-eyebrow {
@@ -123,7 +132,7 @@
         margin-bottom: 12px;
     }
     .toz-hero-heading {
-        font-size: clamp(1.6rem, 2.8vw, 2.45rem);
+        font-size: clamp(1.55rem, 2.7vw, 2.35rem);
         font-weight: 800;
         line-height: 1.24;
         letter-spacing: -0.015em;
@@ -162,7 +171,7 @@
         box-shadow: 0 20px 45px rgba(0, 0, 0, 0.24);
     }
     .toz-featured-img {
-        height: 155px;
+        height: 150px;
         display: flex;
         align-items: center;
         justify-content: center;
@@ -172,6 +181,16 @@
         max-height: 100%;
         max-width: 100%;
         object-fit: contain;
+    }
+    .toz-slide-stat-card {
+        background: rgba(255, 255, 255, 0.08);
+        border: 1px solid rgba(255, 255, 255, 0.16);
+        backdrop-filter: blur(10px);
+        border-radius: 14px;
+        padding: 24px;
+        max-width: 330px;
+        margin-left: auto;
+        color: #FFFFFF;
     }
     .toz-hero-full .carousel-control-prev,
     .toz-hero-full .carousel-control-next {
@@ -192,11 +211,11 @@
     .toz-hero-full .carousel-control-next { right: 16px; }
 
     .toz-pillars-section {
-        padding: 36px 0;
+        padding: 34px 0;
         border-bottom: 1px solid #ECEEF2;
     }
     .toz-pillar-box {
-        padding: 16px 18px;
+        padding: 14px 18px;
         border-left: 2px solid #F1F3F5;
         height: 100%;
         transition: border-color 0.2s ease;
@@ -228,7 +247,7 @@
 
     .toz-section-header {
         text-align: center;
-        margin-bottom: 28px;
+        margin-bottom: 26px;
     }
     .toz-section-kicker {
         font-size: 0.74rem;
@@ -256,7 +275,7 @@
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
         gap: 12px;
-        margin-bottom: 40px;
+        margin-bottom: 32px;
     }
     .toz-offer-tile {
         background: #F8F9FA;
@@ -275,7 +294,7 @@
         transform: translateY(-2px);
     }
     .toz-offer-tile i {
-        font-size: 1.4rem;
+        font-size: 1.35rem;
         color: #D97706;
         display: block;
         margin-bottom: 6px;
@@ -302,7 +321,7 @@
         transform: translateY(-3px);
     }
     .toz-thumb-wrap {
-        height: 210px;
+        height: 205px;
         background: #FFFFFF;
         position: relative;
         display: flex;
@@ -407,7 +426,7 @@
             align-items: stretch;
         }
         .toz-top-search {
-            max-width: 100%;
+            width: 100%;
         }
         .toz-slide {
             min-height: auto;
@@ -434,7 +453,10 @@
             {% endfor %}
         </div>
         <div class="toz-top-search">
-            <input type="text" id="homeProductSearch" class="form-control" placeholder="Tìm kiếm vật tư, thiết bị hoặc mã SKU...">
+            <div class="input-group input-group-sm">
+                <span class="input-group-text"><i class="bi bi-search text-muted"></i></span>
+                <input type="text" id="homeProductSearch" class="form-control" placeholder="Tìm vật tư hoặc mã SKU...">
+            </div>
         </div>
     </div>
 </div>
@@ -503,7 +525,7 @@
             <div class="toz-slide toz-slide-2">
                 <div class="toz-slide-container">
                     <div class="row g-4 align-items-center">
-                        <div class="col-lg-8">
+                        <div class="col-lg-7">
                             <span class="toz-eyebrow">CUNG ỨNG ĐỒNG BỘ & CHÍNH XÁC</span>
                             <h2 class="toz-hero-heading">
                                 Quy trình Đặt hàng & Xuất Phiếu kho Điện tử Khép kín
@@ -515,6 +537,22 @@
                                 Tra cứu đơn hàng của tôi
                             </a>
                         </div>
+                        <div class="col-lg-5 d-none d-lg-block">
+                            <div class="toz-slide-stat-card">
+                                <div class="d-flex align-items-center gap-3 mb-3">
+                                    <div class="rounded-3 bg-warning text-dark d-flex align-items-center justify-content-center" style="width: 48px; height: 48px;">
+                                        <i class="bi bi-file-earmark-check-fill fs-4"></i>
+                                    </div>
+                                    <div>
+                                        <div class="fw-bold">Phiếu Xuất Kho Số</div>
+                                        <div class="small text-white-50">Đối soát tự động 100%</div>
+                                    </div>
+                                </div>
+                                <div class="border-top border-white border-opacity-10 pt-3 small text-light">
+                                    Hỗ trợ in & lưu trữ phiếu xuất kho ngay trên trình duyệt sau khi quản trị viên xác nhận đơn.
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -524,7 +562,7 @@
             <div class="toz-slide toz-slide-3">
                 <div class="toz-slide-container">
                     <div class="row g-4 align-items-center">
-                        <div class="col-lg-8">
+                        <div class="col-lg-7">
                             <span class="toz-eyebrow">DANH MỤC ĐA DẠNG — SẴN SÀNG CUNG ỨNG</span>
                             <h2 class="toz-hero-heading">
                                 Đầy đủ Thiết bị Văn phòng, Linh kiện Điện tử & Vật tư Tiêu hao
@@ -535,6 +573,22 @@
                             <a href="#catalog-section" class="btn btn-toz-accent">
                                 Khám phá {{ total_products }} sản phẩm
                             </a>
+                        </div>
+                        <div class="col-lg-5 d-none d-lg-block">
+                            <div class="toz-slide-stat-card">
+                                <div class="d-flex align-items-center gap-3 mb-3">
+                                    <div class="rounded-3 bg-info text-dark d-flex align-items-center justify-content-center" style="width: 48px; height: 48px;">
+                                        <i class="bi bi-boxes fs-4"></i>
+                                    </div>
+                                    <div>
+                                        <div class="fw-bold">{{ total_products }} Mã Vật tư SKU</div>
+                                        <div class="small text-white-50">Sẵn sàng xuất kho ngay</div>
+                                    </div>
+                                </div>
+                                <div class="border-top border-white border-opacity-10 pt-3 small text-light">
+                                    Phân nhóm khoa học theo Thiết bị văn phòng, Linh kiện điện tử, Phụ kiện mạng và Vật tư tiêu hao.
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
