@@ -1,16 +1,17 @@
 {% extends "base.html" %}
 
-{% block title %}CloudWMS — Hệ thống Quản lý Kho Vật tư & Đặt hàng Trực tuyến{% endblock %}
+{% block title %}CloudWMS — Hệ thống Quản lý Kho Vật tư – Thiết bị Văn phòng & Đặt hàng Trực tuyến{% endblock %}
 
 {% block extra_css %}
 <style>
     body {
-        background-color: #EAEDED !important;
+        background-color: #FFFFFF !important;
         background-image: none !important;
+        color: #1A1D20;
         overflow-x: hidden;
     }
 
-    .amz-subnav-wrap {
+    .toz-category-bar {
         width: 100vw;
         position: relative;
         left: 50%;
@@ -18,326 +19,454 @@
         margin-left: -50vw;
         margin-right: -50vw;
         margin-top: -1.5rem;
-        background-color: #232F3E;
-        color: #FFFFFF;
-        border-bottom: 1px solid #131921;
+        background-color: #FFFFFF;
+        border-top: 1px solid #ECEEF2;
+        border-bottom: 1px solid #ECEEF2;
     }
-    .amz-subnav-inner {
-        max-width: 1360px;
+    .toz-category-inner {
+        max-width: 1320px;
         margin: 0 auto;
-        padding: 6px 16px;
+        padding: 10px 20px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+    }
+    .toz-nav-links {
         display: flex;
         align-items: center;
         gap: 6px;
         overflow-x: auto;
         scrollbar-width: none;
     }
-    .amz-subnav-inner::-webkit-scrollbar {
+    .toz-nav-links::-webkit-scrollbar {
         display: none;
     }
-    .amz-nav-pill {
+    .toz-nav-btn {
         background: transparent;
-        border: 1px solid transparent;
-        color: #FFFFFF;
-        font-size: 0.83rem;
+        border: none;
+        color: #2B3035;
+        font-size: 0.85rem;
         font-weight: 600;
-        padding: 5px 12px;
-        border-radius: 4px;
+        padding: 7px 14px;
+        border-radius: 6px;
         white-space: nowrap;
         cursor: pointer;
-        transition: border-color 0.15s ease, background 0.15s ease;
+        transition: all 0.18s ease;
     }
-    .amz-nav-pill:hover {
-        border-color: #FFFFFF;
+    .toz-nav-btn:hover {
+        color: #D97706;
+        background: #FFFBEB;
     }
-    .amz-nav-pill.active {
-        border-color: #FF9900;
-        color: #FF9900;
+    .toz-nav-btn.active {
+        color: #FFFFFF;
+        background: #1E293B;
+    }
+    .toz-top-search {
+        min-width: 260px;
+        max-width: 320px;
+    }
+    .toz-top-search input {
+        border-radius: 999px;
+        font-size: 0.84rem;
+        padding: 6px 14px;
+        border: 1px solid #DCE0E5;
+        background: #F8F9FA;
+    }
+    .toz-top-search input:focus {
+        background: #FFFFFF;
+        border-color: #D97706;
+        box-shadow: 0 0 0 3px rgba(217, 119, 6, 0.12);
     }
 
-    .amz-hero-fullbleed {
+    .toz-hero-full {
         width: 100vw;
         position: relative;
         left: 50%;
         right: 50%;
         margin-left: -50vw;
         margin-right: -50vw;
-        overflow: hidden;
+        background: #F7F8FA;
+        border-bottom: 1px solid #ECEEF2;
     }
-    .amz-slide {
-        min-height: 410px;
-        padding: 44px 0 115px;
+    .toz-slide {
+        min-height: 400px;
+        padding: 48px 0;
+        display: flex;
+        align-items: center;
+    }
+    .toz-slide-1 {
+        background: linear-gradient(105deg, #1E293B 0%, #27364B 58%, #334155 100%);
         color: #FFFFFF;
-        position: relative;
     }
-    .amz-slide::after {
-        content: "";
-        position: absolute;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        height: 120px;
-        background: linear-gradient(180deg, rgba(234, 237, 237, 0) 0%, #EAEDED 100%);
-        pointer-events: none;
+    .toz-slide-2 {
+        background: linear-gradient(105deg, #292524 0%, #44403C 58%, #57534E 100%);
+        color: #FFFFFF;
     }
-    .amz-bg-1 {
-        background: linear-gradient(125deg, #0F172A 0%, #1E293B 42%, #1D4ED8 100%);
+    .toz-slide-3 {
+        background: linear-gradient(105deg, #0F172A 0%, #1E3A5F 58%, #1D4ED8 100%);
+        color: #FFFFFF;
     }
-    .amz-bg-2 {
-        background: linear-gradient(125deg, #131921 0%, #1E3A5F 52%, #0284C7 100%);
-    }
-    .amz-bg-3 {
-        background: linear-gradient(125deg, #064E3B 0%, #0F766E 55%, #0D9488 100%);
-    }
-    .amz-slide-container {
+    .toz-slide-container {
         max-width: 1320px;
         margin: 0 auto;
-        padding: 0 76px;
-        position: relative;
-        z-index: 2;
+        padding: 0 64px;
+        width: 100%;
     }
-    .amz-kicker {
+    .toz-eyebrow {
         display: inline-block;
-        background: #FF9900;
-        color: #0F1111;
-        font-size: 0.74rem;
-        font-weight: 800;
+        font-size: 0.75rem;
+        font-weight: 700;
+        letter-spacing: 0.12em;
         text-transform: uppercase;
-        letter-spacing: 0.05em;
-        padding: 4px 12px;
-        border-radius: 4px;
-        margin-bottom: 14px;
-    }
-    .amz-hero-title {
-        font-size: clamp(1.55rem, 2.7vw, 2.35rem);
-        font-weight: 800;
-        line-height: 1.22;
-        letter-spacing: -0.01em;
+        color: #F59E0B;
         margin-bottom: 12px;
     }
-    .amz-hero-desc {
+    .toz-hero-heading {
+        font-size: clamp(1.6rem, 2.8vw, 2.45rem);
+        font-weight: 800;
+        line-height: 1.24;
+        letter-spacing: -0.015em;
+        margin-bottom: 14px;
+    }
+    .toz-hero-lead {
         font-size: 0.96rem;
-        color: #E2E8F0;
-        line-height: 1.6;
+        color: #CBD5E1;
+        line-height: 1.65;
         max-width: 540px;
-        margin-bottom: 22px;
+        margin-bottom: 24px;
     }
-    .btn-amz-gold {
-        background: #FFD814;
-        border: 1px solid #FCD200;
-        color: #0F1111;
+    .btn-toz-accent {
+        background: #D97706;
+        border: 1px solid #D97706;
+        color: #FFFFFF;
         font-weight: 700;
-        font-size: 0.9rem;
-        padding: 10px 22px;
-        border-radius: 8px;
-        transition: background 0.15s ease;
+        font-size: 0.88rem;
+        padding: 11px 24px;
+        border-radius: 6px;
+        letter-spacing: 0.02em;
+        transition: all 0.2s ease;
     }
-    .btn-amz-gold:hover {
-        background: #F7CA00;
-        color: #0F1111;
+    .btn-toz-accent:hover {
+        background: #B45309;
+        border-color: #B45309;
+        color: #FFFFFF;
     }
-    .amz-hero-showcase {
-        background: rgba(255, 255, 255, 0.98);
-        color: #0F1111;
+    .toz-featured-frame {
+        background: #FFFFFF;
+        color: #1A1D20;
         border-radius: 12px;
-        padding: 16px;
-        box-shadow: 0 18px 40px rgba(0, 0, 0, 0.28);
-        max-width: 310px;
+        padding: 20px;
+        max-width: 330px;
         margin-left: auto;
+        box-shadow: 0 20px 45px rgba(0, 0, 0, 0.24);
     }
-    .amz-showcase-img {
-        height: 140px;
+    .toz-featured-img {
+        height: 155px;
         display: flex;
         align-items: center;
         justify-content: center;
-        margin: 8px 0;
+        margin: 10px 0;
     }
-    .amz-showcase-img img {
+    .toz-featured-img img {
         max-height: 100%;
         max-width: 100%;
         object-fit: contain;
     }
-
-    .amz-hero-fullbleed .carousel-control-prev,
-    .amz-hero-fullbleed .carousel-control-next {
-        width: 52px;
-        height: 120px;
-        top: 36%;
+    .toz-hero-full .carousel-control-prev,
+    .toz-hero-full .carousel-control-next {
+        width: 44px;
+        height: 44px;
+        top: 50%;
         transform: translateY(-50%);
-        background: transparent;
-        border-radius: 6px;
-        border: 2px solid transparent;
-        opacity: 0.9;
-        z-index: 5;
+        background: rgba(255, 255, 255, 0.14);
+        border-radius: 50%;
+        opacity: 0.85;
     }
-    .amz-hero-fullbleed .carousel-control-prev:hover,
-    .amz-hero-fullbleed .carousel-control-next:hover {
-        border-color: #FFFFFF;
-        background: rgba(15, 23, 42, 0.25);
+    .toz-hero-full .carousel-control-prev:hover,
+    .toz-hero-full .carousel-control-next:hover {
+        background: rgba(255, 255, 255, 0.28);
         opacity: 1;
     }
-    .amz-hero-fullbleed .carousel-control-prev { left: 12px; }
-    .amz-hero-fullbleed .carousel-control-next { right: 12px; }
+    .toz-hero-full .carousel-control-prev { left: 16px; }
+    .toz-hero-full .carousel-control-next { right: 16px; }
 
-    .amz-overlap-section {
-        position: relative;
-        z-index: 10;
-        margin-top: -82px;
+    .toz-pillars-section {
+        padding: 36px 0;
+        border-bottom: 1px solid #ECEEF2;
     }
-    .amz-search-strip {
-        background: #FFFFFF;
-        border: 1px solid #D5D9D9;
-        border-radius: 10px;
-        padding: 14px 18px;
-        box-shadow: 0 6px 20px rgba(15, 23, 42, 0.08);
+    .toz-pillar-box {
+        padding: 16px 18px;
+        border-left: 2px solid #F1F3F5;
+        height: 100%;
+        transition: border-color 0.2s ease;
+    }
+    .toz-pillar-box:hover {
+        border-left-color: #D97706;
+    }
+    .toz-pillar-num {
+        font-size: 0.78rem;
+        font-weight: 800;
+        color: #D97706;
+        letter-spacing: 0.08em;
+        margin-bottom: 6px;
+    }
+    .toz-pillar-title {
+        font-size: 0.88rem;
+        font-weight: 800;
+        text-transform: uppercase;
+        color: #1A1D20;
+        margin-bottom: 6px;
+        letter-spacing: 0.02em;
+    }
+    .toz-pillar-desc {
+        font-size: 0.82rem;
+        color: #64748B;
+        line-height: 1.5;
+        margin-bottom: 0;
     }
 
-    .product-pro-card {
+    .toz-section-header {
+        text-align: center;
+        margin-bottom: 28px;
+    }
+    .toz-section-kicker {
+        font-size: 0.74rem;
+        font-weight: 700;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        color: #D97706;
+        display: block;
+        margin-bottom: 4px;
+    }
+    .toz-section-title {
+        font-size: 1.5rem;
+        font-weight: 800;
+        color: #1A1D20;
+        text-transform: uppercase;
+        letter-spacing: 0.02em;
+        margin-bottom: 4px;
+    }
+    .toz-section-sub {
+        font-size: 0.86rem;
+        color: #64748B;
+    }
+
+    .toz-offer-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+        gap: 12px;
+        margin-bottom: 40px;
+    }
+    .toz-offer-tile {
+        background: #F8F9FA;
+        border: 1px solid #EAECEF;
+        border-radius: 8px;
+        padding: 16px 14px;
+        text-align: center;
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+    .toz-offer-tile:hover,
+    .toz-offer-tile.active {
         background: #FFFFFF;
-        border: 1px solid #D5D9D9;
-        border-radius: 10px;
+        border-color: #D97706;
+        box-shadow: 0 8px 20px rgba(15, 23, 42, 0.06);
+        transform: translateY(-2px);
+    }
+    .toz-offer-tile i {
+        font-size: 1.4rem;
+        color: #D97706;
+        display: block;
+        margin-bottom: 6px;
+    }
+    .toz-offer-tile span {
+        font-size: 0.84rem;
+        font-weight: 700;
+        color: #1E293B;
+    }
+
+    .toz-product-card {
+        background: #FFFFFF;
+        border: 1px solid #EAECEF;
+        border-radius: 8px;
         overflow: hidden;
         height: 100%;
         display: flex;
         flex-direction: column;
-        transition: box-shadow 0.2s ease, transform 0.2s ease;
+        transition: all 0.22s ease;
     }
-    .product-pro-card:hover {
-        transform: translateY(-4px);
-        box-shadow: 0 14px 28px rgba(15, 23, 42, 0.12);
+    .toz-product-card:hover {
+        border-color: #CBD5E1;
+        box-shadow: 0 12px 28px rgba(15, 23, 42, 0.08);
+        transform: translateY(-3px);
     }
-    .product-thumb {
-        height: 185px;
+    .toz-thumb-wrap {
+        height: 210px;
         background: #FFFFFF;
         position: relative;
         display: flex;
         align-items: center;
         justify-content: center;
-        padding: 16px;
-        border-bottom: 1px solid #F0F2F2;
+        padding: 18px;
+        border-bottom: 1px solid #F3F4F6;
+        overflow: hidden;
     }
-    .product-thumb img {
+    .toz-thumb-wrap img {
         max-height: 100%;
         max-width: 100%;
         object-fit: contain;
-        transition: transform 0.25s ease;
+        transition: transform 0.35s ease;
     }
-    .product-pro-card:hover .product-thumb img {
-        transform: scale(1.05);
+    .toz-product-card:hover .toz-thumb-wrap img {
+        transform: scale(1.06);
     }
-    .sku-tag {
+    .toz-sku-pill {
         position: absolute;
         top: 10px;
         left: 10px;
-        background: #232F3E;
+        background: #1E293B;
         color: #FFFFFF;
         font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
         font-size: 0.68rem;
         font-weight: 600;
-        padding: 2px 7px;
+        padding: 3px 8px;
         border-radius: 4px;
     }
-    .stock-tag {
+    .toz-status-pill {
         position: absolute;
         top: 10px;
         right: 10px;
         font-size: 0.68rem;
         font-weight: 700;
-        padding: 2px 8px;
+        padding: 3px 8px;
         border-radius: 4px;
     }
-    .eye-view-btn {
+    .toz-quickview-bar {
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(30, 41, 59, 0.9);
+        color: #FFFFFF;
+        font-size: 0.78rem;
+        font-weight: 600;
+        text-align: center;
+        padding: 7px 0;
+        opacity: 0;
+        transform: translateY(100%);
+        transition: all 0.22s ease;
+    }
+    .toz-product-card:hover .toz-quickview-bar {
+        opacity: 1;
+        transform: translateY(0);
+    }
+    .toz-prod-title {
+        color: #1A1D20;
+        text-decoration: none;
+        font-size: 0.9rem;
+        font-weight: 600;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        min-height: 2.65em;
+        line-height: 1.35;
+        transition: color 0.15s ease;
+    }
+    .toz-prod-title:hover {
+        color: #D97706;
+    }
+    .toz-price-text {
+        color: #D97706;
+        font-weight: 800;
+        font-size: 0.98rem;
+    }
+    .toz-eye-icon {
         width: 32px;
         height: 32px;
         border-radius: 6px;
-        border: 1px solid #D5D9D9;
-        background: #F7FAFA;
-        color: #0F1111;
+        border: 1px solid #E2E8F0;
+        background: #F8FAFC;
+        color: #334155;
         display: inline-flex;
         align-items: center;
         justify-content: center;
         text-decoration: none;
         transition: all 0.15s ease;
-        flex-shrink: 0;
     }
-    .eye-view-btn:hover {
-        background: #EDFDFF;
-        border-color: #007185;
-        color: #007185;
-    }
-    .product-title-link {
-        color: #0F1111;
-        text-decoration: none;
-        display: -webkit-box;
-        -webkit-line-clamp: 2;
-        -webkit-box-orient: vertical;
-        overflow: hidden;
-        min-height: 2.6em;
-        line-height: 1.32;
-    }
-    .product-title-link:hover {
-        color: #C7511F;
+    .toz-eye-icon:hover {
+        border-color: #D97706;
+        color: #D97706;
+        background: #FFFBEB;
     }
 
     @media (max-width: 767.98px) {
-        .amz-slide {
+        .toz-category-inner {
+            flex-direction: column;
+            align-items: stretch;
+        }
+        .toz-top-search {
+            max-width: 100%;
+        }
+        .toz-slide {
             min-height: auto;
-            padding: 28px 0 86px;
+            padding: 32px 0;
         }
-        .amz-slide-container {
-            padding: 0 46px;
+        .toz-slide-container {
+            padding: 0 48px;
         }
-        .amz-overlap-section {
-            margin-top: -54px;
-        }
-        .product-thumb {
-            height: 140px;
-            padding: 10px;
+        .toz-thumb-wrap {
+            height: 155px;
+            padding: 12px;
         }
     }
 </style>
 {% endblock %}
 
 {% block content %}
-<div class="amz-subnav-wrap">
-    <div class="amz-subnav-inner">
-        <button type="button" class="amz-nav-pill active" data-cat="all">
-            <i class="bi bi-list me-1"></i>Tất cả danh mục ({{ products|length }})
-        </button>
-        {% for cat in categories %}
-            <button type="button" class="amz-nav-pill" data-cat="{{ cat.key }}">{{ cat.name }}</button>
-        {% endfor %}
+<div class="toz-category-bar">
+    <div class="toz-category-inner">
+        <div class="toz-nav-links">
+            <button type="button" class="toz-nav-btn active" data-cat="all">Tất cả sản phẩm</button>
+            {% for cat in categories %}
+                <button type="button" class="toz-nav-btn" data-cat="{{ cat.key }}">{{ cat.name }}</button>
+            {% endfor %}
+        </div>
+        <div class="toz-top-search">
+            <input type="text" id="homeProductSearch" class="form-control" placeholder="Tìm kiếm vật tư, thiết bị hoặc mã SKU...">
+        </div>
     </div>
 </div>
 
-<section id="amzMainBanner" class="carousel slide amz-hero-fullbleed" data-bs-ride="carousel" data-bs-interval="5000">
+<section id="tozHeroCarousel" class="carousel slide toz-hero-full" data-bs-ride="carousel" data-bs-interval="5000">
     <div class="carousel-inner">
         <div class="carousel-item active">
-            <div class="amz-slide amz-bg-1">
-                <div class="amz-slide-container">
+            <div class="toz-slide toz-slide-1">
+                <div class="toz-slide-container">
                     <div class="row g-4 align-items-center">
                         <div class="col-lg-7">
-                            <span class="amz-kicker">CloudWMS Enterprise</span>
-                            <h1 class="amz-hero-title">
-                                Hệ thống Quản lý Kho Vật tư – Thiết bị Văn phòng & Đặt hàng Trực tuyến
+                            <span class="toz-eyebrow">CLOUDWMS OFFICE SOLUTIONS</span>
+                            <h1 class="toz-hero-heading">
+                                Có tất cả vật tư & thiết bị văn phòng doanh nghiệp bạn cần
                             </h1>
-                            <p class="amz-hero-desc">
-                                Chuẩn hóa định danh mã SKU, kiểm soát tồn kho thời gian thực và đặt hàng vật tư văn phòng trực tuyến nhanh chóng.
+                            <p class="toz-hero-lead">
+                                Hệ thống quản lý kho chuẩn mã SKU kết hợp đặt hàng trực tuyến đồng bộ, hiện đại, minh bạch và sẵn sàng đáp ứng mọi nhu cầu vận hành văn phòng.
                             </p>
                             <div class="d-flex flex-wrap gap-2">
                                 {% if user.is_authenticated and user.is_staff %}
-                                    <a href="{% url 'dashboard' %}" class="btn btn-amz-gold">
+                                    <a href="{% url 'dashboard' %}" class="btn btn-toz-accent">
                                         Bảng điều khiển kho
                                     </a>
-                                    <a href="{% url 'stock_import' %}" class="btn btn-outline-light fw-semibold px-3 py-2 rounded-3">
+                                    <a href="{% url 'stock_import' %}" class="btn btn-outline-light fw-semibold px-4 py-2 rounded-2">
                                         Nhập hàng vào kho
                                     </a>
                                 {% else %}
-                                    <a href="{% url 'order_create' %}" class="btn btn-amz-gold">
+                                    <a href="{% url 'order_create' %}" class="btn btn-toz-accent">
                                         Đặt hàng trực tuyến
                                     </a>
-                                    <a href="#catalog-section" class="btn btn-outline-light fw-semibold px-3 py-2 rounded-3">
-                                        Xem danh mục vật tư
+                                    <a href="#catalog-section" class="btn btn-outline-light fw-semibold px-4 py-2 rounded-2">
+                                        Xem danh mục
                                     </a>
                                 {% endif %}
                             </div>
@@ -345,12 +474,12 @@
 
                         <div class="col-lg-5 d-none d-lg-block">
                             {% if featured %}
-                            <div class="amz-hero-showcase">
+                            <div class="toz-featured-frame">
                                 <div class="d-flex justify-content-between align-items-center">
-                                    <span class="badge bg-danger" style="font-size: 0.68rem;">SẢN PHẨM NỔI BẬT</span>
+                                    <span class="badge bg-dark" style="font-size: 0.68rem;">TIÊU ĐIỂM KHO VẬN</span>
                                     <span class="font-monospace text-muted" style="font-size: 0.74rem;">{{ featured.sku }}</span>
                                 </div>
-                                <a href="{% url 'product_detail' featured.pk %}" class="amz-showcase-img text-decoration-none">
+                                <a href="{% url 'product_detail' featured.pk %}" class="toz-featured-img text-decoration-none">
                                     {% if featured.image %}
                                         <img src="{{ featured.image.url }}" alt="{{ featured.name }}">
                                     {% else %}
@@ -358,9 +487,9 @@
                                     {% endif %}
                                 </a>
                                 <div class="fw-bold small text-truncate">{{ featured.name }}</div>
-                                <div class="d-flex justify-content-between align-items-center mt-2">
-                                    <span class="fw-bold text-danger fs-5">{{ featured.price_vnd }}</span>
-                                    <a href="{% url 'product_detail' featured.pk %}" class="btn btn-sm btn-outline-dark fw-semibold">Chi tiết</a>
+                                <div class="d-flex justify-content-between align-items-center mt-2 pt-2 border-top">
+                                    <span class="toz-price-text fs-5">{{ featured.price_vnd }}</span>
+                                    <a href="{% url 'product_detail' featured.pk %}" class="btn btn-sm btn-dark fw-semibold px-3">Xem nhanh</a>
                                 </div>
                             </div>
                             {% endif %}
@@ -371,19 +500,19 @@
         </div>
 
         <div class="carousel-item">
-            <div class="amz-slide amz-bg-2">
-                <div class="amz-slide-container">
+            <div class="toz-slide toz-slide-2">
+                <div class="toz-slide-container">
                     <div class="row g-4 align-items-center">
                         <div class="col-lg-8">
-                            <span class="amz-kicker">Cung ứng Tự động</span>
-                            <h2 class="amz-hero-title">
-                                Theo dõi Đơn đặt hàng & Phiếu Xuất kho Điện tử Minh bạch
+                            <span class="toz-eyebrow">CUNG ỨNG ĐỒNG BỘ & CHÍNH XÁC</span>
+                            <h2 class="toz-hero-heading">
+                                Quy trình Đặt hàng & Xuất Phiếu kho Điện tử Khép kín
                             </h2>
-                            <p class="amz-hero-desc">
-                                Mọi yêu cầu đặt hàng được đồng bộ trực tiếp tới kho vận, tự động khấu trừ tồn và xuất chứng từ điện tử ngay sau khi phê duyệt.
+                            <p class="toz-hero-lead">
+                                Theo dõi trạng thái phê duyệt đơn hàng trực tuyến, tự động đối soát tồn kho và xuất phiếu chứng từ điện tử ngay sau khi duyệt.
                             </p>
-                            <a href="{% url 'my_orders' %}" class="btn btn-amz-gold">
-                                Theo dõi đơn hàng của tôi
+                            <a href="{% url 'my_orders' %}" class="btn btn-toz-accent">
+                                Tra cứu đơn hàng của tôi
                             </a>
                         </div>
                     </div>
@@ -392,19 +521,19 @@
         </div>
 
         <div class="carousel-item">
-            <div class="amz-slide amz-bg-3">
-                <div class="amz-slide-container">
+            <div class="toz-slide toz-slide-3">
+                <div class="toz-slide-container">
                     <div class="row g-4 align-items-center">
                         <div class="col-lg-8">
-                            <span class="amz-kicker">Chính hãng 100%</span>
-                            <h2 class="amz-hero-title">
+                            <span class="toz-eyebrow">DANH MỤC ĐA DẠNG — SẴN SÀNG CUNG ỨNG</span>
+                            <h2 class="toz-hero-heading">
                                 Đầy đủ Thiết bị Văn phòng, Linh kiện Điện tử & Vật tư Tiêu hao
                             </h2>
-                            <p class="amz-hero-desc">
-                                Cung ứng trọn gói giấy in, mực in, thiết bị mạng và linh kiện máy tính sẵn sàng phục vụ vận hành doanh nghiệp.
+                            <p class="toz-hero-lead">
+                                Giải pháp cung ứng trọn gói văn phòng phẩm, mực in, thiết bị mạng và linh kiện máy tính chính hãng cho doanh nghiệp.
                             </p>
-                            <a href="#catalog-section" class="btn btn-amz-gold">
-                                Khám phá {{ total_products }} mặt hàng
+                            <a href="#catalog-section" class="btn btn-toz-accent">
+                                Khám phá {{ total_products }} sản phẩm
                             </a>
                         </div>
                     </div>
@@ -413,109 +542,149 @@
         </div>
     </div>
 
-    <button class="carousel-control-prev" type="button" data-bs-target="#amzMainBanner" data-bs-slide="prev">
+    <button class="carousel-control-prev" type="button" data-bs-target="#tozHeroCarousel" data-bs-slide="prev">
         <span class="carousel-control-prev-icon" aria-hidden="true"></span>
         <span class="visually-hidden">Trước</span>
     </button>
-    <button class="carousel-control-next" type="button" data-bs-target="#amzMainBanner" data-bs-slide="next">
+    <button class="carousel-control-next" type="button" data-bs-target="#tozHeroCarousel" data-bs-slide="next">
         <span class="carousel-control-next-icon" aria-hidden="true"></span>
         <span class="visually-hidden">Tiếp</span>
     </button>
 </section>
 
-<section id="catalog-section" class="amz-overlap-section">
-    <div class="amz-search-strip mb-4">
-        <div class="row g-2 align-items-center">
-            <div class="col-md-5">
-                <div class="fw-bold text-dark" style="font-size: 1.05rem;">
-                    Danh mục Vật tư – Thiết bị Văn phòng
-                </div>
+<section class="toz-pillars-section">
+    <div class="row g-3">
+        <div class="col-6 col-lg-3">
+            <div class="toz-pillar-box">
+                <div class="toz-pillar-num">01</div>
+                <div class="toz-pillar-title">Giá thành minh bạch</div>
+                <p class="toz-pillar-desc">Niêm yết đơn giá rõ ràng theo từng mã định danh SKU trên toàn hệ thống.</p>
             </div>
-            <div class="col-md-7">
-                <div class="input-group">
-                    <span class="input-group-text bg-white border-end-0"><i class="bi bi-search text-muted"></i></span>
-                    <input type="text" id="homeProductSearch" class="form-control border-start-0" placeholder="Tìm kiếm nhanh theo tên vật tư, thiết bị hoặc mã SKU...">
-                </div>
+        </div>
+        <div class="col-6 col-lg-3">
+            <div class="toz-pillar-box">
+                <div class="toz-pillar-num">02</div>
+                <div class="toz-pillar-title">Danh mục đa dạng</div>
+                <p class="toz-pillar-desc">Tập hợp đầy đủ thiết bị văn phòng, linh kiện và vật tư tiêu hao hiện đại.</p>
+            </div>
+        </div>
+        <div class="col-6 col-lg-3">
+            <div class="toz-pillar-box">
+                <div class="toz-pillar-num">03</div>
+                <div class="toz-pillar-title">Đặt là có, xuất kho ngay</div>
+                <p class="toz-pillar-desc">Kiểm soát tồn kho thời gian thực, xử lý và xuất phiếu điện tử tức thì.</p>
+            </div>
+        </div>
+        <div class="col-6 col-lg-3">
+            <div class="toz-pillar-box">
+                <div class="toz-pillar-num">04</div>
+                <div class="toz-pillar-title">Cung ứng đồng bộ</div>
+                <p class="toz-pillar-desc">Đáp ứng tiêu chuẩn vận hành chuyên nghiệp cho mọi phòng ban doanh nghiệp.</p>
             </div>
         </div>
     </div>
+</section>
 
-    <div class="row g-3" id="homeProductGrid">
+<section id="catalog-section" class="pt-5 pb-4">
+    <div class="toz-section-header">
+        <span class="toz-section-kicker">WHAT WE OFFER</span>
+        <h2 class="toz-section-title">Danh mục Vật tư – Thiết bị Văn phòng</h2>
+        <p class="toz-section-sub">Cung cấp giải pháp vật tư & thiết bị văn phòng tổng thể cho doanh nghiệp</p>
+    </div>
+
+    <div class="toz-offer-grid">
+        <div class="toz-offer-tile active" data-cat="all">
+            <i class="bi bi-grid-1x2"></i>
+            <span>Tất cả ({{ products|length }})</span>
+        </div>
+        {% for cat in categories %}
+        <div class="toz-offer-tile" data-cat="{{ cat.key }}">
+            <i class="bi bi-box2"></i>
+            <span>{{ cat.name }}</span>
+        </div>
+        {% endfor %}
+    </div>
+
+    <div class="row g-4" id="homeProductGrid">
         {% for p in products %}
         <div class="col-6 col-md-4 col-lg-3 product-grid-item"
              data-name="{{ p.name|lower }} {{ p.sku|lower }}"
              data-cat="{{ p.category.name|default:'none'|lower|striptags }}">
-            <div class="product-pro-card">
-                <a href="{% url 'product_detail' p.pk %}" class="product-thumb text-decoration-none">
-                    <span class="sku-tag">{{ p.sku }}</span>
+            <div class="toz-product-card">
+                <a href="{% url 'product_detail' p.pk %}" class="toz-thumb-wrap text-decoration-none">
+                    <span class="toz-sku-pill">{{ p.sku }}</span>
 
                     {% if user.is_authenticated and user.is_staff %}
                         {% if p.quantity > 5 %}
-                            <span class="stock-tag bg-success text-white">Còn {{ p.quantity }}</span>
+                            <span class="toz-status-pill bg-success text-white">Còn {{ p.quantity }}</span>
                         {% elif p.quantity > 0 %}
-                            <span class="stock-tag bg-warning text-dark">Còn {{ p.quantity }}</span>
+                            <span class="toz-status-pill bg-warning text-dark">Còn {{ p.quantity }}</span>
                         {% else %}
-                            <span class="stock-tag bg-secondary text-white">Hết hàng</span>
+                            <span class="toz-status-pill bg-secondary text-white">Hết hàng</span>
                         {% endif %}
                     {% else %}
                         {% if p.quantity > 0 %}
-                            <span class="stock-tag bg-success text-white">Sẵn hàng</span>
+                            <span class="toz-status-pill bg-success text-white">Sẵn hàng</span>
                         {% else %}
-                            <span class="stock-tag bg-secondary text-white">Tạm hết</span>
+                            <span class="toz-status-pill bg-secondary text-white">Tạm hết</span>
                         {% endif %}
                     {% endif %}
 
                     {% if p.image %}
                         <img src="{{ p.image.url }}" alt="{{ p.name }}">
                     {% else %}
-                        <i class="bi bi-box-seam text-secondary opacity-50" style="font-size: 2.8rem;"></i>
+                        <i class="bi bi-box-seam text-secondary opacity-50" style="font-size: 3rem;"></i>
                     {% endif %}
+
+                    <div class="toz-quickview-bar">
+                        <i class="bi bi-eye me-1"></i>Xem chi tiết & Đánh giá
+                    </div>
                 </a>
 
                 <div class="p-3 d-flex flex-column flex-grow-1">
                     <div class="d-flex justify-content-between align-items-center mb-1">
-                        <span class="text-muted fw-semibold" style="font-size: 0.72rem;">
+                        <span class="text-muted" style="font-size: 0.74rem;">
                             {{ p.category.name|default:"Vật tư văn phòng" }}
                         </span>
-                        <span class="text-warning fw-semibold" style="font-size: 0.72rem;">
+                        <span class="text-warning fw-semibold" style="font-size: 0.74rem;">
                             <i class="bi bi-star-fill"></i> {{ p.avg_rating }} ({{ p.review_count }})
                         </span>
                     </div>
 
-                    <h6 class="fw-bold mb-2" style="font-size: 0.88rem;">
-                        <a href="{% url 'product_detail' p.pk %}" class="product-title-link">
+                    <h6 class="mb-3">
+                        <a href="{% url 'product_detail' p.pk %}" class="toz-prod-title">
                             {{ p.name }}
                         </a>
                     </h6>
 
                     <div class="mt-auto pt-2 border-top d-flex justify-content-between align-items-center gap-1">
-                        <div class="fw-bold text-danger" style="font-size: 0.96rem;">
+                        <div class="toz-price-text">
                             {{ p.price_vnd }}
                         </div>
 
                         <div class="d-flex align-items-center gap-1">
-                            <a href="{% url 'product_detail' p.pk %}" class="eye-view-btn" title="Xem chi tiết sản phẩm">
+                            <a href="{% url 'product_detail' p.pk %}" class="toz-eye-icon" title="Xem chi tiết">
                                 <i class="bi bi-eye"></i>
                             </a>
 
                             {% if p.quantity > 0 %}
                                 {% if user.is_authenticated %}
                                     {% if user.is_staff %}
-                                        <a href="{% url 'product_edit' p.pk %}" class="btn btn-outline-secondary btn-sm px-2.5" style="font-size: 0.75rem; border-radius: 6px;">
+                                        <a href="{% url 'product_edit' p.pk %}" class="btn btn-outline-secondary btn-sm px-2.5" style="font-size: 0.76rem; border-radius: 6px;">
                                             Sửa
                                         </a>
                                     {% else %}
-                                        <a href="{% url 'order_create' %}?product={{ p.id }}" class="btn btn-amz-gold btn-sm px-2.5" style="font-size: 0.75rem; padding: 4px 10px;">
+                                        <a href="{% url 'order_create' %}?product={{ p.id }}" class="btn btn-toz-accent btn-sm px-2.5" style="font-size: 0.76rem; padding: 5px 11px;">
                                             Đặt hàng
                                         </a>
                                     {% endif %}
                                 {% else %}
-                                    <a href="{% url 'login' %}?next={% url 'order_create' %}%3Fproduct%3D{{ p.id }}" class="btn btn-amz-gold btn-sm px-2.5" style="font-size: 0.75rem; padding: 4px 10px;">
+                                    <a href="{% url 'login' %}?next={% url 'order_create' %}%3Fproduct%3D{{ p.id }}" class="btn btn-toz-accent btn-sm px-2.5" style="font-size: 0.76rem; padding: 5px 11px;">
                                         Đặt hàng
                                     </a>
                                 {% endif %}
                             {% else %}
-                                <button class="btn btn-light btn-sm px-2 text-muted" style="font-size: 0.72rem;" disabled>Tạm hết</button>
+                                <button class="btn btn-light btn-sm px-2 text-muted" style="font-size: 0.74rem;" disabled>Tạm hết</button>
                             {% endif %}
                         </div>
                     </div>
@@ -524,8 +693,8 @@
         </div>
         {% empty %}
         <div class="col-12">
-            <div class="card p-5 text-center text-muted">
-                <i class="bi bi-inbox fs-1 mb-2"></i>
+            <div class="p-5 text-center text-muted border rounded-3">
+                <i class="bi bi-inbox fs-1 mb-2 d-block"></i>
                 <p class="mb-0">Hiện chưa có vật tư – thiết bị nào trong danh mục.</p>
             </div>
         </div>
@@ -538,7 +707,8 @@
 <script>
     document.addEventListener("DOMContentLoaded", function () {
         const searchInput = document.getElementById("homeProductSearch");
-        const navPills = document.querySelectorAll(".amz-nav-pill");
+        const navBtns = document.querySelectorAll(".toz-nav-btn");
+        const offerTiles = document.querySelectorAll(".toz-offer-tile");
         const items = document.querySelectorAll(".product-grid-item");
         let activeCat = "all";
 
@@ -557,16 +727,30 @@
             });
         }
 
+        function setCategory(catKey) {
+            activeCat = normalizeStr(catKey);
+            navBtns.forEach(btn => {
+                btn.classList.toggle("active", normalizeStr(btn.getAttribute("data-cat")) === activeCat);
+            });
+            offerTiles.forEach(tile => {
+                tile.classList.toggle("active", normalizeStr(tile.getAttribute("data-cat")) === activeCat);
+            });
+            filterCatalog();
+        }
+
         if (searchInput) {
             searchInput.addEventListener("input", filterCatalog);
         }
 
-        navPills.forEach(btn => {
+        navBtns.forEach(btn => {
             btn.addEventListener("click", function () {
-                navPills.forEach(b => b.classList.remove("active"));
-                this.classList.add("active");
-                activeCat = normalizeStr(this.getAttribute("data-cat"));
-                filterCatalog();
+                setCategory(this.getAttribute("data-cat"));
+            });
+        });
+
+        offerTiles.forEach(tile => {
+            tile.addEventListener("click", function () {
+                setCategory(this.getAttribute("data-cat"));
             });
         });
     });
