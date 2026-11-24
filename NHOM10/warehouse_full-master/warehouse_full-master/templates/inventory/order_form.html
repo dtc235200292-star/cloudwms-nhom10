@@ -97,9 +97,7 @@
 <form method="post" id="orderCreateForm">
     {% csrf_token %}
     <div class="row g-4">
-        <!-- CỘT TRÁI: CHỌN SẢN PHẨM & THÔNG TIN NHẬN HÀNG -->
         <div class="col-lg-7">
-            <!-- Bước 1: Hàng hóa đặt mua -->
             <div class="order-card p-4 mb-4">
                 <div class="d-flex align-items-center gap-2 mb-3">
                     <span class="step-badge">1</span>
@@ -128,7 +126,6 @@
                 </div>
             </div>
 
-            <!-- Bước 2: Thông tin giao nhận -->
             <div class="order-card p-4">
                 <div class="d-flex align-items-center gap-2 mb-3">
                     <span class="step-badge">2</span>
@@ -164,7 +161,6 @@
             </div>
         </div>
 
-        <!-- CỘT PHẢI: TÓM TẮT ĐƠN HÀNG TRỰC QUAN -->
         <div class="col-lg-5">
             <div class="order-card p-4 summary-sticky">
                 <h5 class="fw-bold text-dark mb-3">Tóm tắt đơn đặt hàng</h5>
@@ -282,7 +278,6 @@
         productSelect.addEventListener("change", updateOrderSummary);
         qtyInput.addEventListener("input", updateOrderSummary);
 
-        // Chạy ngay khi mở trang để hiển thị sản phẩm được truyền từ trang chủ
         updateOrderSummary();
     });
 </script>
