@@ -108,13 +108,13 @@
         border-bottom: 1px solid #ECEEF2;
     }
     .toz-slide {
-        min-height: 390px;
-        padding: 44px 0;
+        min-height: 400px;
+        padding: 46px 0;
         display: flex;
         align-items: center;
     }
     .toz-slide-1 {
-        background: linear-gradient(105deg, #1E293B 0%, #27364B 58%, #334155 100%);
+        background: linear-gradient(105deg, #0F172A 0%, #1E293B 55%, #334155 100%);
         color: #FFFFFF;
     }
     .toz-slide-2 {
@@ -133,25 +133,32 @@
     }
     .toz-eyebrow {
         display: inline-block;
+        background: rgba(245, 158, 11, 0.16);
+        border: 1px solid rgba(245, 158, 11, 0.45);
+        padding: 5px 12px;
+        border-radius: 6px;
         font-size: 0.76rem;
         font-weight: 700;
-        letter-spacing: 0.1em;
+        letter-spacing: 0.08em;
         text-transform: uppercase;
-        color: #F59E0B;
-        margin-bottom: 12px;
+        color: #FBBF24;
+        margin-bottom: 14px;
     }
     .toz-hero-heading {
-        font-size: clamp(1.5rem, 2.5vw, 2.25rem);
+        font-size: clamp(1.55rem, 2.6vw, 2.35rem);
         font-weight: 800;
         line-height: 1.28;
         letter-spacing: -0.015em;
         margin-bottom: 14px;
     }
+    .toz-hero-heading .highlight-gold {
+        color: #FBBF24;
+    }
     .toz-hero-lead {
         font-size: 0.96rem;
         color: #CBD5E1;
         line-height: 1.65;
-        max-width: 620px;
+        max-width: 640px;
         margin-bottom: 24px;
     }
     .btn-toz-accent {
@@ -499,12 +506,12 @@
                 <div class="toz-slide-container">
                     <div class="row g-4 align-items-center">
                         <div class="col-lg-8">
-                            <span class="toz-eyebrow">NỀN TẢNG ĐIỆN TOÁN ĐÁM MÂY — NHÓM 10</span>
+                            <span class="toz-eyebrow">ĐỒ ÁN NHÓM 10 • HẠ TẦNG ĐIỆN TOÁN ĐÁM MÂY</span>
                             <h1 class="toz-hero-heading">
-                                Hệ thống Quản lý Kho Vật tư – Thiết bị Văn phòng và Đặt hàng Trực tuyến trên Nền tảng Đám mây
+                                Hệ thống Quản lý Kho <span class="highlight-gold">Vật tư – Thiết bị Văn phòng</span> và <span class="highlight-gold">Đặt hàng Trực tuyến</span> trên Nền tảng Đám mây
                             </h1>
                             <p class="toz-hero-lead">
-                                Chuẩn hóa quản lý danh mục vật tư theo mã SKU, đồng bộ tồn kho thời gian thực và hỗ trợ đặt hàng trực tuyến minh bạch, hiện đại cho doanh nghiệp.
+                                Giải pháp số hóa toàn diện quy trình nhập xuất tồn kho theo chuẩn mã định danh SKU, tự động đối soát số liệu thời gian thực và hỗ trợ đặt hàng trực tuyến minh bạch cho doanh nghiệp.
                             </p>
                             <div class="d-flex flex-wrap gap-2">
                                 {% if user.is_authenticated and user.is_staff %}
@@ -557,12 +564,12 @@
                 <div class="toz-slide-container">
                     <div class="row g-4 align-items-center">
                         <div class="col-lg-8">
-                            <span class="toz-eyebrow">CUNG ỨNG ĐỒNG BỘ & CHÍNH XÁC</span>
+                            <span class="toz-eyebrow">QUY TRÌNH KHÉP KÍN • ĐỐI SOÁT TỰ ĐỘNG</span>
                             <h2 class="toz-hero-heading">
-                                Quy trình Đặt hàng & Xuất Phiếu kho Điện tử Khép kín
+                                Đặt hàng Trực tuyến & Xuất Phiếu kho Điện tử Khép kín
                             </h2>
                             <p class="toz-hero-lead">
-                                Theo dõi trạng thái phê duyệt đơn hàng trực tuyến, tự động đối soát tồn kho và xuất phiếu chứng từ điện tử ngay sau khi duyệt.
+                                Theo dõi trạng thái phê duyệt đơn hàng trực tuyến, tự động trừ tồn kho khi duyệt đơn và xuất phiếu chứng từ điện tử ngay lập tức.
                             </p>
                             <a href="{% url 'my_orders' %}" class="btn btn-toz-accent">
                                 Tra cứu đơn hàng của tôi
@@ -672,7 +679,7 @@
 
 <section id="catalog-section" class="pt-5 pb-4">
     <div class="toz-section-header">
-        <span class="toz-section-kicker">WHAT WE OFFER</span>
+        <span class="toz-section-kicker">DANH MỤC CUNG ỨNG TRỰC TUYẾN</span>
         <h2 class="toz-section-title">Danh mục Vật tư – Thiết bị Văn phòng</h2>
         <p class="toz-section-sub">Cung cấp giải pháp vật tư & thiết bị văn phòng tổng thể cho doanh nghiệp</p>
     </div>
