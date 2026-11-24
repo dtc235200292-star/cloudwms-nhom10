@@ -1,25 +1,68 @@
 {% extends "base.html" %}
-{% load humanize %}
+{% load currency_filters %}
 
 {% block title %}Trang chủ — Hệ thống Quản lý Kho Vật tư & Đặt hàng Trực tuyến{% endblock %}
 
 {% block extra_css %}
 <style>
-    .enterprise-hero {
+    /* NỀN WEB SỐNG ĐỘNG (AMBIENT MESH + DOT GRID) */
+    body {
+        background-color: #F4F7FC !important;
+        background-image:
+            radial-gradient(at 0% 0%, rgba(56, 189, 248, 0.14) 0px, transparent 50%),
+            radial-gradient(at 100% 10%, rgba(99, 102, 241, 0.12) 0px, transparent 48%),
+            radial-gradient(at 50% 100%, rgba(14, 165, 233, 0.1) 0px, transparent 55%),
+            radial-gradient(#CBD5E1 0.85px, transparent 0.85px) !important;
+        background-size: 100% 100%, 100% 100%, 100% 100%, 24px 24px !important;
+    }
+
+    /* BANNER HIỆN ĐẠI, SỐNG ĐỘNG & CÓ CHIỀU SÂU */
+    @keyframes floatSlow {
+        0%, 100% { transform: translateY(0px); }
+        50% { transform: translateY(-7px); }
+    }
+    @keyframes glowPulse {
+        0%, 100% { opacity: 0.55; transform: scale(1); }
+        50% { opacity: 0.85; transform: scale(1.08); }
+    }
+
+    .vivid-hero {
         position: relative;
-        border-radius: 22px;
-        background: linear-gradient(135deg, #0F172A 0%, #1E3A8A 58%, #0284C7 100%);
+        border-radius: 26px;
+        background: linear-gradient(125deg, #0B1120 0%, #172554 45%, #1D4ED8 82%, #0284C7 100%);
         color: #FFFFFF;
-        box-shadow: 0 20px 45px -15px rgba(15, 23, 42, 0.35);
+        box-shadow: 0 25px 55px -15px rgba(29, 78, 216, 0.38);
         overflow: hidden;
     }
-    .hero-arch-pattern {
+    .hero-orb-1 {
+        position: absolute;
+        width: 340px;
+        height: 340px;
+        border-radius: 50%;
+        background: radial-gradient(circle, rgba(56, 189, 248, 0.35) 0%, transparent 70%);
+        top: -110px;
+        right: 12%;
+        animation: glowPulse 6s ease-in-out infinite;
+        pointer-events: none;
+    }
+    .hero-orb-2 {
+        position: absolute;
+        width: 280px;
+        height: 280px;
+        border-radius: 50%;
+        background: radial-gradient(circle, rgba(129, 140, 248, 0.32) 0%, transparent 70%);
+        bottom: -100px;
+        left: 28%;
+        animation: glowPulse 8s ease-in-out infinite reverse;
+        pointer-events: none;
+    }
+    .hero-grid-overlay {
         position: absolute;
         inset: 0;
         background-image:
-            linear-gradient(to right, rgba(255, 255, 255, 0.04) 1px, transparent 1px),
-            linear-gradient(to bottom, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
-        background-size: 32px 32px;
+            linear-gradient(to right, rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+            linear-gradient(to bottom, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+        background-size: 30px 30px;
         pointer-events: none;
     }
     .hero-pill-tag {
@@ -27,34 +70,37 @@
         align-items: center;
         gap: 8px;
         background: rgba(255, 255, 255, 0.12);
-        border: 1px solid rgba(255, 255, 255, 0.24);
+        backdrop-filter: blur(8px);
+        border: 1px solid rgba(255, 255, 255, 0.25);
         color: #E0F2FE;
-        padding: 5px 14px;
+        padding: 6px 15px;
         border-radius: 999px;
         font-size: 0.78rem;
         font-weight: 600;
     }
-    .status-indicator {
+    .status-dot {
         width: 8px;
         height: 8px;
         border-radius: 50%;
         background: #34D399;
-        box-shadow: 0 0 0 3px rgba(52, 211, 153, 0.25);
+        box-shadow: 0 0 0 4px rgba(52, 211, 153, 0.28);
     }
     .hero-main-title {
-        font-size: clamp(1.42rem, 2.7vw, 2.15rem);
+        font-size: clamp(1.48rem, 2.85vw, 2.25rem);
         font-weight: 800;
-        line-height: 1.25;
+        line-height: 1.24;
         letter-spacing: -0.02em;
         color: #FFFFFF;
     }
     .hero-main-title span {
-        color: #7DD3FC;
+        background: linear-gradient(90deg, #7DD3FC 0%, #BAE6FD 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
     }
     .hero-lead-text {
-        color: rgba(226, 232, 240, 0.9);
-        font-size: 0.93rem;
-        line-height: 1.62;
+        color: rgba(226, 232, 240, 0.92);
+        font-size: 0.94rem;
+        line-height: 1.65;
         max-width: 580px;
     }
     .btn-cta-primary {
@@ -62,62 +108,79 @@
         color: #FFFFFF;
         border: none;
         font-weight: 700;
-        padding: 10px 22px;
-        border-radius: 12px;
-        box-shadow: 0 8px 20px -4px rgba(56, 189, 248, 0.5);
-        transition: all 0.2s ease;
+        padding: 11px 24px;
+        border-radius: 13px;
+        box-shadow: 0 10px 24px -4px rgba(56, 189, 248, 0.55);
+        transition: all 0.22s ease;
     }
     .btn-cta-primary:hover {
         color: #FFFFFF;
         transform: translateY(-2px);
+        box-shadow: 0 14px 28px -4px rgba(56, 189, 248, 0.7);
     }
     .btn-cta-secondary {
         background: rgba(255, 255, 255, 0.12);
+        backdrop-filter: blur(8px);
         color: #FFFFFF;
         border: 1px solid rgba(255, 255, 255, 0.28);
         font-weight: 600;
-        padding: 10px 22px;
-        border-radius: 12px;
-        transition: all 0.2s ease;
+        padding: 11px 24px;
+        border-radius: 13px;
+        transition: all 0.22s ease;
     }
     .btn-cta-secondary:hover {
         background: rgba(255, 255, 255, 0.22);
         color: #FFFFFF;
         transform: translateY(-2px);
     }
-    .feature-glass-item {
-        background: rgba(255, 255, 255, 0.1);
-        backdrop-filter: blur(10px);
-        border: 1px solid rgba(255, 255, 255, 0.18);
-        border-radius: 14px;
-        padding: 14px 16px;
+
+    /* Các thẻ Glassmorphism sống động bên phải Banner */
+    .glass-card-stack {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+    }
+    .glass-feature-card {
+        background: rgba(255, 255, 255, 0.11);
+        backdrop-filter: blur(12px);
+        border: 1px solid rgba(255, 255, 255, 0.22);
+        border-radius: 16px;
+        padding: 14px 18px;
         display: flex;
         align-items: center;
         gap: 14px;
-        transition: transform 0.2s ease, background 0.2s ease;
+        transition: all 0.25s ease;
     }
-    .feature-glass-item:hover {
-        transform: translateX(4px);
-        background: rgba(255, 255, 255, 0.16);
+    .glass-feature-card:hover {
+        transform: translateX(6px);
+        background: rgba(255, 255, 255, 0.18);
+        border-color: rgba(125, 211, 252, 0.55);
     }
-    .feature-icon-circle {
-        width: 42px;
-        height: 42px;
-        border-radius: 11px;
-        background: rgba(56, 189, 248, 0.2);
-        color: #7DD3FC;
+    .glass-feature-card:nth-child(2) {
+        animation: floatSlow 5.5s ease-in-out infinite;
+    }
+    .glass-icon-box {
+        width: 44px;
+        height: 44px;
+        border-radius: 12px;
+        background: linear-gradient(135deg, rgba(56, 189, 248, 0.35), rgba(37, 99, 235, 0.35));
+        border: 1px solid rgba(186, 230, 253, 0.35);
+        color: #BAE6FD;
         display: inline-flex;
         align-items: center;
         justify-content: center;
-        font-size: 1.2rem;
+        font-size: 1.25rem;
         flex-shrink: 0;
     }
+
+    /* Thanh tìm kiếm & lọc danh mục */
     .filter-bar-card {
-        background: rgba(255, 255, 255, 0.96);
+        background: rgba(255, 255, 255, 0.92);
+        backdrop-filter: blur(10px);
         border: 1px solid #E2E8F0;
-        border-radius: 16px;
+        border-radius: 18px;
         padding: 14px 18px;
-        box-shadow: 0 4px 16px rgba(15, 23, 42, 0.04);
+        box-shadow: 0 8px 24px rgba(15, 23, 42, 0.05);
     }
     .cat-filter-btn {
         border-radius: 999px;
@@ -136,30 +199,32 @@
         background: #EFF6FF;
     }
     .cat-filter-btn.active {
-        background: #1D4ED8;
+        background: linear-gradient(135deg, #2563EB 0%, #1D4ED8 100%);
         color: #FFFFFF;
         border-color: #1D4ED8;
-        box-shadow: 0 4px 12px rgba(29, 78, 216, 0.25);
+        box-shadow: 0 4px 12px rgba(29, 78, 216, 0.28);
     }
+
+    /* Thẻ sản phẩm */
     .product-pro-card {
         background: #FFFFFF;
         border: 1px solid #E2E8F0;
-        border-radius: 16px;
+        border-radius: 18px;
         overflow: hidden;
         height: 100%;
         display: flex;
         flex-direction: column;
-        box-shadow: 0 4px 14px -4px rgba(15, 23, 42, 0.05);
-        transition: transform 0.22s ease, box-shadow 0.22s ease, border-color 0.22s ease;
+        box-shadow: 0 6px 18px -4px rgba(15, 23, 42, 0.06);
+        transition: transform 0.24s ease, box-shadow 0.24s ease, border-color 0.24s ease;
     }
     .product-pro-card:hover {
-        transform: translateY(-4px);
-        border-color: #93C5FD;
-        box-shadow: 0 18px 34px -10px rgba(29, 78, 216, 0.14);
+        transform: translateY(-5px);
+        border-color: #60A5FA;
+        box-shadow: 0 20px 36px -10px rgba(29, 78, 216, 0.16);
     }
     .product-thumb {
-        height: 170px;
-        background: #F8FAFC;
+        height: 175px;
+        background: linear-gradient(180deg, #F8FAFC 0%, #F1F5F9 100%);
         position: relative;
         display: flex;
         align-items: center;
@@ -172,10 +237,10 @@
         max-height: 100%;
         max-width: 100%;
         object-fit: contain;
-        transition: transform 0.3s ease;
+        transition: transform 0.32s ease;
     }
     .product-pro-card:hover .product-thumb img {
-        transform: scale(1.06);
+        transform: scale(1.07);
     }
     .sku-tag {
         position: absolute;
@@ -198,6 +263,27 @@
         padding: 3px 9px;
         border-radius: 999px;
     }
+    /* Nút con mắt xem nhanh thông tin sản phẩm */
+    .eye-view-btn {
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        border: 1px solid #CBD5E1;
+        background: #F8FAFC;
+        color: #1E293B;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        text-decoration: none;
+        transition: all 0.2s ease;
+        flex-shrink: 0;
+    }
+    .eye-view-btn:hover {
+        background: #EFF6FF;
+        border-color: #2563EB;
+        color: #2563EB;
+        transform: scale(1.08);
+    }
     .product-title-link {
         color: #0F172A;
         text-decoration: none;
@@ -212,13 +298,14 @@
     .product-title-link:hover {
         color: #1D4ED8;
     }
+
     @media (max-width: 767.98px) {
-        .enterprise-hero {
-            border-radius: 18px;
+        .vivid-hero {
+            border-radius: 20px;
             padding: 20px 16px !important;
         }
         .product-thumb {
-            height: 132px;
+            height: 135px;
             padding: 10px;
         }
     }
@@ -226,13 +313,16 @@
 {% endblock %}
 
 {% block content %}
-<section class="enterprise-hero p-4 p-lg-5 mb-4 fade-up-enter">
-    <div class="hero-arch-pattern"></div>
+<!-- 1. HERO BANNER SỐNG ĐỘNG -->
+<section class="vivid-hero p-4 p-lg-5 mb-4 fade-up-enter">
+    <div class="hero-orb-1"></div>
+    <div class="hero-orb-2"></div>
+    <div class="hero-grid-overlay"></div>
 
     <div class="row g-4 align-items-center position-relative" style="z-index: 2;">
         <div class="col-lg-7">
             <div class="hero-pill-tag mb-3">
-                <span class="status-indicator"></span>
+                <span class="status-dot"></span>
                 <span>CloudWMS • Nền tảng Quản lý Kho & Đặt hàng Đám mây</span>
             </div>
 
@@ -242,9 +332,9 @@
 
             <p class="hero-lead-text mb-4">
                 {% if user.is_authenticated and user.is_staff %}
-                    Quản lý tập trung danh mục vật tư – thiết bị theo mã SKU, kiểm soát chặt chẽ phiếu nhập – xuất kho, cảnh báo định mức tồn tối thiểu và phê duyệt đơn đặt hàng theo thời gian thực.
+                    Kiểm soát tập trung danh mục vật tư theo chuẩn mã SKU, tự động hóa phiếu nhập – xuất kho, cảnh báo định mức tồn tối thiểu và phê duyệt đơn đặt hàng theo thời gian thực.
                 {% else %}
-                    Tra cứu nhanh danh mục vật tư – thiết bị văn phòng trực tuyến, xem chi tiết thông số sản phẩm, đánh giá chất lượng và gửi yêu cầu đặt hàng nhanh chóng.
+                    Tra cứu nhanh danh mục vật tư – thiết bị văn phòng trực tuyến, xem thông số kỹ thuật chi tiết, đánh giá chất lượng và gửi đơn đặt hàng chỉ với một chạm.
                 {% endif %}
             </p>
 
@@ -278,10 +368,10 @@
 
         <div class="col-lg-5">
             {% if user.is_authenticated and user.is_staff %}
-            <div class="d-flex flex-column gap-2.5">
-                <div class="feature-glass-item justify-content-between">
+            <div class="glass-card-stack">
+                <div class="glass-feature-card justify-content-between">
                     <div class="d-flex align-items-center gap-3">
-                        <span class="feature-icon-circle"><i class="bi bi-upc-scan"></i></span>
+                        <span class="glass-icon-box"><i class="bi bi-upc-scan"></i></span>
                         <div>
                             <div class="fw-bold text-white small">Tổng mặt hàng (SKU)</div>
                             <div style="font-size: 0.76rem; color: #CBD5E1;">Danh mục vật tư đang quản lý</div>
@@ -290,20 +380,20 @@
                     <div class="fs-3 fw-bold text-info">{{ total_products }}</div>
                 </div>
 
-                <div class="feature-glass-item justify-content-between">
+                <div class="glass-feature-card justify-content-between">
                     <div class="d-flex align-items-center gap-3">
-                        <span class="feature-icon-circle"><i class="bi bi-boxes"></i></span>
+                        <span class="glass-icon-box"><i class="bi bi-boxes"></i></span>
                         <div>
                             <div class="fw-bold text-white small">Tổng số lượng tồn kho</div>
                             <div style="font-size: 0.76rem; color: #CBD5E1;">Đơn vị sản phẩm sẵn sàng xuất</div>
                         </div>
                     </div>
-                    <div class="fs-3 fw-bold text-white">{{ total_stock|intcomma }}</div>
+                    <div class="fs-3 fw-bold text-white">{{ total_stock }}</div>
                 </div>
 
-                <div class="feature-glass-item justify-content-between">
+                <div class="glass-feature-card justify-content-between">
                     <div class="d-flex align-items-center gap-3">
-                        <span class="feature-icon-circle" style="background: rgba(245, 158, 11, 0.25); color: #FCD34D;"><i class="bi bi-exclamation-triangle-fill"></i></span>
+                        <span class="glass-icon-box" style="background: rgba(245, 158, 11, 0.25); color: #FCD34D;"><i class="bi bi-exclamation-triangle-fill"></i></span>
                         <div>
                             <div class="fw-bold text-white small">Cảnh báo định mức</div>
                             <div style="font-size: 0.76rem; color: #CBD5E1;">Mặt hàng tồn thấp (≤ 5)</div>
@@ -313,25 +403,25 @@
                 </div>
             </div>
             {% else %}
-            <div class="d-flex flex-column gap-2.5">
-                <div class="feature-glass-item">
-                    <span class="feature-icon-circle"><i class="bi bi-patch-check-fill"></i></span>
+            <div class="glass-card-stack">
+                <div class="glass-feature-card">
+                    <span class="glass-icon-box"><i class="bi bi-patch-check-fill"></i></span>
                     <div>
                         <div class="fw-bold text-white small">Vật tư – Thiết bị Chính hãng</div>
                         <div style="font-size: 0.78rem; color: #CBD5E1;">Định danh chuẩn mã SKU, niêm yết giá minh bạch</div>
                     </div>
                 </div>
 
-                <div class="feature-glass-item">
-                    <span class="feature-icon-circle"><i class="bi bi-lightning-charge-fill"></i></span>
+                <div class="glass-feature-card">
+                    <span class="glass-icon-box"><i class="bi bi-lightning-charge-fill"></i></span>
                     <div>
                         <div class="fw-bold text-white small">Đặt hàng Trực tuyến 1 Chạm</div>
-                        <div style="font-size: 0.78rem; color: #CBD5E1;">Chọn sản phẩm trực tiếp, tự động tính tổng thanh toán</div>
+                        <div style="font-size: 0.78rem; color: #CBD5E1;">Tự động gắn sản phẩm, tính tổng thanh toán tức thì</div>
                     </div>
                 </div>
 
-                <div class="feature-glass-item">
-                    <span class="feature-icon-circle"><i class="bi bi-file-earmark-text-fill"></i></span>
+                <div class="glass-feature-card">
+                    <span class="glass-icon-box"><i class="bi bi-file-earmark-text-fill"></i></span>
                     <div>
                         <div class="fw-bold text-white small">Phiếu Xuất kho Điện tử</div>
                         <div style="font-size: 0.78rem; color: #CBD5E1;">Theo dõi tiến độ duyệt đơn & in hóa đơn trực tuyến</div>
@@ -343,17 +433,19 @@
     </div>
 </section>
 
+<!-- 2. DANH MỤC VẬT TƯ – THIẾT BỊ VĂN PHÒNG -->
 <section id="catalog-section" class="fade-up-enter delay-1">
     <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-2 mb-3">
         <div>
             <h4 class="fw-bold mb-0 text-dark">Danh mục Vật tư – Thiết bị Văn phòng</h4>
-            <p class="text-muted small mb-0">Bấm vào sản phẩm để xem thông tin chi tiết & đánh giá, hoặc bấm Đặt hàng ngay</p>
+            <p class="text-muted small mb-0">Bấm biểu tượng <i class="bi bi-eye text-primary"></i> để xem thông tin chi tiết & đánh giá, hoặc bấm <strong>Đặt hàng</strong></p>
         </div>
         <a href="{% url 'product_list' %}" class="btn btn-outline-primary btn-sm rounded-pill px-3 align-self-start align-self-md-auto bg-white">
             Xem tất cả <i class="bi bi-arrow-right ms-1"></i>
         </a>
     </div>
 
+    <!-- Thanh tìm kiếm & lọc danh mục -->
     <div class="filter-bar-card mb-4">
         <div class="row g-2 align-items-center">
             <div class="col-lg-5">
@@ -373,13 +465,14 @@
         </div>
     </div>
 
+    <!-- Lưới sản phẩm -->
     <div class="row g-3" id="homeProductGrid">
         {% for p in products %}
         <div class="col-6 col-md-4 col-lg-3 product-grid-item"
              data-name="{{ p.name|lower }} {{ p.sku|lower }}"
              data-cat="{{ p.category.name|default:'none'|lower|striptags }}">
             <div class="product-pro-card">
-                <a href="{% url 'product_detail' p.pk %}" class="product-thumb text-decoration-none">
+                <a href="{% url 'product_detail' p.pk %}" class="product-thumb text-decoration-none" title="Xem chi tiết {{ p.name }}">
                     <span class="sku-tag">{{ p.sku }}</span>
 
                     {% if user.is_authenticated and user.is_staff %}
@@ -410,9 +503,15 @@
                         <span class="text-primary fw-semibold" style="font-size: 0.72rem;">
                             {{ p.category.name|default:"Vật tư văn phòng" }}
                         </span>
-                        <span class="text-warning" style="font-size: 0.72rem;">
-                            <i class="bi bi-star-fill"></i> 5.0
-                        </span>
+                        {% if p.avg_rating %}
+                            <span class="text-warning fw-semibold" style="font-size: 0.72rem;">
+                                <i class="bi bi-star-fill"></i> {{ p.avg_rating }} ({{ p.review_count }})
+                            </span>
+                        {% else %}
+                            <span class="text-muted" style="font-size: 0.69rem;">
+                                Chưa có đánh giá
+                            </span>
+                        {% endif %}
                     </div>
 
                     <h6 class="fw-bold mb-2" style="font-size: 0.88rem;">
@@ -423,27 +522,35 @@
 
                     <div class="mt-auto pt-2 border-top d-flex justify-content-between align-items-center gap-1">
                         <div class="fw-bold text-danger" style="font-size: 0.94rem;">
-                            {{ p.price|floatformat:0|intcomma }} đ
+                            {{ p.price|vnd }}
                         </div>
-                        {% if p.quantity > 0 %}
-                            {% if user.is_authenticated %}
-                                {% if user.is_staff %}
-                                    <a href="{% url 'product_edit' p.pk %}" class="btn btn-outline-secondary btn-sm rounded-pill px-2.5" style="font-size: 0.74rem;">
-                                        Cập nhật
-                                    </a>
+
+                        <div class="d-flex align-items-center gap-1">
+                            <!-- Con mắt xem thông tin chi tiết sản phẩm -->
+                            <a href="{% url 'product_detail' p.pk %}" class="eye-view-btn" title="Xem thông tin chi tiết & đánh giá">
+                                <i class="bi bi-eye"></i>
+                            </a>
+
+                            {% if p.quantity > 0 %}
+                                {% if user.is_authenticated %}
+                                    {% if user.is_staff %}
+                                        <a href="{% url 'product_edit' p.pk %}" class="btn btn-outline-secondary btn-sm rounded-pill px-2.5" style="font-size: 0.74rem;">
+                                            Sửa
+                                        </a>
+                                    {% else %}
+                                        <a href="{% url 'order_create' %}?product={{ p.id }}" class="btn btn-primary btn-sm rounded-pill px-2.5 fw-semibold" style="font-size: 0.74rem;">
+                                            Đặt hàng
+                                        </a>
+                                    {% endif %}
                                 {% else %}
-                                    <a href="{% url 'order_create' %}?product={{ p.id }}" class="btn btn-primary btn-sm rounded-pill px-2.5 fw-semibold" style="font-size: 0.74rem;">
+                                    <a href="{% url 'login' %}?next={% url 'order_create' %}%3Fproduct%3D{{ p.id }}" class="btn btn-outline-primary btn-sm rounded-pill px-2.5 fw-semibold" style="font-size: 0.74rem;">
                                         Đặt hàng
                                     </a>
                                 {% endif %}
                             {% else %}
-                                <a href="{% url 'login' %}?next={% url 'order_create' %}%3Fproduct%3D{{ p.id }}" class="btn btn-outline-primary btn-sm rounded-pill px-2.5 fw-semibold" style="font-size: 0.74rem;">
-                                    Đặt hàng
-                                </a>
+                                <button class="btn btn-light btn-sm rounded-pill px-2 text-muted" style="font-size: 0.72rem;" disabled>Tạm hết</button>
                             {% endif %}
-                        {% else %}
-                            <button class="btn btn-light btn-sm rounded-pill px-2 text-muted" style="font-size: 0.72rem;" disabled>Tạm hết</button>
-                        {% endif %}
+                        </div>
                     </div>
                 </div>
             </div>
