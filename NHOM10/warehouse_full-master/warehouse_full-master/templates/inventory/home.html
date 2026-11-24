@@ -103,22 +103,19 @@
         right: 50%;
         margin-left: -50vw;
         margin-right: -50vw;
-        background: #0F172A;
-        overflow: hidden;
-    }
-    .toz-slide {
         min-height: 360px;
-        padding: 42px 0;
+        padding: 46px 0;
         display: flex;
         align-items: center;
-        position: relative;
+        background-color: #0F172A;
         background-image:
             radial-gradient(circle at 82% 22%, rgba(217, 119, 6, 0.18) 0%, transparent 42%),
             radial-gradient(circle at 18% 85%, rgba(59, 130, 246, 0.14) 0%, transparent 45%),
             linear-gradient(115deg, #0B1120 0%, #162033 55%, #1E293B 100%);
         color: #FFFFFF;
+        overflow: hidden;
     }
-    .toz-slide::before {
+    .toz-hero-full::before {
         content: "";
         position: absolute;
         inset: 0;
@@ -130,7 +127,7 @@
     .toz-slide-container {
         max-width: 96%;
         margin: 0 auto;
-        padding: 0 76px;
+        padding: 0 16px;
         width: 100%;
         position: relative;
         z-index: 2;
@@ -151,20 +148,20 @@
         margin-bottom: 14px;
     }
     .toz-hero-heading {
-        font-size: clamp(1.45rem, 2.35vw, 2.15rem);
+        font-size: clamp(1.5rem, 2.4vw, 2.2rem);
         font-weight: 800;
         line-height: 1.3;
         letter-spacing: -0.015em;
-        margin-bottom: 12px;
+        margin-bottom: 14px;
     }
     .toz-hero-heading .highlight-gold {
         color: #FBBF24;
     }
     .toz-hero-lead {
-        font-size: 0.93rem;
+        font-size: 0.94rem;
         color: #94A3B8;
         line-height: 1.65;
-        max-width: 620px;
+        max-width: 650px;
         margin-bottom: 24px;
     }
     .btn-toz-accent {
@@ -211,7 +208,7 @@
         border: 1px solid rgba(255, 255, 255, 0.15);
     }
     .toz-featured-img {
-        height: 138px;
+        height: 140px;
         display: flex;
         align-items: center;
         justify-content: center;
@@ -224,68 +221,6 @@
         max-height: 100%;
         max-width: 100%;
         object-fit: contain;
-    }
-    .toz-workflow-row {
-        display: flex;
-        align-items: center;
-        gap: 12px;
-        padding: 9px 12px;
-        background: #F8FAFC;
-        border: 1px solid #E2E8F0;
-        border-radius: 10px;
-    }
-    .toz-workflow-step {
-        width: 28px;
-        height: 28px;
-        border-radius: 7px;
-        background: #0F172A;
-        color: #FBBF24;
-        font-size: 0.76rem;
-        font-weight: 800;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        flex-shrink: 0;
-    }
-
-    .toz-hero-full .carousel-control-prev,
-    .toz-hero-full .carousel-control-next {
-        width: 38px;
-        height: 38px;
-        top: 50%;
-        transform: translateY(-50%);
-        background: rgba(255, 255, 255, 0.08);
-        border: 1px solid rgba(255, 255, 255, 0.14);
-        border-radius: 50%;
-        opacity: 0.8;
-        transition: all 0.2s ease;
-    }
-    .toz-hero-full .carousel-control-prev:hover,
-    .toz-hero-full .carousel-control-next:hover {
-        background: #D97706;
-        border-color: #D97706;
-        opacity: 1;
-    }
-    .toz-hero-full .carousel-control-prev { left: 20px; }
-    .toz-hero-full .carousel-control-next { right: 20px; }
-    .toz-hero-full .carousel-control-prev-icon,
-    .toz-hero-full .carousel-control-next-icon {
-        width: 1rem;
-        height: 1rem;
-    }
-    .toz-hero-full .carousel-indicators {
-        margin-bottom: 12px;
-    }
-    .toz-hero-full .carousel-indicators [data-bs-target] {
-        width: 22px;
-        height: 3px;
-        border-radius: 2px;
-        background-color: rgba(255, 255, 255, 0.35);
-        border: none;
-    }
-    .toz-hero-full .carousel-indicators .active {
-        background-color: #F59E0B;
-        width: 32px;
     }
 
     .toz-pillars-section {
@@ -528,12 +463,9 @@
         .toz-top-search {
             width: 100%;
         }
-        .toz-slide {
+        .toz-hero-full {
             min-height: auto;
-            padding: 32px 0 40px;
-        }
-        .toz-slide-container {
-            padding: 0 54px;
+            padding: 32px 0;
         }
         .toz-thumb-wrap {
             height: 155px;
@@ -561,197 +493,62 @@
     </div>
 </div>
 
-<section id="tozHeroCarousel" class="carousel slide toz-hero-full" data-bs-ride="carousel" data-bs-interval="5500">
-    <div class="carousel-indicators">
-        <button type="button" data-bs-target="#tozHeroCarousel" data-bs-slide-to="0" class="active" aria-current="true"></button>
-        <button type="button" data-bs-target="#tozHeroCarousel" data-bs-slide-to="1"></button>
-        <button type="button" data-bs-target="#tozHeroCarousel" data-bs-slide-to="2"></button>
-    </div>
-
-    <div class="carousel-inner">
-        <div class="carousel-item active">
-            <div class="toz-slide">
-                <div class="toz-slide-container">
-                    <div class="row g-4 align-items-center">
-                        <div class="col-lg-8">
-                            <span class="toz-eyebrow">
-                                <i class="bi bi-cloud-check-fill"></i> ĐỒ ÁN NHÓM 10 • ĐIỆN TOÁN ĐÁM MÂY
-                            </span>
-                            <h1 class="toz-hero-heading">
-                                Hệ thống Quản lý Kho <span class="highlight-gold">Vật tư – Thiết bị Văn phòng</span> và <span class="highlight-gold">Đặt hàng Trực tuyến</span> trên Nền tảng Đám mây
-                            </h1>
-                            <p class="toz-hero-lead">
-                                Giải pháp số hóa toàn diện quy trình nhập xuất tồn kho theo chuẩn mã định danh SKU, tự động đối soát số liệu thời gian thực và hỗ trợ đặt hàng trực tuyến minh bạch cho doanh nghiệp.
-                            </p>
-                            <div class="d-flex flex-wrap gap-2">
-                                {% if user.is_authenticated and user.is_staff %}
-                                    <a href="{% url 'dashboard' %}" class="btn btn-toz-accent">
-                                        Bảng điều khiển kho
-                                    </a>
-                                    <a href="{% url 'stock_import' %}" class="btn btn-toz-ghost">
-                                        Nhập hàng vào kho
-                                    </a>
-                                {% else %}
-                                    <a href="{% url 'order_create' %}" class="btn btn-toz-accent">
-                                        Đặt hàng trực tuyến
-                                    </a>
-                                    <a href="#catalog-section" class="btn btn-toz-ghost">
-                                        Xem danh mục vật tư
-                                    </a>
-                                {% endif %}
-                            </div>
-                        </div>
-
-                        <div class="col-lg-4 d-none d-lg-block">
-                            {% if featured %}
-                            <div class="toz-showcase-card">
-                                <div class="d-flex justify-content-between align-items-center">
-                                    <span class="badge bg-dark" style="font-size: 0.68rem;">TIÊU ĐIỂM KHO VẬN</span>
-                                    <span class="font-monospace text-muted fw-semibold" style="font-size: 0.74rem;">{{ featured.sku }}</span>
-                                </div>
-                                <a href="{% url 'product_detail' featured.pk %}" class="toz-featured-img text-decoration-none">
-                                    {% if featured.image %}
-                                        <img src="{{ featured.image.url }}" alt="{{ featured.name }}">
-                                    {% else %}
-                                        <i class="bi bi-box-seam text-secondary fs-1"></i>
-                                    {% endif %}
-                                </a>
-                                <div class="fw-bold small text-truncate text-dark">{{ featured.name }}</div>
-                                <div class="d-flex justify-content-between align-items-center mt-2 pt-2 border-top">
-                                    <span class="toz-price-text fs-5">{{ featured.price_vnd }}</span>
-                                    <a href="{% url 'product_detail' featured.pk %}" class="btn btn-sm btn-dark fw-semibold px-3">Xem nhanh</a>
-                                </div>
-                            </div>
-                            {% endif %}
-                        </div>
-                    </div>
+<section class="toz-hero-full">
+    <div class="toz-slide-container">
+        <div class="row g-4 align-items-center">
+            <div class="col-lg-8">
+                <span class="toz-eyebrow">
+                    <i class="bi bi-cloud-check-fill"></i> ĐỒ ÁN NHÓM 10 • ĐIỆN TOÁN ĐÁM MÂY
+                </span>
+                <h1 class="toz-hero-heading">
+                    Hệ thống Quản lý Kho <span class="highlight-gold">Vật tư – Thiết bị Văn phòng</span> và <span class="highlight-gold">Đặt hàng Trực tuyến</span> trên Nền tảng Đám mây
+                </h1>
+                <p class="toz-hero-lead">
+                    Giải pháp số hóa toàn diện quy trình nhập xuất tồn kho theo chuẩn mã định danh SKU, tự động đối soát số liệu thời gian thực và hỗ trợ đặt hàng trực tuyến minh bạch cho doanh nghiệp.
+                </p>
+                <div class="d-flex flex-wrap gap-2">
+                    {% if user.is_authenticated and user.is_staff %}
+                        <a href="{% url 'dashboard' %}" class="btn btn-toz-accent">
+                            Bảng điều khiển kho
+                        </a>
+                        <a href="{% url 'stock_import' %}" class="btn btn-toz-ghost">
+                            Nhập hàng vào kho
+                        </a>
+                    {% else %}
+                        <a href="{% url 'order_create' %}" class="btn btn-toz-accent">
+                            Đặt hàng trực tuyến
+                        </a>
+                        <a href="#catalog-section" class="btn btn-toz-ghost">
+                            Xem danh mục vật tư
+                        </a>
+                    {% endif %}
                 </div>
             </div>
-        </div>
 
-        <div class="carousel-item">
-            <div class="toz-slide">
-                <div class="toz-slide-container">
-                    <div class="row g-4 align-items-center">
-                        <div class="col-lg-8">
-                            <span class="toz-eyebrow">
-                                <i class="bi bi-arrow-repeat"></i> QUY TRÌNH KHÉP KÍN • ĐỐI SOÁT TỰ ĐỘNG
-                            </span>
-                            <h2 class="toz-hero-heading">
-                                Đặt hàng Trực tuyến & <span class="highlight-gold">Xuất Phiếu kho Điện tử</span> Khép kín
-                            </h2>
-                            <p class="toz-hero-lead">
-                                Theo dõi trạng thái phê duyệt đơn hàng trực tuyến, tự động trừ tồn kho ngay khi quản trị viên xác nhận và xuất phiếu chứng từ điện tử chuẩn xác.
-                            </p>
-                            <div class="d-flex flex-wrap gap-2">
-                                <a href="{% url 'my_orders' %}" class="btn btn-toz-accent">
-                                    Tra cứu đơn hàng của tôi
-                                </a>
-                                <a href="{% url 'order_create' %}" class="btn btn-toz-ghost">
-                                    Tạo phiếu đặt mới
-                                </a>
-                            </div>
-                        </div>
-
-                        <div class="col-lg-4 d-none d-lg-block">
-                            <div class="toz-showcase-card">
-                                <div class="d-flex justify-content-between align-items-center mb-3">
-                                    <span class="badge bg-warning text-dark fw-bold" style="font-size: 0.68rem;">LUỒNG XỬ LÝ TỰ ĐỘNG</span>
-                                    <span class="text-muted small fw-semibold">3 Bước chuẩn</span>
-                                </div>
-                                <div class="d-flex flex-column gap-2">
-                                    <div class="toz-workflow-row">
-                                        <span class="toz-workflow-step">01</span>
-                                        <div class="small">
-                                            <div class="fw-bold text-dark">Đặt hàng theo mã SKU</div>
-                                            <div class="text-muted" style="font-size: 0.74rem;">Kiểm tra khả năng đáp ứng tức thì</div>
-                                        </div>
-                                    </div>
-                                    <div class="toz-workflow-row">
-                                        <span class="toz-workflow-step">02</span>
-                                        <div class="small">
-                                            <div class="fw-bold text-dark">Phê duyệt & Trừ tồn kho</div>
-                                            <div class="text-muted" style="font-size: 0.74rem;">Cập nhật sổ cái nhập xuất tự động</div>
-                                        </div>
-                                    </div>
-                                    <div class="toz-workflow-row">
-                                        <span class="toz-workflow-step">03</span>
-                                        <div class="small">
-                                            <div class="fw-bold text-dark">Xuất phiếu kho điện tử</div>
-                                            <div class="text-muted" style="font-size: 0.74rem;">In & lưu trữ chứng từ trực tuyến</div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+            <div class="col-lg-4 d-none d-lg-block">
+                {% if featured %}
+                <div class="toz-showcase-card">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <span class="badge bg-dark" style="font-size: 0.68rem;">TIÊU ĐIỂM KHO VẬN</span>
+                        <span class="font-monospace text-muted fw-semibold" style="font-size: 0.74rem;">{{ featured.sku }}</span>
+                    </div>
+                    <a href="{% url 'product_detail' featured.pk %}" class="toz-featured-img text-decoration-none">
+                        {% if featured.image %}
+                            <img src="{{ featured.image.url }}" alt="{{ featured.name }}">
+                        {% else %}
+                            <i class="bi bi-box-seam text-secondary fs-1"></i>
+                        {% endif %}
+                    </a>
+                    <div class="fw-bold small text-truncate text-dark">{{ featured.name }}</div>
+                    <div class="d-flex justify-content-between align-items-center mt-2 pt-2 border-top">
+                        <span class="toz-price-text fs-5">{{ featured.price_vnd }}</span>
+                        <a href="{% url 'product_detail' featured.pk %}" class="btn btn-sm btn-dark fw-semibold px-3">Xem nhanh</a>
                     </div>
                 </div>
-            </div>
-        </div>
-
-        <div class="carousel-item">
-            <div class="toz-slide">
-                <div class="toz-slide-container">
-                    <div class="row g-4 align-items-center">
-                        <div class="col-lg-8">
-                            <span class="toz-eyebrow">
-                                <i class="bi bi-boxes"></i> DANH MỤC ĐA DẠNG — SẴN SÀNG CUNG ỨNG
-                            </span>
-                            <h2 class="toz-hero-heading">
-                                Đầy đủ <span class="highlight-gold">Thiết bị Văn phòng</span>, Linh kiện Điện tử & Vật tư Tiêu hao
-                            </h2>
-                            <p class="toz-hero-lead">
-                                Giải pháp cung ứng trọn gói văn phòng phẩm, mực in, thiết bị mạng và linh kiện máy tính chính hãng cho mọi phòng ban doanh nghiệp.
-                            </p>
-                            <div class="d-flex flex-wrap gap-2">
-                                <a href="#catalog-section" class="btn btn-toz-accent">
-                                    Khám phá {{ total_products }} sản phẩm
-                                </a>
-                                <a href="{% url 'product_list' %}" class="btn btn-toz-ghost">
-                                    Xem bảng giá SKU
-                                </a>
-                            </div>
-                        </div>
-
-                        <div class="col-lg-4 d-none d-lg-block">
-                            <div class="toz-showcase-card">
-                                <div class="d-flex justify-content-between align-items-center mb-3">
-                                    <span class="badge bg-dark" style="font-size: 0.68rem;">NĂNG LỰC CUNG ỨNG</span>
-                                    <span class="text-success small fw-bold"><i class="bi bi-circle-fill me-1" style="font-size: 0.5rem;"></i>Trực tuyến</span>
-                                </div>
-                                <div class="row g-2 text-center mb-3">
-                                    <div class="col-6">
-                                        <div class="p-3 rounded-3 bg-light border">
-                                            <div class="fs-3 fw-bold text-dark">{{ total_products }}</div>
-                                            <div class="text-muted small fw-semibold">Mã vật tư SKU</div>
-                                        </div>
-                                    </div>
-                                    <div class="col-6">
-                                        <div class="p-3 rounded-3 bg-light border">
-                                            <div class="fs-3 fw-bold text-warning">{{ categories|length }}</div>
-                                            <div class="text-muted small fw-semibold">Nhóm danh mục</div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="small text-secondary text-center border-top pt-2">
-                                    Đồng bộ dữ liệu kho vận 24/7 trên hạ tầng đám mây
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                {% endif %}
             </div>
         </div>
     </div>
-
-    <button class="carousel-control-prev" type="button" data-bs-target="#tozHeroCarousel" data-bs-slide="prev">
-        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-        <span class="visually-hidden">Trước</span>
-    </button>
-    <button class="carousel-control-next" type="button" data-bs-target="#tozHeroCarousel" data-bs-slide="next">
-        <span class="carousel-control-next-icon" aria-hidden="true"></span>
-        <span class="visually-hidden">Tiếp</span>
-    </button>
 </section>
 
 <section class="toz-pillars-section">
