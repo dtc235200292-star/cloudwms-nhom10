@@ -18,34 +18,43 @@
         .site-navbar {
             background-color: #FFFFFF;
             border-bottom: 1px solid #ECEEF2;
-            padding: 12px 0;
+            padding: 10px 0;
         }
         .site-navbar-inner {
             max-width: 96%;
             margin: 0 auto;
-            padding: 0 16px;
+            padding: 0 12px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
         }
         .brand-lockup {
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 10px;
             text-decoration: none;
+            min-width: 0;
+            flex: 1 1 auto;
         }
         .brand-icon-box {
-            width: 40px;
-            height: 40px;
+            width: 38px;
+            height: 38px;
             border-radius: 10px;
             background: linear-gradient(135deg, #1E293B 0%, #D97706 100%);
             color: #FFFFFF;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.25rem;
+            font-size: 1.15rem;
             flex-shrink: 0;
-            box-shadow: 0 4px 12px rgba(217, 119, 6, 0.22);
+            box-shadow: 0 4px 10px rgba(217, 119, 6, 0.22);
+        }
+        .brand-text-wrap {
+            min-width: 0;
         }
         .brand-title-main {
-            font-size: 0.96rem;
+            font-size: 0.95rem;
             font-weight: 800;
             color: #0F172A;
             line-height: 1.25;
@@ -55,8 +64,15 @@
             font-size: 0.72rem;
             font-weight: 600;
             color: #D97706;
-            letter-spacing: 0.02em;
+            letter-spacing: 0.01em;
             display: block;
+        }
+        .navbar-toggler-custom {
+            flex-shrink: 0;
+            border: 1px solid #E2E8F0;
+            border-radius: 8px;
+            padding: 6px 10px;
+            background: #F8FAFC;
         }
         .nav-link-clean {
             color: #334155 !important;
@@ -81,15 +97,15 @@
         .toz-footer-top {
             max-width: 96%;
             margin: 0 auto;
-            padding: 48px 16px 36px;
+            padding: 44px 16px 32px;
         }
         .toz-footer-heading {
             color: #FFFFFF;
-            font-size: 0.92rem;
+            font-size: 0.9rem;
             font-weight: 800;
             text-transform: uppercase;
             letter-spacing: 0.04em;
-            margin-bottom: 18px;
+            margin-bottom: 16px;
             position: relative;
             padding-bottom: 10px;
         }
@@ -217,15 +233,39 @@
             align-items: center;
             gap: 10px;
             color: #64748B;
-            font-size: 0.8rem;
+            font-size: 0.78rem;
         }
 
-        @media (max-width: 575.98px) {
+        @media (max-width: 1199.98px) {
+            .site-navbar-inner {
+                flex-wrap: wrap;
+            }
+            .brand-lockup {
+                max-width: calc(100% - 56px);
+            }
+            .brand-icon-box {
+                width: 34px;
+                height: 34px;
+                font-size: 1rem;
+                border-radius: 8px;
+            }
             .brand-title-main {
                 font-size: 0.82rem;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
             }
             .brand-title-sub {
-                font-size: 0.66rem;
+                font-size: 0.67rem;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+            #mainNavbar {
+                width: 100%;
+                padding-top: 10px;
+                margin-top: 8px;
+                border-top: 1px solid #F1F5F9;
             }
         }
     </style>
@@ -238,14 +278,14 @@
                 <div class="brand-icon-box">
                     <i class="bi bi-cloud-check-fill"></i>
                 </div>
-                <div>
+                <div class="brand-text-wrap">
                     <span class="brand-title-main">Hệ thống Quản lý Kho Vật tư – Thiết bị Văn phòng</span>
                     <span class="brand-title-sub">Đặt hàng Trực tuyến trên Nền tảng Đám mây • Nhóm 10</span>
                 </div>
             </a>
 
-            <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar">
-                <span class="navbar-toggler-icon"></span>
+            <button class="navbar-toggler navbar-toggler-custom" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar" aria-controls="mainNavbar" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon" style="width: 1.2em; height: 1.2em;"></span>
             </button>
 
             <div class="collapse navbar-collapse" id="mainNavbar">
@@ -297,7 +337,7 @@
                     {% endif %}
                 </ul>
 
-                <div class="d-flex align-items-center gap-2">
+                <div class="d-flex align-items-center gap-2 pt-2 pt-xl-0">
                     {% if user.is_authenticated %}
                         <span class="badge bg-light text-dark border px-3 py-2 rounded-pill">
                             <i class="bi bi-person-circle text-warning me-1"></i>{{ user.username }}
@@ -344,7 +384,7 @@
                         <div class="brand-icon-box" style="width: 36px; height: 36px; font-size: 1.1rem;">
                             <i class="bi bi-cloud-check-fill"></i>
                         </div>
-                        <div class="fw-bold text-white" style="font-size: 0.95rem; line-height: 1.3;">
+                        <div class="fw-bold text-white" style="font-size: 0.92rem; line-height: 1.3;">
                             Hệ thống Quản lý Kho Vật tư – Thiết bị Văn phòng & Đặt hàng Trực tuyến
                         </div>
                     </div>
