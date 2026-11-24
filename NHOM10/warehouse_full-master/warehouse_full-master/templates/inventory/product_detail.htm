@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% load humanize %}
+{% load currency_filters %}
 
 {% block title %}{{ product.name }} — Chi tiết vật tư & Đánh giá{% endblock %}
 
@@ -119,20 +119,18 @@
             </h2>
 
             <div class="d-flex align-items-center gap-2 mb-3">
-                <div class="text-warning">
-                    <i class="bi bi-star-fill"></i>
-                    <i class="bi bi-star-fill"></i>
-                    <i class="bi bi-star-fill"></i>
-                    <i class="bi bi-star-fill"></i>
-                    <i class="bi bi-star-fill"></i>
-                </div>
-                <span class="fw-bold text-dark small">{{ avg_rating }}/5.0</span>
-                <span class="text-muted small">({{ review_count }} đánh giá)</span>
+                {% if avg_rating %}
+                    <span class="text-warning"><i class="bi bi-star-fill"></i></span>
+                    <span class="fw-bold text-dark small">{{ avg_rating }}/5.0</span>
+                    <span class="text-muted small">({{ review_count }} đánh giá từ khách hàng)</span>
+                {% else %}
+                    <span class="text-muted small"><i class="bi bi-chat-dots me-1"></i>Chưa có đánh giá nào</span>
+                {% endif %}
             </div>
 
             <div class="p-3 rounded-3 bg-light border mb-3 d-flex align-items-baseline justify-content-between">
                 <span class="text-secondary small fw-semibold">Đơn giá niêm yết:</span>
-                <span class="fs-3 fw-bold text-danger">{{ product.price|floatformat:0|intcomma }} đ</span>
+                <span class="fs-3 fw-bold text-danger">{{ product.price|vnd }}</span>
             </div>
 
             <table class="table spec-table mb-4">
@@ -230,9 +228,11 @@
         <div class="detail-card p-4 h-100">
             <div class="d-flex justify-content-between align-items-center mb-3">
                 <h5 class="fw-bold text-dark mb-0">Nhận xét từ khách hàng ({{ review_count }})</h5>
-                <span class="badge bg-warning bg-opacity-15 text-dark border border-warning px-2.5 py-1.5">
-                    <i class="bi bi-star-fill text-warning me-1"></i>{{ avg_rating }} / 5.0
-                </span>
+                {% if avg_rating %}
+                    <span class="badge bg-warning bg-opacity-15 text-dark border border-warning px-2.5 py-1.5">
+                        <i class="bi bi-star-fill text-warning me-1"></i>{{ avg_rating }} / 5.0
+                    </span>
+                {% endif %}
             </div>
 
             {% if reviews %}
