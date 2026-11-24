@@ -21,13 +21,19 @@ def is_admin_user(user):
     return user.is_authenticated and user.is_staff
 
 
+def format_vnd_price(value):
+    if value is None:
+        return "0 đ"
+    return f"{int(round(float(value))):,} đ"
+
+
 def home(request):
     products_qs = Product.objects.select_related("category").filter(status="active").order_by("-created_at")
     low_stock_count = products_qs.filter(quantity__lte=5).count()
     products_list = list(products_qs)
 
-    # Gắn thông tin đánh giá thật từ session (không gán cứng 5.0 ảo)
     for p in products_list:
+        p.price_vnd = format_vnd_price(p.price)
         reviews = request.session.get(f"product_reviews_{p.id}", [])
         p.review_count = len(reviews)
         p.avg_rating = round(sum(r["rating"] for r in reviews) / len(reviews), 1) if reviews else None
@@ -43,12 +49,14 @@ def home(request):
                 "name": cat.name.strip()[:1].upper() + cat.name.strip()[1:] if cat.name.strip() else cat.name,
             })
 
+    total_stock_val = products_qs.aggregate(total=Sum("quantity"))["total"] or 0
+
     context = {
         "products": products_list,
         "featured": products_list[0] if products_list else None,
         "categories": unique_categories,
         "total_products": products_qs.count(),
-        "total_stock": products_qs.aggregate(total=Sum("quantity"))["total"] or 0,
+        "total_stock": f"{int(total_stock_val):,}",
         "low_stock_count": low_stock_count,
     }
     return render(request, "inventory/home.html", context)
@@ -56,6 +64,8 @@ def home(request):
 
 def product_detail(request, pk):
     product = get_object_or_404(Product.objects.select_related("category", "supplier"), pk=pk)
+    product.price_vnd = format_vnd_price(product.price)
+
     session_key = f"product_reviews_{product.id}"
     reviews = request.session.get(session_key, [])
 
@@ -396,7 +406,10 @@ def order_create(request):
         messages.info(request, "Tài khoản Quản trị viên chỉ duyệt đơn, không đặt hàng như khách hàng.")
         return redirect("order_list")
 
-    products = Product.objects.select_related("category").filter(status="active", quantity__gt=0)
+    products = list(Product.objects.select_related("category").filter(status="active", quantity__gt=0))
+    for p in products:
+        p.price_vnd = format_vnd_price(p.price)
+
     selected_product_id = request.GET.get("product", "")
 
     if request.method == "POST":
@@ -419,7 +432,6 @@ def order_create(request):
         if selected_product_id and selected_product_id.isdigit():
             initial_data["product"] = int(selected_product_id)
         form = OrderForm(initial=initial_data)
-        form.fields["product"].queryset = products
 
     products_json = json.dumps(
         {
