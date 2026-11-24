@@ -25,10 +25,23 @@ def home(request):
     products_qs = Product.objects.select_related("category").filter(status="active").order_by("-created_at")
     low_stock_count = products_qs.filter(quantity__lte=5).count()
     products_list = list(products_qs)
+
+    # Gộp trùng danh mục theo tên chuẩn hóa (loại bỏ trùng "phụ kiện mạng" / "Phụ kiện mạng")
+    unique_categories = []
+    seen_names = set()
+    for cat in Category.objects.all().order_by("id"):
+        norm_name = " ".join(cat.name.strip().lower().split())
+        if norm_name not in seen_names:
+            seen_names.add(norm_name)
+            unique_categories.append({
+                "key": norm_name,
+                "name": cat.name.strip()[:1].upper() + cat.name.strip()[1:] if cat.name.strip() else cat.name,
+            })
+
     context = {
         "products": products_list,
         "featured": products_list[0] if products_list else None,
-        "categories": Category.objects.all(),
+        "categories": unique_categories,
         "total_products": products_qs.count(),
         "total_stock": products_qs.aggregate(total=Sum("quantity"))["total"] or 0,
         "low_stock_count": low_stock_count,
@@ -284,27 +297,25 @@ def dashboard(request):
     approved_orders = approved_orders_qs.count()
     rejected_orders = Order.objects.filter(status="rejected").count()
 
-    # Dữ liệu biểu đồ cột: Tồn kho theo từng nhóm danh mục
-    cat_labels = []
-    cat_quantities = []
-    for cat in Category.objects.all():
-        qty = products.filter(category=cat).aggregate(total=Sum("quantity"))["total"] or 0
-        cat_labels.append(cat.name)
-        cat_quantities.append(qty)
+    # Dữ liệu biểu đồ cột: Tồn kho theo từng nhóm danh mục (gộp trùng tên)
+    cat_map = {}
+    for p in products:
+        cat_name = p.category.name.strip() if p.category and p.category.name.strip() else "Chưa phân loại"
+        norm_key = " ".join(cat_name.lower().split())
+        if norm_key not in cat_map:
+            display_name = cat_name[:1].upper() + cat_name[1:]
+            cat_map[norm_key] = {"name": display_name, "qty": 0}
+        cat_map[norm_key]["qty"] += p.quantity
 
-    uncategorized_qty = products.filter(category__isnull=True).aggregate(total=Sum("quantity"))["total"] or 0
-    if uncategorized_qty > 0:
-        cat_labels.append("Chưa phân loại")
-        cat_quantities.append(uncategorized_qty)
+    cat_labels = [v["name"] for v in cat_map.values()]
+    cat_quantities = [v["qty"] for v in cat_map.values()]
 
-    # Top sản phẩm xuất kho nhiều nhất (từ các đơn hàng đã duyệt)
     top_products = (
         approved_orders_qs.values("product__sku", "product__name")
         .annotate(total_sold=Sum("quantity"))
         .order_by("-total_sold")[:5]
     )
 
-    # Đơn hàng mới nhất
     recent_orders = Order.objects.select_related("user", "product").order_by("-created_at")[:6]
 
     context = {
