@@ -26,7 +26,6 @@ def home(request):
     low_stock_count = products_qs.filter(quantity__lte=5).count()
     products_list = list(products_qs)
 
-    # Gộp trùng danh mục theo tên chuẩn hóa (loại bỏ trùng "phụ kiện mạng" / "Phụ kiện mạng")
     unique_categories = []
     seen_names = set()
     for cat in Category.objects.all().order_by("id"):
@@ -47,6 +46,53 @@ def home(request):
         "low_stock_count": low_stock_count,
     }
     return render(request, "inventory/home.html", context)
+
+
+def product_detail(request, pk):
+    product = get_object_or_404(Product.objects.select_related("category", "supplier"), pk=pk)
+    session_key = f"product_reviews_{product.id}"
+    reviews = request.session.get(session_key, [])
+
+    if request.method == "POST":
+        if not request.user.is_authenticated:
+            messages.warning(request, "Vui lòng đăng nhập để gửi đánh giá sản phẩm.")
+            return redirect("login")
+
+        rating = int(request.POST.get("rating", 5))
+        rating = max(1, min(5, rating))
+        comment = request.POST.get("comment", "").strip()
+
+        if not comment:
+            messages.error(request, "Vui lòng nhập nội dung nhận xét trước khi gửi.")
+        else:
+            new_review = {
+                "user": request.user.username,
+                "rating": rating,
+                "comment": comment,
+                "date": timezone.localtime(timezone.now()).strftime("%d/%m/%Y %H:%M"),
+            }
+            reviews.insert(0, new_review)
+            request.session[session_key] = reviews
+            request.session.modified = True
+            messages.success(request, "Cảm ơn bạn đã gửi đánh giá sản phẩm!")
+            return redirect("product_detail", pk=product.pk)
+
+    avg_rating = round(sum(r["rating"] for r in reviews) / len(reviews), 1) if reviews else 5.0
+    related_products = Product.objects.filter(
+        status="active", category=product.category
+    ).exclude(pk=product.pk)[:4]
+
+    return render(
+        request,
+        "inventory/product_detail.html",
+        {
+            "product": product,
+            "reviews": reviews,
+            "avg_rating": avg_rating,
+            "review_count": len(reviews),
+            "related_products": related_products,
+        },
+    )
 
 
 def register_view(request):
@@ -297,7 +343,6 @@ def dashboard(request):
     approved_orders = approved_orders_qs.count()
     rejected_orders = Order.objects.filter(status="rejected").count()
 
-    # Dữ liệu biểu đồ cột: Tồn kho theo từng nhóm danh mục (gộp trùng tên)
     cat_map = {}
     for p in products:
         cat_name = p.category.name.strip() if p.category and p.category.name.strip() else "Chưa phân loại"
@@ -345,7 +390,8 @@ def order_create(request):
         messages.info(request, "Tài khoản Quản trị viên chỉ duyệt đơn, không đặt hàng như khách hàng.")
         return redirect("order_list")
 
-    products = Product.objects.filter(status="active", quantity__gt=0)
+    products = Product.objects.select_related("category").filter(status="active", quantity__gt=0)
+    selected_product_id = request.GET.get("product", "")
 
     if request.method == "POST":
         form = OrderForm(request.POST)
@@ -354,7 +400,7 @@ def order_create(request):
             if order.quantity > order.product.quantity:
                 messages.error(
                     request,
-                    f"Sản phẩm '{order.product.name}' chỉ còn tối đa {order.product.quantity} sản phẩm trong kho.",
+                    f"Rất tiếc, số lượng đặt vượt quá khả năng cung ứng hiện tại của '{order.product.name}'.",
                 )
             else:
                 order.user = request.user
@@ -363,10 +409,37 @@ def order_create(request):
                 messages.success(request, f"Đã gửi đơn đặt hàng #{order.id} thành công! Chờ quản trị viên duyệt.")
                 return redirect("my_orders")
     else:
-        form = OrderForm()
+        initial_data = {}
+        if selected_product_id and selected_product_id.isdigit():
+            initial_data["product"] = int(selected_product_id)
+        form = OrderForm(initial=initial_data)
         form.fields["product"].queryset = products
 
-    return render(request, "inventory/order_form.html", {"form": form, "products": products})
+    products_json = json.dumps(
+        {
+            str(p.id): {
+                "id": p.id,
+                "sku": p.sku,
+                "name": p.name,
+                "price": float(p.price),
+                "category": p.category.name if p.category else "Vật tư văn phòng",
+                "image": p.image.url if p.image else "",
+            }
+            for p in products
+        },
+        ensure_ascii=False,
+    )
+
+    return render(
+        request,
+        "inventory/order_form.html",
+        {
+            "form": form,
+            "products": products,
+            "selected_product_id": str(selected_product_id),
+            "products_json": products_json,
+        },
+    )
 
 
 @login_required
