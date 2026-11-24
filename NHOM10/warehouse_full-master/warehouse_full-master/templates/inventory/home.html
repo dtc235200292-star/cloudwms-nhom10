@@ -38,7 +38,7 @@
         display: flex;
         align-items: center;
         justify-content: space-between;
-        gap: 16px;
+        gap: 14px;
     }
     .toz-nav-links {
         display: flex;
@@ -46,29 +46,32 @@
         gap: 6px;
         overflow-x: auto;
         scrollbar-width: none;
+        -webkit-overflow-scrolling: touch;
     }
     .toz-nav-links::-webkit-scrollbar {
         display: none;
     }
     .toz-nav-btn {
-        background: transparent;
-        border: none;
+        background: #F8FAFC;
+        border: 1px solid #E2E8F0;
         color: #334155;
-        font-size: 0.85rem;
+        font-size: 0.84rem;
         font-weight: 600;
-        padding: 7px 14px;
-        border-radius: 6px;
+        padding: 6px 14px;
+        border-radius: 999px;
         white-space: nowrap;
         cursor: pointer;
         transition: all 0.18s ease;
     }
     .toz-nav-btn:hover {
         color: #D97706;
+        border-color: #FCD34D;
         background: #FFFBEB;
     }
     .toz-nav-btn.active {
         color: #FFFFFF;
         background: #0F172A;
+        border-color: #0F172A;
     }
     .toz-top-search {
         width: 360px;
@@ -135,24 +138,24 @@
     .toz-eyebrow {
         display: inline-flex;
         align-items: center;
-        gap: 8px;
+        gap: 7px;
         background: rgba(245, 158, 11, 0.12);
         border: 1px solid rgba(245, 158, 11, 0.35);
         padding: 5px 12px;
         border-radius: 999px;
         font-size: 0.72rem;
         font-weight: 700;
-        letter-spacing: 0.08em;
+        letter-spacing: 0.07em;
         text-transform: uppercase;
         color: #FBBF24;
         margin-bottom: 14px;
     }
     .toz-hero-heading {
-        font-size: clamp(1.5rem, 2.4vw, 2.2rem);
+        font-size: clamp(1.32rem, 2.4vw, 2.2rem);
         font-weight: 800;
-        line-height: 1.3;
+        line-height: 1.32;
         letter-spacing: -0.015em;
-        margin-bottom: 14px;
+        margin-bottom: 12px;
     }
     .toz-hero-heading .highlight-gold {
         color: #FBBF24;
@@ -160,9 +163,14 @@
     .toz-hero-lead {
         font-size: 0.94rem;
         color: #94A3B8;
-        line-height: 1.65;
+        line-height: 1.62;
         max-width: 650px;
-        margin-bottom: 24px;
+        margin-bottom: 22px;
+    }
+    .hero-cta-group {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
     }
     .btn-toz-accent {
         background: #D97706;
@@ -174,6 +182,7 @@
         border-radius: 8px;
         letter-spacing: 0.01em;
         transition: all 0.2s ease;
+        text-align: center;
     }
     .btn-toz-accent:hover {
         background: #B45309;
@@ -190,6 +199,7 @@
         padding: 10px 22px;
         border-radius: 8px;
         transition: all 0.2s ease;
+        text-align: center;
     }
     .btn-toz-ghost:hover {
         background: rgba(255, 255, 255, 0.14);
@@ -223,12 +233,16 @@
         object-fit: contain;
     }
 
+    .mobile-featured-strip {
+        display: none;
+    }
+
     .toz-pillars-section {
-        padding: 30px 0;
+        padding: 26px 0;
         border-bottom: 1px solid #ECEEF2;
     }
     .toz-pillar-box {
-        padding: 12px 18px;
+        padding: 12px 16px;
         border-left: 2px solid #E2E8F0;
         height: 100%;
         transition: border-color 0.2s ease;
@@ -237,33 +251,33 @@
         border-left-color: #D97706;
     }
     .toz-pillar-num {
-        font-size: 0.76rem;
+        font-size: 0.74rem;
         font-weight: 800;
         color: #D97706;
         letter-spacing: 0.08em;
-        margin-bottom: 5px;
+        margin-bottom: 4px;
     }
     .toz-pillar-title {
-        font-size: 0.88rem;
+        font-size: 0.86rem;
         font-weight: 800;
         text-transform: uppercase;
         color: #0F172A;
-        margin-bottom: 5px;
+        margin-bottom: 4px;
         letter-spacing: 0.02em;
     }
     .toz-pillar-desc {
-        font-size: 0.82rem;
+        font-size: 0.81rem;
         color: #64748B;
-        line-height: 1.5;
+        line-height: 1.48;
         margin-bottom: 0;
     }
 
     .toz-section-header {
         text-align: center;
-        margin-bottom: 24px;
+        margin-bottom: 22px;
     }
     .toz-section-kicker {
-        font-size: 0.74rem;
+        font-size: 0.72rem;
         font-weight: 700;
         letter-spacing: 0.14em;
         text-transform: uppercase;
@@ -272,7 +286,7 @@
         margin-bottom: 4px;
     }
     .toz-section-title {
-        font-size: 1.5rem;
+        font-size: clamp(1.18rem, 2vw, 1.5rem);
         font-weight: 800;
         color: #0F172A;
         text-transform: uppercase;
@@ -280,21 +294,21 @@
         margin-bottom: 4px;
     }
     .toz-section-sub {
-        font-size: 0.86rem;
+        font-size: 0.85rem;
         color: #64748B;
     }
 
     .toz-offer-grid {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-        gap: 14px;
-        margin-bottom: 32px;
+        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+        gap: 12px;
+        margin-bottom: 28px;
     }
     .toz-offer-tile {
         background: #F8FAFC;
         border: 1px solid #E2E8F0;
         border-radius: 8px;
-        padding: 16px 14px;
+        padding: 14px 12px;
         text-align: center;
         cursor: pointer;
         transition: all 0.2s ease;
@@ -307,13 +321,13 @@
         transform: translateY(-2px);
     }
     .toz-offer-tile i {
-        font-size: 1.35rem;
+        font-size: 1.3rem;
         color: #D97706;
         display: block;
-        margin-bottom: 6px;
+        margin-bottom: 5px;
     }
     .toz-offer-tile span {
-        font-size: 0.85rem;
+        font-size: 0.84rem;
         font-weight: 700;
         color: #1E293B;
     }
@@ -336,14 +350,14 @@
     @media (max-width: 767.98px) {
         .wide-product-grid {
             grid-template-columns: repeat(2, minmax(0, 1fr));
-            gap: 12px;
+            gap: 10px;
         }
     }
 
     .toz-product-card {
         background: #FFFFFF;
         border: 1px solid #E2E8F0;
-        border-radius: 8px;
+        border-radius: 10px;
         overflow: hidden;
         height: 100%;
         display: flex;
@@ -377,23 +391,23 @@
     }
     .toz-sku-pill {
         position: absolute;
-        top: 10px;
-        left: 10px;
+        top: 8px;
+        left: 8px;
         background: #0F172A;
         color: #FFFFFF;
         font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-        font-size: 0.68rem;
+        font-size: 0.66rem;
         font-weight: 600;
-        padding: 3px 8px;
+        padding: 2px 7px;
         border-radius: 4px;
     }
     .toz-status-pill {
         position: absolute;
-        top: 10px;
-        right: 10px;
-        font-size: 0.68rem;
+        top: 8px;
+        right: 8px;
+        font-size: 0.66rem;
         font-weight: 700;
-        padding: 3px 8px;
+        padding: 2px 7px;
         border-radius: 4px;
     }
     .toz-quickview-bar {
@@ -456,20 +470,125 @@
     }
 
     @media (max-width: 767.98px) {
+        main.container,
+        .container.my-4,
+        .container.py-4 {
+            max-width: 100% !important;
+            width: 100% !important;
+            padding-left: 12px !important;
+            padding-right: 12px !important;
+        }
         .toz-category-inner {
             flex-direction: column;
             align-items: stretch;
+            padding: 8px 12px;
+            gap: 8px;
+        }
+        .toz-nav-btn {
+            font-size: 0.78rem;
+            padding: 5px 11px;
         }
         .toz-top-search {
             width: 100%;
         }
         .toz-hero-full {
             min-height: auto;
-            padding: 32px 0;
+            padding: 24px 0 26px;
+        }
+        .toz-slide-container {
+            padding: 0 14px;
+        }
+        .toz-eyebrow {
+            font-size: 0.66rem;
+            padding: 4px 10px;
+            margin-bottom: 10px;
+        }
+        .toz-hero-heading {
+            font-size: 1.28rem;
+            line-height: 1.35;
+            margin-bottom: 10px;
+        }
+        .toz-hero-lead {
+            font-size: 0.83rem;
+            line-height: 1.55;
+            margin-bottom: 16px;
+        }
+        .hero-cta-group {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+        }
+        .hero-cta-group .btn {
+            padding: 9px 10px;
+            font-size: 0.8rem;
+            width: 100%;
+        }
+        .mobile-featured-strip {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: rgba(255, 255, 255, 0.96);
+            color: #0F172A;
+            border-radius: 12px;
+            padding: 10px 12px;
+            margin-top: 16px;
+            box-shadow: 0 10px 24px rgba(0, 0, 0, 0.25);
+        }
+        .mobile-featured-strip img {
+            width: 52px;
+            height: 52px;
+            object-fit: contain;
+            background: #F8FAFC;
+            border-radius: 8px;
+            padding: 4px;
+            flex-shrink: 0;
+        }
+        .toz-pillars-section {
+            padding: 18px 0;
+        }
+        .toz-pillar-box {
+            padding: 8px 10px;
+        }
+        .toz-pillar-title {
+            font-size: 0.78rem;
+        }
+        .toz-pillar-desc {
+            font-size: 0.74rem;
+            line-height: 1.4;
+        }
+        .toz-offer-grid {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 8px;
+            margin-bottom: 20px;
+        }
+        .toz-offer-tile {
+            padding: 10px 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 7px;
+            text-align: left;
+        }
+        .toz-offer-tile i {
+            font-size: 1.05rem;
+            margin-bottom: 0;
+        }
+        .toz-offer-tile span {
+            font-size: 0.78rem;
         }
         .toz-thumb-wrap {
-            height: 155px;
-            padding: 12px;
+            height: 140px;
+            padding: 10px;
+        }
+        .toz-prod-title {
+            font-size: 0.82rem;
+            min-height: 2.6em;
+        }
+        .toz-price-text {
+            font-size: 0.88rem;
+        }
+        .toz-eye-icon {
+            display: none;
         }
     }
 </style>
@@ -506,7 +625,7 @@
                 <p class="toz-hero-lead">
                     Giải pháp số hóa toàn diện quy trình nhập xuất tồn kho theo chuẩn mã định danh SKU, tự động đối soát số liệu thời gian thực và hỗ trợ đặt hàng trực tuyến minh bạch cho doanh nghiệp.
                 </p>
-                <div class="d-flex flex-wrap gap-2">
+                <div class="hero-cta-group">
                     {% if user.is_authenticated and user.is_staff %}
                         <a href="{% url 'dashboard' %}" class="btn btn-toz-accent">
                             Bảng điều khiển kho
@@ -523,6 +642,25 @@
                         </a>
                     {% endif %}
                 </div>
+
+                {% if featured %}
+                <div class="mobile-featured-strip">
+                    {% if featured.image %}
+                        <img src="{{ featured.image.url }}" alt="{{ featured.name }}">
+                    {% endif %}
+                    <div class="flex-grow-1 min-width-0">
+                        <div class="d-flex align-items-center gap-2 mb-1">
+                            <span class="badge bg-dark" style="font-size: 0.6rem;">TIÊU ĐIỂM</span>
+                            <span class="font-monospace text-muted" style="font-size: 0.68rem;">{{ featured.sku }}</span>
+                        </div>
+                        <div class="fw-bold text-truncate" style="font-size: 0.8rem;">{{ featured.name }}</div>
+                        <div class="toz-price-text" style="font-size: 0.86rem;">{{ featured.price_vnd }}</div>
+                    </div>
+                    <a href="{% url 'product_detail' featured.pk %}" class="btn btn-dark btn-sm fw-semibold flex-shrink-0" style="font-size: 0.75rem;">
+                        Xem
+                    </a>
+                </div>
+                {% endif %}
             </div>
 
             <div class="col-lg-4 d-none d-lg-block">
@@ -552,7 +690,7 @@
 </section>
 
 <section class="toz-pillars-section">
-    <div class="row g-3">
+    <div class="row g-2 g-lg-3">
         <div class="col-6 col-lg-3">
             <div class="toz-pillar-box">
                 <div class="toz-pillar-num">01</div>
@@ -584,7 +722,7 @@
     </div>
 </section>
 
-<section id="catalog-section" class="pt-5 pb-4">
+<section id="catalog-section" class="pt-4 pt-lg-5 pb-4">
     <div class="toz-section-header">
         <span class="toz-section-kicker">DANH MỤC CUNG ỨNG TRỰC TUYẾN</span>
         <h2 class="toz-section-title">Danh mục Vật tư – Thiết bị Văn phòng</h2>
@@ -640,17 +778,17 @@
                     </div>
                 </a>
 
-                <div class="p-3 d-flex flex-column flex-grow-1">
+                <div class="p-2 p-md-3 d-flex flex-column flex-grow-1">
                     <div class="d-flex justify-content-between align-items-center mb-1">
-                        <span class="text-muted" style="font-size: 0.74rem;">
+                        <span class="text-muted text-truncate" style="font-size: 0.72rem; max-width: 62%;">
                             {{ p.category.name|default:"Vật tư văn phòng" }}
                         </span>
-                        <span class="text-warning fw-semibold" style="font-size: 0.74rem;">
+                        <span class="text-warning fw-semibold" style="font-size: 0.72rem;">
                             <i class="bi bi-star-fill"></i> {{ p.avg_rating }} ({{ p.review_count }})
                         </span>
                     </div>
 
-                    <h6 class="mb-3">
+                    <h6 class="mb-2 mb-md-3">
                         <a href="{% url 'product_detail' p.pk %}" class="toz-prod-title">
                             {{ p.name }}
                         </a>
@@ -669,21 +807,21 @@
                             {% if p.quantity > 0 %}
                                 {% if user.is_authenticated %}
                                     {% if user.is_staff %}
-                                        <a href="{% url 'product_edit' p.pk %}" class="btn btn-outline-secondary btn-sm px-2.5" style="font-size: 0.76rem; border-radius: 6px;">
+                                        <a href="{% url 'product_edit' p.pk %}" class="btn btn-outline-secondary btn-sm px-2" style="font-size: 0.74rem; border-radius: 6px;">
                                             Sửa
                                         </a>
                                     {% else %}
-                                        <a href="{% url 'order_create' %}?product={{ p.id }}" class="btn btn-toz-accent btn-sm px-2.5" style="font-size: 0.76rem; padding: 5px 11px;">
+                                        <a href="{% url 'order_create' %}?product={{ p.id }}" class="btn btn-toz-accent btn-sm px-2" style="font-size: 0.74rem; padding: 4px 9px;">
                                             Đặt hàng
                                         </a>
                                     {% endif %}
                                 {% else %}
-                                    <a href="{% url 'login' %}?next={% url 'order_create' %}%3Fproduct%3D{{ p.id }}" class="btn btn-toz-accent btn-sm px-2.5" style="font-size: 0.76rem; padding: 5px 11px;">
+                                    <a href="{% url 'login' %}?next={% url 'order_create' %}%3Fproduct%3D{{ p.id }}" class="btn btn-toz-accent btn-sm px-2" style="font-size: 0.74rem; padding: 4px 9px;">
                                         Đặt hàng
                                     </a>
                                 {% endif %}
                             {% else %}
-                                <button class="btn btn-light btn-sm px-2 text-muted" style="font-size: 0.74rem;" disabled>Tạm hết</button>
+                                <button class="btn btn-light btn-sm px-2 text-muted" style="font-size: 0.72rem;" disabled>Tạm hết</button>
                             {% endif %}
                         </div>
                     </div>
